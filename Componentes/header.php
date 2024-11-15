@@ -17,23 +17,22 @@
       <a class="navbar-brand" href="../Index.php">Udev</a>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-        <li class="nav-item">
-          <a class="nav-link" href="../Docentes/Docentes-Vista.php">Docentes</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="../Cuentas-De-Cobro/Cuentas-De-Cobro-Vista.php">Cuentas de Cobro</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="../Programador/Programador-Vista.php">Programador</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="../Asistencias/Asistencias-Vista.php">Asistencias</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../Docentes/Docentes-Vista.php">Docentes</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../Instituciones/Instituciones-Vista.php">Instituciones</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../Salones/Salones-Vista.php">Salones</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../Programador/Programador-Vista.php">Programador</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../Modulos/Modulos-Vista.php">Módulos</a>
@@ -48,3 +47,5 @@
     </div>
   </div>
 </nav>
+</body>
+</html>
