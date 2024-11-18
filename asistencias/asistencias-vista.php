@@ -56,5 +56,5 @@
 
 <?php include_once '../componentes/footer.php'; ?>
 
-<script src="js/datatable_asistencias.js"></script>
-<script src="js/datatable_programador.js"></script>
+<script src="js/Datatable-Asistencias.js"></script>
+<script src="js/Datatable-Programador.js"></script>

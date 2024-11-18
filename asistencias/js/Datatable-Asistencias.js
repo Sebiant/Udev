@@ -3,7 +3,7 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "asistencias-controlador.php",
+            "url": "Asistencias-Controlador.php",
             "type": "GET"
         },
         "columns": [

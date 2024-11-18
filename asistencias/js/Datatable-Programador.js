@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var table = $('#datos_programador').DataTable({
         "ajax": {
-            "url": "programador-controlador.php",
+            "url": "Programador-Controlador.php",
             "dataSrc": "data"  
         },
         "columns": [
@@ -26,24 +26,12 @@ $(document).ready(function () {
     }); 
 });
 
-// probando automatizacion ;)
-
-window.onload = function funcion1(){
-$año = date('Y');
-$hora = date('h');
-
-if ($año == 2024 && $hora > 12) {
-   
-     
-}
-
-  }
 async function cambiarEstado(id) {
     if (confirm("Deseas confirmar si el docente " + id + " asistió?")) {
         try {
             
             let respuestaAsistencia = await $.ajax({
-                url: 'programador-controlador.php?accion=crearAsistencia',
+                url: 'Programador-Controlador.php?accion=crearAsistencia',
                 type: 'POST',
                 data: { id_programador: id },
                 dataType: 'json'
@@ -58,7 +46,7 @@ async function cambiarEstado(id) {
             }
 
             let respuestaEstado = await $.ajax({
-                url: 'programador-controlador.php?accion=cambiarEstado',
+                url: 'Programador-Controlador.php?accion=cambiarEstado',
                 type: 'POST',
                 data: { id_programador: id },
                 dataType: 'json'
