@@ -19,6 +19,38 @@ switch ($accion){
                 echo "Error al crear el salón: " . $conn->error;
         }
         break;
+    case 'modificar':
+        // Obtener los datos del salón específico para cargar en el formulario
+        $id_salon = $_POST['id_salon'];
+            
+        if (empty($id_salon)) {
+            echo json_encode(["error" => "ID de salón no proporcionado"]);
+            exit;
+        }
+    
+        $sql = "SELECT * FROM salones WHERE id_salon = '$id_salon'";
+        $result = $conn->query($sql);
+    
+        if ($result === false) {
+            // Mostrar error si la consulta falla
+            echo json_encode(["error" => "Error en la consulta SQL: " . $conn->error]);
+            exit;
+        }
+    
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            $salon = $result->fetch_assoc();
+            $salon['estado'] = $salon['estado'] == 1 ? "Sí" : "No"; // Convertir a "Sí" o "No"
+            $data[] = $salon;
+        }
+        if ($result->num_rows > 0) {
+            $data[] = $result->fetch_assoc();
+        }
+    
+        header('Content-Type: application/json');
+        echo json_encode(["data" => $data]);
+        break;
     
     case 'editar':
         $id_salon = $_POST['id_salon'];

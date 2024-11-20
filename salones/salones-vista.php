@@ -1,5 +1,6 @@
 <?php
     include_once '../componentes/header.php';
+    include_once '../conexion.php';
 ?>
     
 
@@ -24,11 +25,11 @@
             <table id="datos_salones" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>Id Salon</th>
                         <th>Nombre_salon</th>
                         <th>Capacidad</th>
                         <th>Descripcion</th>
-                        <th>Id_institucion</th>
+                        <th>Instituciones</th>
                         <th>Estado</th>
                         <th>Modificar</th>
                         <th>Borrar</th>
@@ -65,16 +66,30 @@
             <label for="descripcion" class="form-label">Descripcion:</label>
             <input type="text" name="descripcion" id="descripcion" class="form-control">
           </div>
-          <div class="mb-3">
-            <label for="id_instituto" class="form-label">Id_institucion:</label>
-            <input type="number" name="id_institucion" id="id_institucion" class="form-control">
-          </div>
-          <div class="form-check mb-3">
-            <input type="checkbox" class="form-check-input" name="estado" id="estado">
-            <label class="form-check-label" for="estado">Estado</label>
-          </div>
+          <div class="form-group">
+                        <label for="id_institucion">Institución:</label>
+                        <select class="form-control" name="id_institucion">
+                            <option value="">-- Selecciona una institución --</option>
+                            <?php
+                            // Cargar las instituciones en las opciones del select
+                           
+                            $sql = "SELECT id_institucion, nombre FROM instituciones";
+                            $result = $conn->query($sql);
+
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<option value='".$row['id_institucion']."'>".$row['nombre']."</option>";
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+          <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <input type="checkbox" name="estado"> Activo
+                    </div>
           <div class="modal-footer">
-              <button class="btn btn-success" onclick="crearInstitucion()">Guardar</button>
+              <button type="submit" class="btn btn-success">Guardar</button>
           </div>
         </form>
       </div>
@@ -108,16 +123,27 @@
                         <label for="descripcion" class="form-label">Descripcion:</label>
                         <input type="text"   class="form-control" name="descripcion">
                     </div>
-                    <div class="mb-3">
-                        <label for="id_instituto" class="form-label">Institución:</label>
-                        <select class="form-control" name="id_institucion" id="id_institucion">
-                            <option value="">Selecciona una Institución</option>
-                                
+                    <div class="form-group">
+                        <label for="id_institucion">Institución:</label>
+                        <select class="form-control" name="id_institucion">
+                            <option value="">-- Selecciona una institución --</option>
+                            <?php
+                            // Cargar las instituciones en las opciones del select
+                           
+                            $sql = "SELECT id_institucion, nombre FROM instituciones";
+                            $result = $conn->query($sql);
+
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<option value='".$row['id_institucion']."'>".$row['nombre']."</option>";
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="estado">Estado:</label>
-                        <input type="checkbox" name="estado" id="estado"> Activo
+                        <input type="checkbox" name="estado"> Activo
                     </div>
                     </div>
                     <div class="modal-footer">
