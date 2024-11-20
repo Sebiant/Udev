@@ -1,10 +1,10 @@
 function crearPrograma() {
     const formData = new FormData(document.getElementById('formPrograma'));
 
-    console.log('Acción: Crear');
+    console.log('Acción: crear');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('controlador-programas.php?accion=crear', {
+    fetch('Controlador-Programas.php?accion=crear', {
         method: 'POST',
         body: formData
     })
@@ -22,10 +22,10 @@ function crearPrograma() {
 function editarPrograma() {
     const formData = new FormData(document.getElementById('formPrograma'));
 
-    console.log('Acción: Editar');
+    console.log('Acción: editar');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('controlador-programas.php?accion=editar', {
+    fetch('Controlador-Programas.php?accion=editar', {
         method: 'POST',
         body: formData
     })
@@ -45,7 +45,7 @@ function activarPrograma() {
 
     console.log('ID Programa a Activar:', id_programa);
 
-    fetch('controlador-programas.php?accion=activar', {
+    fetch('Controlador-Programas.php?accion=activar', {
         method: 'POST',
         body: new URLSearchParams({ id_programa })
     })

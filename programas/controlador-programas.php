@@ -42,7 +42,7 @@ switch ($accion) {
                             tipo='$tipo', 
                             nombre='$nombre', 
                             duracion_mes='$duracion_mes', 
-                            cant_modulos='cant_modulos', 
+                            cant_modulos='$cant_modulos', 
                             descripcion='$descripcion', 
                             estado='$estado'
                             WHERE id_programa='$id_programa'";
