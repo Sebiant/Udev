@@ -11,7 +11,7 @@ switch ($accion){
         $id_institucion = $_POST['id_institucion'];
         $estado = isset($_POST['estado']) ? 1 : 0;
 
-        $sql = "INSERT INTO salones (nombre_salon, capacidad, descripcion, id_institucion, estado)
+        $sql = "INSERT INTO Salones (nombre_salon, capacidad, descripcion, id_institucion, estado)
                 VALUES ('$nombre_salon','$capacidad','$descripcion','$id_institucion','$estado')";
         if ($conn -> query($sql)=== TRUE){
             echo "Salón creado con éxito";
@@ -19,6 +19,7 @@ switch ($accion){
                 echo "Error al crear el salón: " . $conn->error;
         }
         break;
+    
     case 'editar':
         $id_salon = $_POST['id_salon'];
 
@@ -81,8 +82,15 @@ switch ($accion){
             break;
 
     default:
-        $sql = "SELECT * FROM salones";
+        $sql = "SELECT S.id_salon, S.nombre_salon, S.capacidad, S.descripcion, i.nombre, S.estado 
+        FROM salones S
+        JOIN instituciones i ON i.id_institucion = S.id_institucion";
         $result = $conn->query($sql);
+
+        if ($result === false) {
+            // Si la consulta falla, mostramos el error de la base de datos y detenemos la ejecución
+            die("Error en la consulta SQL: " . $conn->error);
+        }
 
             $data = [];
 

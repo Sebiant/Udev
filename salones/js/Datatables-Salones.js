@@ -3,16 +3,20 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "salones-controlador.php",
+            url: "Salones-Controlador.php",
             type: "POST",
             dataSrc: 'data'
         },
         columns: [
             { "data": "id_salon" },
             { "data": "nombre_salon" },
-            { "data": "cantidad" },
+            { "data": "capacidad" },
             { "data": "descripcion" },
-            { "data": "id_institucion" },
+            { "data": "id_institucion",
+                render: function(data, type, row) {
+                return row.nombre || "Institución no encontrada"; // Muestra el nombre de la institución directamente
+                }
+            },
             { "data": "estado" },
             {
                 data: null,
@@ -32,14 +36,14 @@ $(document).ready(function() {
         var idSalon = data.id_salon;
 
         $.ajax({
-            url: 'salones-controlador.php?accion=modificar',
+            url: 'Salones-Controlador.php?accion=modificar',
             type: 'POST',
             data: { id_salon: idSalon },
             success: function(response) {
                 var Salon = response.data[0];
                 $('#editForm [name="id_salon"]').val(Salon.id_salon);
                 $('#editForm [name="nombre_salon"]').val(Salon.nombre_salon);
-                $('#editForm [name="cantidad"]').val(Salon.cantidad);
+                $('#editForm [name="capacidad"]').val(Salon.capacidad);
                 $('#editForm [name="descripcion"]').val(Salon.descripcion);
                 $('#editForm [name="id_institucion"]').val(Salon.id_institucion);
                 $('#editForm [name="estado"]').prop('checked', Salon.estado === "Sí");
@@ -54,7 +58,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         $.ajax({
-            url: 'salones-controlador.php?accion=editar',
+            url: 'Salones-Controlador.php?accion=editar',
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
@@ -75,7 +79,7 @@ $(document).ready(function() {
 
         if (confirm('¿Estás seguro de que quieres desactivar el salon?')) {
             $.ajax({
-                url: 'salones-controlador.php?accion=eliminar',
+                url: 'Salones-Controlador.php?accion=eliminar',
                 type: 'POST',
                 data: { id_salon: idSalon },
                 success: function(response) {

@@ -109,12 +109,15 @@
                         <input type="text"   class="form-control" name="descripcion">
                     </div>
                     <div class="mb-3">
-                        <label for="id_instituto" class="form-label">Id_institucion:</label>
-                        <input type="number" class="form-control" name="id_institucion">
+                        <label for="id_instituto" class="form-label">Institución:</label>
+                        <select class="form-control" name="id_institucion" id="id_institucion">
+                            <option value="">Selecciona una Institución</option>
+                                
+                        </select>
                     </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" name="estado" id="estado">
-                        <label class="form-check-label" for="estado">Estado</label>
+                    <div class="form-group">
+                        <label for="estado">Estado:</label>
+                        <input type="checkbox" name="estado" id="estado"> Activo
                     </div>
                     </div>
                     <div class="modal-footer">
@@ -129,5 +132,5 @@
     <?php
     include_once '../componentes/footer.php';
     ?>
-    <script src="js/consultas_salones.js"></script>
-    <script src="js/datatable_salones.js"></script>
+    <script src="js/Consultas-Salones.js"></script>
+    <script src="js/Datatables-Salones.js"></script>
