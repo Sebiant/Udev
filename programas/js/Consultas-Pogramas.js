@@ -3,20 +3,16 @@ function crearPrograma() {
 
     console.log('Acción: crear');
     console.log('Datos del Formulario:', ...formData.entries());
-
-    fetch('Controlador-Programas.php?accion=crear', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+    
+    $.ajax({
+        url: 'Controlador-Programas.php?accion=crear',
+        type: 'POST',
+        data: formData,
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
     });
+    
 }
 
 function editarPrograma() {

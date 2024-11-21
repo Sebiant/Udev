@@ -7,10 +7,10 @@ $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 switch ($accion) {
     case 'crear':
         $tipo = $_POST['tipo'];
-        $nombre = $_POST['nombre'];
-        $duracion_mes = $_POST['duracion_mes'];
-        $cant_modulos = $_POST['cant_modulos'];
-        $descripcion = $_POST['descripcion'];  
+        $nombre = $_POST['nombre_programa'];
+        $duracion_mes = $_POST['duracion_programa'];
+        $cant_modulos = $_POST['cantidad_modulos'];
+        $descripcion = $_POST['descripcion-programa'];  
 
         $sql = "INSERT INTO programas (tipo, nombre, duracion_mes, cant_modulos, descripcion) 
                 VALUES ('$tipo', '$nombre', '$duracion_mes', '$cant_modulos', '$descripcion')";
@@ -29,7 +29,7 @@ switch ($accion) {
         $result = $conn->query($sql_select);
 
         if ($result->num_rows > 0) {
-            $programa = $result->fetch_assoc();
+            $programa =   $result->fetch_assoc();
 
             // Otros campos
             $tipo = isset($_POST['tipo']) ? $_POST['tipo'] : $programa['tipo'];

@@ -53,30 +53,30 @@ include_once '../componentes/header.php';
 
                         <div class="mb-3">
                             <label for="tipo_programa" class="form-label">Tipo de Programa:</label>
-                            <input type="text" name="tipo_programa" id="tipo_programa" class="form-control">
+                            <input type="text" name="tipo_programa" id="tipo_programa" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label for="nombre_programa" class="form-label">Nombre del programa:</label>
-                            <input type="text" name="nombre_programa" id="nombre_programa" class="form-control">
+                            <input type="text" name="nombre_programa" id="nombre_programa" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label for="duracion_programa" class="form-label">Duracion:</label>
-                            <input type="text" name="duracion_programa" id="duracion_programa" class="form-control">
+                            <input type="text" name="duracion_programa" id="duracion_programa" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label for="cantidad_modulos" class="form-label">Cant de modulos:</label>
-                            <input type="text" name="cantidad_modulos" id="cantidad_modulos" class="form-control">
+                            <input type="text" name="cantidad_modulos" id="cantidad_modulos" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label for="descripcion_programa" class="form-label">Descripcion:</label>
-                            <input type="text" name="descripcion_programa" id="descripcion_programa" class="form-control">
+                            <input type="text" name="descripcion_programa" id="descripcion_programa" class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                <input type="hidden" name="id_programa" id="id_programa">
-                <input type="hidden" name="operacion" id="operacion">
-                <button type="submit" class="btn btn-success">Guardar</button>
-            </div>
+                        <input type="hidden" name="id_programa" id="id_programa">
+                        <input type="hidden" name="operacion" id="operacion">
+                        <button type="submit" class="btn btn-success" onclick="crearPrograma()">Guardar</button>
+                    </div>
                 </form>
             </div>
          
@@ -96,23 +96,23 @@ include_once '../componentes/header.php';
                     <input type="hidden" name="id_programa">
                     <div class="form-group">
                         <label for="tipo_programa">Tipo</label>
-                        <input type="text" class="form-control" name="tipo_programa">
+                        <input type="text" class="form-control" name="tipo_programa" required>
                     </div>
                     <div class="form-group">
                         <label for="nombre_programa">Nombre del programa</label>
-                        <input type="text" class="form-control" name="nombre_programa">
+                        <input type="text" class="form-control" name="nombre_programa" required>
                     </div>
                     <div class="form-group">
                         <label for="duracion_programa">Duracion</label>
-                        <input type="text" class="form-control" name="duracion_programa">
+                        <input type="text" class="form-control" name="duracion_programa" required>
                     </div>
                     <div class="form-group">
                         <label for="cantidad_modulos">Cant de modulos</label>
-                        <input type="text" class="form-control" name="cantidad_modulos">
+                        <input type="text" class="form-control" name="cantidad_modulos" required>
                     </div>
                     <div class="form-group">
                         <label for="descripcion_programa">Descripcion</label>
-                        <input type="text" class="form-control" name="descripcion_programa">
+                        <input type="text" class="form-control" name="descripcion_programa" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -122,8 +122,9 @@ include_once '../componentes/header.php';
         </div>
     </div>
 </div>
+
 <?php
 include_once '../componentes/footer.php';
 ?>
-<script src="js/Consultas-Programas.js"></script>
+<script src="js/Consultas-Pogramas.js"></script>
 <script src="js/Datatable-Programas.js"></script>
