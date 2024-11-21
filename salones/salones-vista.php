@@ -55,20 +55,20 @@
           <input type="hidden" name="id_salon" id="id_salon">
 
           <div class="mb-3">
-            <label for="nombre_salon" class="form-label">Nombre_salon:</label>
-            <input type="text" name="nombre_salon" id="nombre_salon" class="form-control">
+            <label for="nombre_salon" class="form-label">Nombre salon:</label>
+            <input type="text" name="nombre_salon" id="nombre_salon" class="form-control" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Escribe el nombre del salón.">
           </div>
           <div class="mb-3">
             <label for="capacidad" class="form-label">Capacidad:</label>
-            <input type="number" name="capacidad" id="capacidad" class="form-control">
+            <input type="number" name="capacidad" id="capacidad" class="form-control" min="0" step="1" required>
           </div>
           <div class="mb-3">
             <label for="descripcion" class="form-label">Descripcion:</label>
-            <input type="text" name="descripcion" id="descripcion" class="form-control">
+            <input type="text" name="descripcion" id="descripcion" class="form-control" required>
           </div>
           <div class="form-group">
                         <label for="id_institucion">Institución:</label>
-                        <select class="form-control" name="id_institucion">
+                        <select class="form-control" name="id_institucion" required>
                             <option value="">-- Selecciona una institución --</option>
                             <?php
                             // Cargar las instituciones en las opciones del select
@@ -86,7 +86,7 @@
                     </div>
           <div class="form-group">
                         <label for="estado">Estado:</label>
-                        <input type="checkbox" name="estado"> Activo
+                        <input type="checkbox" name="estado" required> Activo
                     </div>
           <div class="modal-footer">
               <button type="submit" class="btn btn-success">Guardar</button>
@@ -113,19 +113,19 @@
                         
                     <div class="mb-3">
                         <label for="nombre_salon" class="form-label">Nombre_salon:</label>
-                        <input type="text"  class="form-control" name="nombre_salon">
+                        <input type="text"  class="form-control" name="nombre_salon" required>
                     </div>
                     <div class="mb-3">
                         <label for="capacidad" class="form-label">Capacidad:</label>
-                        <input type="number"   class="form-control" name="capacidad">
+                        <input type="number"   class="form-control" name="capacidad" min="0" step="1" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Escribe el nombre del salón.">
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripcion:</label>
-                        <input type="text"   class="form-control" name="descripcion">
+                        <input type="text"   class="form-control" name="descripcion" required>
                     </div>
                     <div class="form-group">
                         <label for="id_institucion">Institución:</label>
-                        <select class="form-control" name="id_institucion">
+                        <select class="form-control" name="id_institucion" required>
                             <option value="">-- Selecciona una institución --</option>
                             <?php
                             // Cargar las instituciones en las opciones del select
@@ -143,7 +143,7 @@
                     </div>
                     <div class="form-group">
                         <label for="estado">Estado:</label>
-                        <input type="checkbox" name="estado"> Activo
+                        <input type="checkbox" name="estado" required> Activo
                     </div>
                     </div>
                     <div class="modal-footer">
