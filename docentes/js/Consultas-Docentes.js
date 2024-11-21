@@ -4,7 +4,7 @@ function crearDocente() {
     console.log('Acción: Crear');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('docentes-controlador.php?accion=crear', {
+    fetch('Docentes-Controlador.php?accion=crear', {
         method: 'POST',
         body: formData
     })
@@ -25,7 +25,7 @@ function editarDocente() {
     console.log('Acción: Editar');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('docentes-controlador.php?accion=editar', {
+    fetch('Docentes-Controlador.php?accion=editar', {
         method: 'POST',
         body: formData
     })
@@ -45,7 +45,7 @@ function activarDocente() {
 
     console.log('ID Docente a Activar:', id_docente);
 
-    fetch('docentes-controlador.php?accion=activar', {
+    fetch('Docentes-Controlador.php?accion=activar', {
         method: 'POST',
         body: new URLSearchParams({ id_docente })
     })

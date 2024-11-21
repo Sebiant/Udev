@@ -3,7 +3,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "docentes-controlador.php",
+            url: "Docentes-Controlador.php",
             type: "POST",
             dataSrc: 'data'
         },
@@ -35,7 +35,7 @@ $(document).ready(function() {
     
     
         $.ajax({
-            url: 'docentes-controlador.php',
+            url: 'Docentes-Controlador.php',
             type: 'POST',
             data: { id_docente: idDocente },
             success: function(response) {
@@ -73,7 +73,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         $.ajax({
-            url: 'docentes-controlador.php?accion=editar',
+            url: 'Docentes-Controlador.php?accion=editar',
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
@@ -94,7 +94,7 @@ $(document).ready(function() {
 
         if (confirm('¿Estás seguro de que quieres desactivar a este docente?')) {
             $.ajax({
-                url: 'docentes-controlador.php?accion=eliminar',
+                url: 'Docentes-Controlador.php?accion=eliminar',
                 type: 'POST',
                 data: { id_docente: idDocente },
                 success: function(response) {
