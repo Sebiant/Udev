@@ -12,9 +12,10 @@ $(document).ready(function() {
             { "data": "nombre_salon" },
             { "data": "capacidad" },
             { "data": "descripcion" },
-            { "data": "id_institucion",
+            { 
+                "data": "id_institucion",
                 render: function(data, type, row) {
-                return row.nombre || "Institución no encontrada"; // Muestra el nombre de la institución directamente
+                    return row.nombre || "Institución no encontrada"; // Muestra el nombre de la institución directamente
                 }
             },
             { "data": "estado" },
@@ -25,12 +26,18 @@ $(document).ready(function() {
             },
             {
                 data: null,
-                defaultContent: '<button class="btn btn-danger w-100 btn-delete">Borrar</button>',
+                render: console.log(row.estado), function(data, type, row) {
+                    // Comprobar el estado del salón para determinar el texto del botón
+                    let buttonText = row.estado === 'Sí' ? 'Desactivar' : 'Activar';
+                    let statusValue = row.estado === 'Sí' ? 1 : 0; // 1 para activo y 0 para inactivo
+                    return `<button class="btn btn-warning w-100 toggle-btn" data-status="${statusValue}">${buttonText}</button>`;
+                    
+                },
                 orderable: false
             }
         ]
     });
-    
+
     $('#datos_salones').on('click', '.btn-modify', function() {
         var data = table.row($(this).parents('tr')).data();
         var idSalon = data.id_salon;
@@ -50,10 +57,11 @@ $(document).ready(function() {
                 $('#editModal').modal('show');
             },
             error: function() {
-                alert('Error al obtener los datos del salon.');
+                alert('Error al obtener los datos del salón.');
             }
         });
     });
+
     $('#editForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -62,36 +70,50 @@ $(document).ready(function() {
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-                alert('Salon actualizado exitosamente.');
+                alert('Salón actualizado exitosamente.');
                 table.ajax.reload();
                 $('#editModal').modal('hide');
             },
             error: function() {
-                alert('Error al actualizar el salon.');
+                alert('Error al actualizar el salón.');
             }
         });
     });
 
+    $('#datos_salones').on('click', '.toggle-btn', function() {
+        var btn = $(this);
+        var status = btn.data('status');
 
-    $('#datos_salones').on('click', '.btn-delete', function() {
-        var data = table.row($(this).parents('tr')).data();
-        var idSalon = data.id_salon;
+        var data = table.row(btn.parents('tr')).data();
+        
+        if (status === 0) { // Si está inactivo (estado 'No')
+            btn.text('Desactivar');
+            btn.data('status', 1);
 
-        if (confirm('¿Estás seguro de que quieres desactivar el salon?')) {
             $.ajax({
-                url: 'Salones-Controlador.php?accion=eliminar',
+                url: 'Salones-Controlador.php?accion=activar',
                 type: 'POST',
-                data: { id_salon: idSalon },
+                data: { id_salon: data.id_salon, estado: 1 }, // Enviar estado activado
                 success: function(response) {
-                    table.ajax.reload();
-                    alert('Salon desactivado exitosamente.');
-                },
-                error: function() {
-                    alert('Error al desactivar el salon.');
+                    alert('Salón activado exitosamente.');
+                    table.ajax.reload(); // Recargar tabla para reflejar cambios
+                    console.log(data);
+                }
+            });
+        } else { // Si está activo (estado 'Sí')
+            btn.text('Activar');
+            btn.data('status', 0);
+
+            $.ajax({
+                url: 'Salones-Controlador.php?accion=desactivar',
+                type: 'POST',
+                data: { id_salon: data.id_salon, estado: 0 }, // Enviar estado desactivado
+                success: function(response) {
+                    alert('Salón desactivado exitosamente.');
+                    table.ajax.reload(); // Recargar tabla para reflejar cambios
+                    console.log(data);
                 }
             });
         }
     });
-
-    
 });

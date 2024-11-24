@@ -32,7 +32,7 @@
                         <th>Instituciones</th>
                         <th>Estado</th>
                         <th>Modificar</th>
-                        <th>Borrar</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
             </table>
@@ -83,10 +83,6 @@
                             }
                             ?>
                         </select>
-                    </div>
-          <div class="form-group">
-                        <label for="estado">Estado:</label>
-                        <input type="checkbox" name="estado" required> Activo
                     </div>
           <div class="modal-footer">
               <button type="submit" class="btn btn-success">Guardar</button>
@@ -140,10 +136,6 @@
                             }
                             ?>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="estado">Estado:</label>
-                        <input type="checkbox" name="estado" required> Activo
                     </div>
                     </div>
                     <div class="modal-footer">
