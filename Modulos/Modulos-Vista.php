@@ -55,19 +55,20 @@ $result = $conn->query($sql);
 
                     <div class="mb-3">
                         <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
-                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" required>
+                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" require title="Ingrese una fecha valida">
                     </div>
                     <div class="mb-3">
                         <label for="fecha_fin" class="form-label">Fecha Fin:</label> <!-- Corregido -->
-                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" required> <!-- Corregido -->
+                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" required title="Ingrese una fecha valida"> <!-- Corregido -->
                     </div>
                     <div class="mb-3">
                         <label for="estado" class="form-label">Estado:</label>
-                        <select name="estado" id="estado" class="form-control">
+                        <select name="estado" id="estado" class="form-control" required>
                             <option value="Activo">Activo</option>
                             <option value="Inactivo">Inactivo</option>
                         </select>
-                        <br>
+                    </div>
+                    <div>
                         <label for="id_programa">Programa:</label>
                         <select id="id_programa" name="id_programa" class="form-control" required>
                             <option value="">-- Selecciona un programa --</option>
@@ -112,24 +113,26 @@ $result = $conn->query($sql);
                     </div>
                     <div class="form-group">
                         <label for="edit_estado">Estado</label>
-                        <select class="form-control" id="edit_estado" name="estado">
+                        <select class="form-control" id="edit_estado" name="estado" required>
                             <option value="Activo">Activo</option>
                             <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
-                    <label for="id_programa">Programa:</label>
-                    <select id="id_programa" name="id_programa" class="form-control" required>
-                        <option value="">-- Selecciona un programa --</option>
-                        <?php
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
+                    <div>
+                        <label for="id_programa">Programa:</label>
+                        <select id="id_programa" name="id_programa" class="form-control" required>
+                            <option value="">-- Selecciona un programa --</option>
+                            <?php
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay programas disponibles</option>';
                             }
-                        } else {
-                            echo '<option value="">No hay programas disponibles</option>';
-                        }
-                        ?>
-                    </select>
+                            ?>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -142,4 +145,4 @@ $result = $conn->query($sql);
 <?php
 include_once '../componentes/footer.php';
 ?>
-<script src="js/Datatable-Modulo.js"></script>
+<script src="js/Datatables-Modulos.js"></script>

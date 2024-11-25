@@ -80,6 +80,10 @@ switch ($accion) {
                 FROM modulos 
                 JOIN programas ON modulos.id_programa = programas.id_programa";
         $result = $conn->query($sql);
+
+        if ($result === false) {
+            die("Error en la consulta SQL: " . $conn->error);
+        }
     
         $data = [];
     

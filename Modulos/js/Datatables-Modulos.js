@@ -2,7 +2,7 @@ $(document).ready(function() {
     // Inicializar DataTable
     $('#datos_modulo').DataTable({
         "ajax": {
-            "url": "modulo-controlador.php",
+            "url": "Modulos-Controlador.php",
             "type": "GET",
             "data": { "accion": "default" },
             "dataSrc": "data"
@@ -11,7 +11,7 @@ $(document).ready(function() {
             { "data": "id_modulo" },
             { "data": "fecha_inicio" },
             { "data": "fecha_fin" },
-            { "data": "id_programa" },
+            { "data": "nombre_programa" },
             { "data": "estado" },
             {
                 "data": "id_modulo",
@@ -36,7 +36,7 @@ $(document).ready(function() {
 function editarModulo(id) {
     if (confirm('¿Está seguro de que desea editar este módulo ' + id + '?')) {
         $.ajax({
-            url: 'modulo-controlador.php', // URL del controlador
+            url: 'Modulos-Controlador.php', // URL del controlador
             type: 'POST', // Cambiado a POST
             data: { accion: 'obtener', id_modulo: id }, // Enviar el ID
             success: function(response) {
@@ -45,6 +45,7 @@ function editarModulo(id) {
                     $('#editForm input[name="id_modulo"]').val(modulo.id_modulo);
                     $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
                     $('#editForm input[name="fecha_final"]').val(modulo.fecha_fin);
+                    $('#editForm input[name="id_programa"]').val(modulo.id_programa);
                     $('#editForm select[name="estado"]').val(modulo.estado);
                     $('#editModuloModal').modal('show'); // Mostrar modal
                 } else {
@@ -62,7 +63,7 @@ function editarModulo(id) {
 $('#editForm').on('submit', function(event) {
     event.preventDefault();
     $.ajax({
-        url: 'modulo-controlador.php?accion=editar',
+        url: 'Modulos-Controlador.php?accion=editar',
         type: 'POST',
         data: $(this).serialize(),
         success: function(response) {
@@ -80,7 +81,7 @@ $('#editForm').on('submit', function(event) {
 function borrarModulo(id) {
     if (confirm('¿Está seguro de que desea eliminar este módulo?')) {
         $.ajax({
-            url: 'modulo-controlador.php?accion=eliminar',
+            url: 'Modulos-Controlador.php?accion=eliminar',
             type: 'POST',
             data: { id_modulo: id },
             success: function(response) {
@@ -98,7 +99,7 @@ function borrarModulo(id) {
 function crearModulo() {
     const datosFormulario = $('#formModulo').serialize();
     $.ajax({
-        url: 'modulo-controlador.php?accion=crear',
+        url: 'Modulos-Controlador.php?accion=crear',
         type: 'POST',
         data: datosFormulario,
         success: function(response) {
