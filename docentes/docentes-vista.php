@@ -77,16 +77,18 @@
             <input type="text" name="descripcion_especialidad" id="descripcion_especialidad" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label for="telefono" class="form-label">Teléfono:</label>
-            <input type="text" name="telefono" id="telefono" class="form-control" required>
+          <label for="telefono" class="form-label">Teléfono:</label>
+<input type="text" name="telefono" id="telefono" class="form-control" required maxlength="10" pattern="\d{1,10}">
+
           </div>
           <div class="mb-3">
             <label for="direccion" class="form-label">Dirección:</label>
             <input type="text" name="direccion" id="direccion" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" name="email" id="email" class="form-control" required>
+          <label for="email" class="form-label">Email:</label>
+<input type="email" name="email" id="email" class="form-control" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)$"> 
+
           </div>
           <div class="form-check mb-3">
             <input type="checkbox" class="form-check-input" name="declara_renta" id="declara_renta">
@@ -113,7 +115,7 @@
     </div>
 
     <!-- Modal de edición -->
-<div id="editModal" class="modal fade" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div id="editModal" class="modal fade" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -127,39 +129,42 @@
 
                     <div class="mb-3">
                         <label for="tipo_documento_editar" class="form-label">Tipo de Documento:</label>
-                        <input type="text" name="tipo_documento" id="tipo_documento_editar" class="form-control">
+                        <input type="text" name="tipo_documento" id="tipo_documento_editar" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="numero_documento_editar" class="form-label">Número de Documento:</label>
-                        <input type="text" name="numero_documento" id="numero_documento_editar" class="form-control">
+                        <input type="text" name="numero_documento" id="numero_documento_editar" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="nombres_editar" class="form-label">Nombres:</label>
-                        <input type="text" name="nombres" id="nombres_editar" class="form-control">
+                        <input type="text" name="nombres" id="nombres_editar" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="apellidos_editar" class="form-label">Apellidos:</label>
-                        <input type="text" name="apellidos" id="apellidos_editar" class="form-control">
+                        <input type="text" name="apellidos" id="apellidos_editar" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="especialidad_editar" class="form-label">Especialidad:</label>
-                        <input type="text" name="especialidad" id="especialidad_editar" class="form-control">
+                        <input type="text" name="especialidad" id="especialidad_editar" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="descripcion_especialidad_editar" class="form-label">Descripción Especialidad:</label>
-                        <input type="text" name="descripcion_especialidad" id="descripcion_especialidad_editar" class="form-control">
+                        <input type="text" name="descripcion_especialidad" id="descripcion_especialidad_editar" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="telefono_editar" class="form-label">Teléfono:</label>
-                        <input type="text" name="telefono" id="telefono_editar" class="form-control">
+    <label for="telefono_editar" class="form-label">Teléfono:</label>
+    <input type="text" name="telefono" id="telefono_editar" class="form-control" required maxlength="10" pattern="\d{10}">
+</div>
+
                     </div>
                     <div class="mb-3">
                         <label for="direccion_editar" class="form-label">Dirección:</label>
-                        <input type="text" name="direccion" id="direccion_editar" class="form-control">
+                        <input type="text" name="direccion" id="direccion_editar" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email_editar" class="form-label">Email:</label>
-                        <input type="email" name="email" id="email_editar" class="form-control">
+                    <label for="email_editar" class="form-label">Email:</label>
+<input type="email" name="email" id="email_editar" class="form-control" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)$">
+
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" name="declara_renta" id="declara_renta_editar">
@@ -181,6 +186,7 @@
         </div>
     </div>
 </div>
+
 
     <?php
     include_once '../componentes/footer.php';
