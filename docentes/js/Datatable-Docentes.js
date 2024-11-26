@@ -23,7 +23,7 @@ $(document).ready(function() {
             },
             {
                 data: null,
-                defaultContent: '<button class="btn btn-danger w-100 btn-delete">Borrar</button>',
+                defaultContent: '<button class="btn btn-danger w-100 btn-delete">Desactivar</button>',
                 orderable: false
             }
         ]
@@ -47,8 +47,7 @@ $(document).ready(function() {
                     $('#editForm [name="id_docente"]').val(docente.id_docente);
                     $('#editForm [name="tipo_documento"]').val(docente.tipo_documento);
                     $('#editForm [name="numero_documento"]').val(docente.numero_documento);
-                    $('#editForm [name="nombres"]').val(docente.nombres);
-                    $('#editForm [name="apellidos"]').val(docente.apellidos);
+                    $('#editForm [name="nombres"]').val(docente.nombre_completo);
                     $('#editForm [name="especialidad"]').val(docente.especialidad);
                     $('#editForm [name="descripcion_especialidad"]').val(docente.descripcion_especialidad);
                     $('#editForm [name="telefono"]').val(docente.telefono);

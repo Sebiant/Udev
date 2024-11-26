@@ -56,7 +56,8 @@ switch ($accion) {
         break;
 
     case 'editar':
-        $id_docente = $_POST['id_docente'];
+    
+        $id_docente = isset($_POST['id_docente']) ? intval($_POST['id_docente']) : null;
 
         $sql_select = "SELECT * FROM docentes WHERE id_docente='$id_docente'";
         $result = $conn->query($sql_select);
@@ -69,6 +70,7 @@ switch ($accion) {
             $retenedor_iva = isset($_POST['retenedor_iva']) ? 1 : 0; // Si no está seleccionado, valor es 0
 
             // Otros campos
+            $id_docente = isset($_POST['id_docente']) ? $_POST['id_docente'] : $docente['id_docente'];
             $tipo_documento = isset($_POST['tipo_documento']) ? $_POST['tipo_documento'] : $docente['tipo_documento'];
             $numero_documento = isset($_POST['numero_documento']) ? $_POST['numero_documento'] : $docente['numero_documento'];
             $nombres = isset($_POST['nombres']) ? $_POST['nombres'] : $docente['nombres'];
@@ -133,6 +135,8 @@ switch ($accion) {
     default:
         $sql = "SELECT  tipo_documento, 
                         numero_documento, 
+                        nombres,
+                        apellidos,
                         CONCAT(nombres, ' ', apellidos) AS nombre_completo,
                         especialidad,
                         descripcion_especialidad, 

@@ -32,7 +32,7 @@ function editarDocente() {
     .then(response => response.text())
     .then(data => {
         //alert(data);
-        console.log('Recargando la página...');
+        alert('Recargando la página...');
         location.reload();
     })
     .catch(error => {
