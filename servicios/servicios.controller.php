@@ -3,33 +3,33 @@
 include("../Conexion.php");
 
 @$action = $_POST["operacion"];
-main($action, $conexion);
+main($action, $conn);
 
-function main($action, $conexion)
+function main($action, $conn)
 {
     switch ($action) {
         case 'crear':
-            crear($conexion);
+            crear($conn);
             break;
         case 'editar':
-            editar($conexion);
+            editar($conn);
             break;
         case 'borrar':
-            borrar($conexion);
+            borrar($conn);
             break;
         case 'obtener_registro':
-            obtener_registro($conexion);
+            obtener_registro($conn);
             break;
         default:
-        obtener_registros($conexion);
+        obtener_registros($conn);
             break;
     }
 }
 
-function borrar($conexion)
+function borrar($conn)
 {
     if (isset($_POST["codigo_servicio"])) {
-        $stmt = $conexion->prepare("DELETE FROM servicios WHERE codigo_servicio = :codigo_servicio");
+        $stmt = $conn->prepare("DELETE FROM servicios WHERE codigo_servicio = :codigo_servicio");
 
         $resultado = $stmt->execute(
             array(
@@ -42,9 +42,9 @@ function borrar($conexion)
     }
 }
 
-function crear($conexion)
+function crear($conn)
 {
-    $stmt = $conexion->prepare("INSERT INTO servicios(codigo_servicio, descripcion_servicio, valor_total_servicio, estado) VALUES(:codigo_servicio, :descripcion_servicio, :valor_total_servicio, :estado)");
+    $stmt = $conn->prepare("INSERT INTO servicios(codigo_servicio, descripcion_servicio, valor_total_servicio, estado) VALUES(:codigo_servicio, :descripcion_servicio, :valor_total_servicio, :estado)");
 
     $resultado = $stmt->execute(
         array(
@@ -59,9 +59,9 @@ function crear($conexion)
     }
 }
 
-function editar($conexion)
+function editar($conn)
 {
-    $stmt = $conexion->prepare("UPDATE servicios SET descripcion_servicio=:descripcion_servicio, valor_total_servicio=:valor_total_servicio, estado=:estado WHERE codigo_servicio = :codigo_servicio");
+    $stmt = $conn->prepare("UPDATE servicios SET descripcion_servicio=:descripcion_servicio, valor_total_servicio=:valor_total_servicio, estado=:estado WHERE codigo_servicio = :codigo_servicio");
 
     $resultado = $stmt->execute(
         array(
@@ -79,13 +79,13 @@ function editar($conexion)
     }
 }
 
-function obtener_registro($conexion)
+function obtener_registro($conn)
 {
     $salida = array();
     
 
     try {
-        $stmt = $conexion->prepare("SELECT * FROM servicios WHERE codigo_servicio = :codigo_servicio LIMIT 1");
+        $stmt = $conn->prepare("SELECT * FROM servicios WHERE codigo_servicio = :codigo_servicio LIMIT 1");
         $stmt->bindParam(':codigo_servicio', $_POST['codigo_servicio'], PDO::PARAM_INT);
         $stmt->execute();
 
@@ -102,7 +102,7 @@ function obtener_registro($conexion)
     echo json_encode($salida);
 }
 
-function obtener_registros($conexion)
+function obtener_registros($conn)
 {
     
     $query = "";
@@ -126,7 +126,7 @@ if (isset($_POST["length"]) && isset($_POST["start"])) {
     $query .= 'LIMIT ' . $_POST["start"] . ', ' . $_POST["length"];
 }
 
-$stmt = $conexion->prepare($query);
+$stmt = $conn->prepare($query);
 
 try {
     $stmt->execute();
@@ -167,7 +167,7 @@ echo json_encode($salida);
 
 function obtener_todos_registros (){
     include("../conexion.php");
-    $stmt = $conexion->prepare("SELECT * FROM servicios");
+    $stmt = $conn->prepare("SELECT * FROM servicios");
     $stmt ->execute();
     $resutlado = $stmt->fetchAll();
     return $stmt ->rowCount();
