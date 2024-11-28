@@ -53,7 +53,10 @@ include_once '../componentes/header.php';
 
                         <div class="mb-3">
                             <label for="tipo_documento" class="form-label">Tipo de Documento:</label>
-                            <input type="text" name="tipo_documento" id="tipo_documento" class="form-control" required>
+                            <select name="tipo_documento" id="tipo_documento" class="form-control" required>
+                                <option value="cedula_ciudadania">Cédula de ciudadanía</option>
+                                <option value="cedula_extranjeria">Cédula de Extranjería</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="numero_documento" class="form-label">Número de Documento:</label>
@@ -123,7 +126,10 @@ include_once '../componentes/header.php';
 
                     <div class="mb-3">
                         <label for="tipo_documento_editar" class="form-label">Tipo de Documento:</label>
-                        <input type="text" name="tipo_documento" id="tipo_documento_editar" class="form-control" required>
+                        <select name="tipo_documento" id="tipo_documento_editar" class="form-control" required>
+                            <option value="cedula_ciudadania">Cédula de ciudadanía</option>
+                            <option value="cedula_extranjeria">Cédula de Extranjería</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="numero_documento_editar" class="form-label">Número de Documento:</label>
