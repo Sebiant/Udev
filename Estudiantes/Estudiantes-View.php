@@ -134,7 +134,8 @@
 
   <?php
 
-  include ("../Componentes/footer.php");
+
+  include ("../Componentes/footer.php");//si
 
   ?>
 
