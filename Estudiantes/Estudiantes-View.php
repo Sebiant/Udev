@@ -23,7 +23,7 @@
 </head>
 
 <body>
-  <?php include_once '../componentes/navbar.php' ?>
+  <?php include_once '../Componentes/header.php' ?>
 
   <h1 class="text-center">Estudiante</h1>
   <div>
@@ -134,7 +134,7 @@
 
   <?php
 
-  include ("../componentes/pie.php");
+  include ("../Componentes/footer.php");
 
   ?>
 

@@ -1,37 +1,37 @@
 <?php
 
-include ("../conexion.php");
+include ("../Conexion.php");
 //include("funciones.php");
 
 @$action = $_POST["operacion"];
-main($action, $conexion);
+main($action, $conn);
 
-function main($action, $conexion)
+function main($action, $conn)
 {
     switch ($action) {
         case 'crear':
-            crear($conexion);
+            crear($conn);
             break;
 
         case 'editar':
-            editar($conexion);
+            editar($conn);
             break;
 
         case 'borrar':
-            borrar($conexion);
+            borrar($conn);
             break;
 
         case 'obtener_registro':
-            obtener_registro($conexion);
+            obtener_registro($conn);
             break;
 
         default:
-            obtener_registros($conexion);
+            obtener_registros($conn);
             break;
     }
 }
 
-function crear($conexion)
+function crear($conn)
 {
 
     if ($_POST["operacion"] == "crear") {
@@ -41,7 +41,7 @@ function crear($conexion)
         if ($_FILES["imagen_estudiante"]["name"] != '') {
             $imagen = subir_imagen();
         }
-        $stmt = $conexion->prepare("INSERT INTO estudiantes(nombre_estudiante, apellidos_estudiante, fecha_nacimiento_estudiante, imagen, estado)VALUES(:nombre, :apellidos, :fecha_nacimiento_estudiante, :imagen_estudiante, :estado)");
+        $stmt = $conn->prepare("INSERT INTO estudiantes(nombre_estudiante, apellidos_estudiante, fecha_nacimiento_estudiante, imagen, estado)VALUES(:nombre, :apellidos, :fecha_nacimiento_estudiante, :imagen_estudiante, :estado)");
 
         $resultado = $stmt->execute(
             array(
@@ -58,7 +58,7 @@ function crear($conexion)
     }
 }
 
-function editar($conexion)
+function editar($conn)
 {
 
 
@@ -75,7 +75,7 @@ function editar($conexion)
         }
 
 
-        $stmt = $conexion->prepare("UPDATE estudiantes SET nombre_estudiante=:nombre, apellidos_estudiante=:apellidos,fecha_nacimiento_estudiante=:fecha_nacimiento_estudiante, 
+        $stmt = $conn->prepare("UPDATE estudiantes SET nombre_estudiante=:nombre, apellidos_estudiante=:apellidos,fecha_nacimiento_estudiante=:fecha_nacimiento_estudiante, 
         imagen=:imagen_estudiante,estado=:estado WHERE codigo_estudiante = :codigo_estudiante");
 
         $stmt->bindParam(':nombre', $_POST["nombre"]);
@@ -98,10 +98,10 @@ function editar($conexion)
 
 }
 
-function borrar($conexion)
+function borrar($conn)
 {
     if (isset($_POST["codigo_estudiante"])) {
-        $stmt = $conexion->prepare("DELETE FROM estudiantes WHERE codigo_estudiante = :codigo_estudiante");
+        $stmt = $conn->prepare("DELETE FROM estudiantes WHERE codigo_estudiante = :codigo_estudiante");
 
         $resultado = $stmt->execute(
             array(
@@ -115,7 +115,7 @@ function borrar($conexion)
 }
 
 
-function obtener_registros($conexion) //Se realizo revision de filtro para mostrar solo estudiantes activos
+function obtener_registros($conn) //Se realizo revision de filtro para mostrar solo estudiantes activos
 {
     $query = "SELECT * FROM estudiantes WHERE estado = 'Activo' ";
 
@@ -133,7 +133,7 @@ function obtener_registros($conexion) //Se realizo revision de filtro para mostr
         $query .= 'LIMIT :start, :length';
     }
 
-    $stmt = $conexion->prepare($query);
+    $stmt = $conn->prepare($query);
 
     if (isset($_POST["search"]["value"])) {
         $search = "%" . $_POST["search"]["value"] . "%";
@@ -168,7 +168,7 @@ function obtener_registros($conexion) //Se realizo revision de filtro para mostr
         $salida = array(
             "draw" => $draw,
             "recordsTotal" => $filtered_rows,
-            "recordsFiltered" => obtener_todos_registros($conexion),
+            "recordsFiltered" => obtener_todos_registros($conn),
             "data" => $datos
         );
 
@@ -179,10 +179,10 @@ function obtener_registros($conexion) //Se realizo revision de filtro para mostr
     }
 }
 
-function obtener_registro($conexion)
+function obtener_registro($conn)
 {
     if (isset($_POST["codigo_estudiante"])) {
-        $stmt = $conexion->prepare("SELECT * FROM estudiantes WHERE codigo_estudiante = :codigo_estudiante LIMIT 1");
+        $stmt = $conn->prepare("SELECT * FROM estudiantes WHERE codigo_estudiante = :codigo_estudiante LIMIT 1");
         $stmt->bindParam(':codigo_estudiante', $_POST["codigo_estudiante"], PDO::PARAM_INT);
 
         try {
@@ -205,9 +205,9 @@ function obtener_registro($conexion)
     }
 }
 
-function obtener_todos_registros($conexion)
+function obtener_todos_registros($conn)
 {
-    $stmt = $conexion->prepare("SELECT * FROM estudiantes WHERE estado = 'Activo'");
+    $stmt = $conn->prepare("SELECT * FROM estudiantes WHERE estado = 'Activo'");
     try {
         $stmt->execute();
         return $stmt->rowCount();
@@ -234,7 +234,7 @@ function subir_imagen()
 
 function obtener_nombre_imagen($codigo_estudiante)
 {
-    include ('../conexion.php');
+    include ('../Conexion.php');
     $stmt = $conexion->prepare("SELECT imagen From estudiantes WHERE codigo_estudiante= '$codigo_estudiante'");
     $stmt->execute();
     $resultado = $stmt->fetchAll();
@@ -244,10 +244,10 @@ function obtener_nombre_imagen($codigo_estudiante)
 
 }
 
-function obtener_estado($conexion)
+function obtener_estado($conn)
 {
 
-    include ('../conexion.php');
+    include ('../Conexion.php');
     $stmt = $conexion->prepare("SELECT estado FROM estudiantes ");
     $stmt->execute();
     $resutlado = $stmt->fetchAll();
