@@ -15,7 +15,7 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
-  <link rel="stylesheet" href="../css/style.css">
+ 
 
 </head>
 
@@ -135,7 +135,7 @@
   <?php
 
 
-  include ("../Componentes/footer.php");//si
+  include ("../Componentes/footer.php");
 
   ?>
 
@@ -172,7 +172,7 @@
         "serverSide": true,
         "order": [],
         "ajax": {
-          url: "estudiantes.controller.php",
+          url: "Estudiantes-Controller.php",
           type: "POST"
 
         },
@@ -182,7 +182,7 @@
           "orderable": false,
         },]
       });
-
+//funcionalidad de creacion 
       $(document).on('submit', '#formulario', function (event) {
         event.preventDefault();
         var nombres = $("#codigo_estudiante").val();
