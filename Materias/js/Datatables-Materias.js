@@ -11,8 +11,6 @@ $(document).ready(function() {
             { "data": "id_materia" },
             { "data": "nombre" },
             { "data": "descripcion" },
-            { "data": "frecuencia" },
-            { "data": "modalidad" },
             { "data": "estado" },
             {
                 data: null,

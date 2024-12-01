@@ -25,8 +25,6 @@
                         <th>Id</th>
                         <th>Nombre</th>
                         <th>Descripcion</th>
-                        <th>frecuencia</th>
-                        <th>Modalidad</th>
                         <th>estado</th>
                         <th>Modificar</th>
                         <th>Borrar</th>
@@ -57,14 +55,6 @@
           <div class="mb-3">
             <label for="numero_documento" class="form-label">Descripcion de la materia:</label>
             <input type="text" name="numero_documento" id="numero_documento" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="nombres" class="form-label">Frecuencia de la materia:</label>
-            <input type="text" name="nombres" id="nombres" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label for="apellidos" class="form-label">Modalidad de la materia:</label>
-            <input type="text" name="apellidos" id="apellidos" class="form-control">
           </div>
         </form>
       </div>
@@ -97,14 +87,6 @@
                             <label for="numero_documento">Descripcion de la materia</label>
                             <input type="text" class="form-control" name="numero_documento">
                         </div>
-                        <div class="form-group">
-                            <label for="nombres">frecuencia de la materia</label>
-                            <input type="text" class="form-control" name="nombres">
-                        </div>
-                        <div class="form-group">
-                            <label for="apellidos">Modalidad de la materia</label>
-                            <input type="text" class="form-control" name="apellidos">
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -117,5 +99,5 @@
     <?php
     include_once '../componentes/footer.php';
     ?>
-    <script src="js/consultas_materias.js"></script>
-    <script src="js/datatables_materias.js"></script>
+    <script src="js/Consultas-Materias.js"></script>
+    <script src="js/Datatables-Materias.js"></script>

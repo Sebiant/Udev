@@ -11,8 +11,8 @@ switch ($accion) {
         $frecuencia = $_POST['frecuencia'];
         $modalidad = $_POST['modalidad'];
 
-        $sql = "INSERT INTO materias (nombre, descripcion, frecuencia, modalidad) 
-                VALUES ('$nombre', '$descripcion', '$frecuencia', '$modalidad')";
+        $sql = "INSERT INTO materias (nombre, descripcion) 
+                VALUES ('$nombre', '$descripcion')";
         
         if ($conn->query($sql) === TRUE) {
             echo "Nuevo registro creado exitosamente.";
@@ -32,15 +32,11 @@ switch ($accion) {
             // Otros campos
             $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $materia['nombre'];
             $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : $materia['descripcion'];
-            $frecuencia = isset($_POST['frecuencia']) ? $_POST['frecuencia'] : $materia['frecuencia'];
-            $modalidad = isset($_POST['modalidad']) ? $_POST['modalidad'] : $docente['modalidad'];
             $estado = isset($_POST['estado']) ? $_POST['estado'] : $materia['estado'];
 
             $sql_update = "UPDATE materias SET 
                             nombre='$nombre', 
                             descripcion='$descripcion', 
-                            frecuencia='$frecuencia', 
-                            modalidad='$modalidad', 
                             estado='$estado'
                             WHERE id_materia='$id_materia'";
 
