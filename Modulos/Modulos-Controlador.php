@@ -10,6 +10,12 @@ switch ($accion) {
         $id_programa = $_POST['id_programa'];
         $estado = isset($_POST['estado']) ? 1 : 0;
 
+        // Validar que las fechas no estén vacías
+    if (empty($fecha_inicio) || empty($fecha_fin)) {
+        echo "Error: Las fechas son obligatorias.";
+        exit; // Termina la ejecución si hay un error
+    }
+
         $sql = "INSERT INTO modulos (fecha_inicio, fecha_fin, estado, id_programa) 
                 VALUES ('$fecha_inicio', '$fecha_fin', '$estado', '$id_programa')";
         
@@ -93,10 +99,13 @@ switch ($accion) {
                 $row['id_programa'] = $row['nombre_programa'];
                 $data[] = $row;
             }
-        }
+        
     
         header('Content-Type: application/json');
         echo json_encode(['data' => $data]);
+    } else {
+        die("Error en la consulta SQL: " . $conn->error);
+    }
     break;
 }
 

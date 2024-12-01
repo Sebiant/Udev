@@ -55,22 +55,17 @@ $result = $conn->query($sql);
 
                     <div class="mb-3">
                         <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
-                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" require title="Ingrese una fecha valida">
+                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" min="2024-11-29" max="2026-12-31" required>
+                        <div class="invalid-feedback">La fecha es obligatoria.</div>
                     </div>
                     <div class="mb-3">
                         <label for="fecha_fin" class="form-label">Fecha Fin:</label> <!-- Corregido -->
-                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" required title="Ingrese una fecha valida"> <!-- Corregido -->
-                    </div>
-                    <div class="mb-3">
-                        <label for="estado" class="form-label">Estado:</label>
-                        <select name="estado" id="estado" class="form-control" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
+                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" min="2024-11-29" max="2026-12-31" required>
+                        <div class="invalid-feedback">La fecha es obligatoria.</div> <!-- Corregido -->
                     </div>
                     <div>
                         <label for="id_programa">Programa:</label>
-                        <select id="id_programa" name="id_programa" class="form-control" required>
+                        <select id="id_programa" name="id_programa" class="form-control" required title="Selecciona un programa">
                             <option value="">-- Selecciona un programa --</option>
                             <?php
                             if ($result->num_rows > 0) {
@@ -86,7 +81,7 @@ $result = $conn->query($sql);
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="crearModulo()">Guardar</button>
+                <button type="submit" class="btn btn-success" onclick="crearModulo()">Guardar</button>
             </div>
         </div>
     </div>
@@ -111,16 +106,9 @@ $result = $conn->query($sql);
                         <label for="edit_fecha_fin">Fecha Fin</label> 
                         <input type="date" class="form-control" id="edit_fecha_fin" name="fecha_fin" required>
                     </div>
-                    <div class="form-group">
-                        <label for="edit_estado">Estado</label>
-                        <select class="form-control" id="edit_estado" name="estado" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                    </div>
                     <div>
                         <label for="id_programa">Programa:</label>
-                        <select id="id_programa" name="id_programa" class="form-control" required>
+                        <select id="id_programa" name="id_programa" class="form-control" required title="Selecciona un programa">
                             <option value="">-- Selecciona un programa --</option>
                             <?php
                             if ($result->num_rows > 0) {
@@ -146,3 +134,31 @@ $result = $conn->query($sql);
 include_once '../componentes/footer.php';
 ?>
 <script src="js/Datatables-Modulos.js"></script>
+
+<script>
+    function crearModulo() {
+    // Validar el formulario antes de enviar
+    const form = document.getElementById('formModulo');
+    
+    if (form.checkValidity()) {
+        // Si el formulario es válido, proceder a enviar los datos
+        $('#modalModulos').modal('hide'); // Cierra el modal antes de enviar
+        // Aquí puedes agregar tu lógica para enviar el formulario, por ejemplo, usando AJAX
+        $.ajax({
+            url: 'Modulos-Controlador.php',
+            type: 'POST',
+            data: $(form).serialize(), // Serializa el formulario
+            success: function(response) {
+                // Manejar la respuesta del servidor
+                alert('Módulo creado exitosamente.');
+            },
+            error: function() {
+                alert('Hubo un error al crear el módulo.');
+            }
+        });
+    } else {
+        // Si el formulario no es válido, mostrar los mensajes de error
+        form.classList.add('was-validated');
+    }
+}
+</script>

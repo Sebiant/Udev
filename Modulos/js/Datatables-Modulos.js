@@ -45,7 +45,7 @@ function editarModulo(id) {
                     $('#editForm input[name="id_modulo"]').val(modulo.id_modulo);
                     $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
                     $('#editForm input[name="fecha_final"]').val(modulo.fecha_fin);
-                    $('#editForm input[name="id_programa"]').val(modulo.id_programa);
+                    $('#editForm select[name="id_programa"]').val(modulo.id_programa);
                     $('#editForm select[name="estado"]').val(modulo.estado);
                     $('#editModuloModal').modal('show'); // Mostrar modal
                 } else {
@@ -79,13 +79,13 @@ $('#editForm').on('submit', function(event) {
 
 // Función para borrar un módulo
 function borrarModulo(id) {
-    if (confirm('¿Está seguro de que desea eliminar este módulo?')) {
+    if (confirm('¿Está seguro de que desea desactivar este módulo?')) {
         $.ajax({
             url: 'Modulos-Controlador.php?accion=eliminar',
             type: 'POST',
             data: { id_modulo: id },
             success: function(response) {
-                alert('Módulo eliminado exitosamente.');
+                alert('Módulo desactivado exitosamente.');
                 $('#datos_modulo').DataTable().ajax.reload(); // Recargar datos
             },
             error: function() {
@@ -99,7 +99,7 @@ function borrarModulo(id) {
 function crearModulo() {
     const datosFormulario = $('#formModulo').serialize();
     $.ajax({
-        url: 'Modulos-Controlador.php?accion=crear',
+        url: 'Modulos-Controlador.php?accion=crear', 
         type: 'POST',
         data: datosFormulario,
         success: function(response) {
@@ -112,3 +112,5 @@ function crearModulo() {
         }
     });
 }
+
+
