@@ -8,8 +8,7 @@ switch ($accion) {
     case 'crear':
         $nombre= $_POST['nombre'];
         $descripcion = $_POST['descripcion'];
-        $frecuencia = $_POST['frecuencia'];
-        $modalidad = $_POST['modalidad'];
+        $estado = isset($_POST['estado']) ? 1 : 0;
 
         $sql = "INSERT INTO materias (nombre, descripcion) 
                 VALUES ('$nombre', '$descripcion')";
@@ -83,6 +82,7 @@ switch ($accion) {
         
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
+                    $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
                     $data[] = $row;
                 }
             }
