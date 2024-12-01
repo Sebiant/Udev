@@ -4,7 +4,7 @@ function crearMateria() {
     console.log('Acción: Crear');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('materias-controlador.php?accion=crear', {
+    fetch('Materias-Controlador.php?accion=crear', {
         method: 'POST',
         body: formData
     })
@@ -25,7 +25,7 @@ function editarMateria() {
     console.log('Acción: Editar');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('materias-controlador.php?accion=editar', {
+    fetch('Materias-Controlador.php?accion=editar', {
         method: 'POST',
         body: formData
     })
@@ -45,7 +45,7 @@ function activarMateria() {
 
     console.log('ID Materia a Activar:', id_materia);
 
-    fetch('materias-controlador.php?accion=editar', {
+    fetch('Materias-Controlador.php?accion=editar', {
         method: 'POST',
         body: new URLSearchParams({ id_materia })
     })

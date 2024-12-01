@@ -3,7 +3,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "materias-controlador.php",
+            url: "Materias-Controlador.php",
             type: "POST",
             dataSrc: 'data'  
         },
