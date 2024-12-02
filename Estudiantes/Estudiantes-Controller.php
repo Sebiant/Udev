@@ -142,26 +142,27 @@ function obtener_registros($conn) //Se realizo revision de filtro para mostrar s
     $param_types = '';
     $params = [];
 
-    if (isset($_POST["search"]["value"])) {
+    //correccion realiada para simplificacion del codigo y manejo de busqueda, orden y paginacion
+
+    if (!empty($_POST["search"]["value"])) {
         $search = "%" . $_POST["search"]["value"] . "%";
-        //$stmt->bindParam(':search', $search, PDO::PARAM_STR);
-    
-        if (isset($_POST["length"]) && $_POST["length"] != -1) {
-            //$stmt->bindParam(':start', $_POST["start"], PDO::PARAM_INT);
-            //$stmt->bindParam(':length', $_POST["length"], PDO::PARAM_INT);
-            $start = intval($_POST["start"]);
-            $length = intval($_POST["length"]);
-            $stmt->bind_param("ssii", $search, $search, $start, $length);
-        } else {
-            $stmt->bind_param("ss", $search, $search);
-        }
-    } else {
-        if (isset($_POST["length"]) && $_POST["length"] != -1) {
-            $start = intval($_POST["start"]);
-            $length = intval($_POST["length"]);
-            $stmt->bind_param("ii", $start, $length);
-        }
+        $param_types .= 'ss';
+        $params[] = &$search;
+        $params[] = &$search;
     }
+
+    if (!empty($_POST["length"]) && $_POST["length"] != -1) {
+        $start = intval($_POST["start"]);
+        $length = intval($_POST["length"]);
+        $param_types .= 'ii';
+        $params[] = &$start;
+        $params[] = &$length;
+    }
+
+    if ($param_types) {
+        $stmt->bind_param($param_types, ...$params);
+    }
+
 
     try {
         $stmt->execute();
@@ -171,27 +172,29 @@ function obtener_registros($conn) //Se realizo revision de filtro para mostrar s
         //$filtered_rows = $stmt->rowCount();
         //$draw = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
 
-        foreach ($resultado as $fila) {
-            $imagen = $fila["imagen"] != '' ? '<img src="../img/' . $fila["imagen"] . '" class="img-thumbnail" width="50" height="35" />' : '';
+        while ($fila = $resultado->fetch_assoc()) {
+            $imagen = $fila["imagen"] ? '<img src="../img/' . $fila["imagen"] . '" class="img-thumbnail" width="50" height="35" />' : '';
 
-            $sub_array = array();
-            $sub_array[] = $fila["codigo_estudiante"];
-            $sub_array[] = $fila["nombre_estudiante"];
-            $sub_array[] = $fila["apellidos_estudiante"];
-            $sub_array[] = $fila["fecha_nacimiento_estudiante"];
-            $sub_array[] = $imagen;
-            $sub_array[] = $fila["estado"];
-            $sub_array[] = '<button type="button" data-bs-toggle="modal" data-bs-target="#modalUsuario" name="editar" id="' . $fila["codigo_estudiante"] . '" class="btn btn-success bi bi-pencil-square editar"></button>';
-            $datos[] = $sub_array;
+            $datos[] = [
+                $fila["codigo_estudiante"],
+                $fila["nombre_estudiante"],
+                $fila["apellidos_estudiante"],
+                $fila["fecha_nacimiento_estudiante"],
+                $imagen,
+                $fila["estado"],
+                '<button type="button" data-bs-toggle="modal" data-bs-target="#modalUsuario" name="editar" id="' . $fila["codigo_estudiante"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
+            ];
         }
-        
 
         $salida = array(
             //"draw" => $draw,
            // "recordsTotal" => $filtered_rows,
-            "draw" => isset($_POST['draw']) ? intval($_POST['draw']) : 0,
-            "recordsTotal" => $stmt->num_rows,
-            "recordsFiltered" => obtener_todos_registros($conn),
+            //"draw" => isset($_POST['draw']) ? intval($_POST['draw']) : 0,
+            //"recordsTotal" => $stmt->num_rows,
+            //"recordsFiltered" => obtener_todos_registros($conn),
+            "draw" => intval($_POST["draw"] ?? 0),
+            "recordsTotal" => obtener_todos_registros($conn),
+            "recordsFiltered" => $resultado->num_rows,
             "data" => $datos
         );
 
@@ -223,23 +226,33 @@ function obtener_registro($conn)
             }
 
             echo json_encode($salida);
-        } catch (PDOException $e) {
+        } catch (mysqli_sql_exception $e) {
             echo "Error en la consulta: " . $e->getMessage();
         }
     }
 }
 
-function obtener_todos_registros($conn)
+
+//correcion de forma y parametros de conexion nueva funcion
+/*function obtener_todos_registros($conn)
 {
-    $stmt = $conn->prepare("SELECT * FROM estudiantes WHERE estado = 'activo'");
+    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM estudiantes WHERE estado = 'activo'");
     try {
         $stmt->execute();
-        return $stmt->rowCount();
-    } catch (PDOException $e) {
+        return $stmt->fetch_assoc()["total"] ?? 0;
+    } catch (mysqli_sql_exception $e) {
         echo "Error en la consulta: " . $e->getMessage();
         return 0;
     }
+}*/
+
+function obtener_todos_registros($conn)
+{
+    $query = "SELECT COUNT(*) AS total FROM estudiantes WHERE estado = 'activo'";
+    $result = $conn->query($query);
+    return $result->fetch_assoc()["total"] ?? 0;
 }
+
 
 
 function subir_imagen()
