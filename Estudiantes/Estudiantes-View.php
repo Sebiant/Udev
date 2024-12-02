@@ -185,7 +185,7 @@
 //funcionalidad de creacion 
       $(document).on('submit', '#formulario', function (event) {
         event.preventDefault();
-        var nombres = $("#codigo_estudiante").val();
+        var codigo = $("#codigo_estudiante").val();
         var nombres = $("#nombre_estudiante").val();
         var apellidos = $("#apellidos_estudiante").val();
         var fecha_nacimiento_estudiante = $("#fecha_nacimiento_estudiante").val();
@@ -202,7 +202,7 @@
         }
         if (nombres != '' && apellidos != '' && fecha_nacimiento_estudiante != '') {
           $.ajax({
-            url: "estudiantes.controller.php",
+            url: "Estudiantes-Controller.php",
             method: 'POST',
             data: new FormData(this),
             contentType: false,

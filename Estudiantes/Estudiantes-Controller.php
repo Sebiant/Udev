@@ -38,11 +38,14 @@ function crear($conn)
 
 
         $imagen = '';
-        if ($_FILES["imagen_estudiante"]["name"] != '') {
+        if (!empty($_FILES["imagen_estudiante"]["name"])) {
             $imagen = subir_imagen();
         }
-        $stmt = $conn->prepare("INSERT INTO estudiantes(nombre_estudiante, apellidos_estudiante, fecha_nacimiento_estudiante, imagen, estado)VALUES(:nombre, :apellidos, :fecha_nacimiento_estudiante, :imagen_estudiante, :estado)");
 
+        //se cambia los valores por placeholders al ser mysqli
+
+        $stmt = $conn->prepare("INSERT INTO estudiantes(nombre_estudiante, apellidos_estudiante, fecha_nacimiento_estudiante, imagen, estado)VALUES(?,?,?,?,?)");
+/*
         $resultado = $stmt->execute(
             array(
                 ':nombre' => $_POST["nombre"],
@@ -52,8 +55,27 @@ function crear($conn)
                 ':estado' => $_POST["estado"],
             )
         );
-        if (!empty($resultado)) {
+        */
+
+        $stmt->bind_param(
+            "sssss",
+            
+            $_POST["nombre"],
+            $_POST["apellidos"],
+            $_POST["fecha_nacimiento_estudiante"],
+            $imagen,
+            $_POST["estado"]
+        );
+
+
+
+        /* if (!empty($resultado) ) {
             echo 'Registro creado';
+        }*/
+        if ($stmt->execute()){
+            echo 'Registro creado';
+        }else{
+            echo 'Error al crear el registro: ' . $conn->errror;
         }
     }
 }
