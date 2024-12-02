@@ -164,6 +164,7 @@ function obtener_registros($conn) //Se realizo revision de filtro para mostrar s
             $sub_array[] = '<button type="button" data-bs-toggle="modal" data-bs-target="#modalUsuario" name="editar" id="' . $fila["codigo_estudiante"] . '" class="btn btn-success bi bi-pencil-square editar"></button>';
             $datos[] = $sub_array;
         }
+        
 
         $salida = array(
             "draw" => $draw,
@@ -172,7 +173,8 @@ function obtener_registros($conn) //Se realizo revision de filtro para mostrar s
             "data" => $datos
         );
 
-        echo json_encode($salida);
+        
+
 
     } catch (PDOException $e) {
         echo "Error en la consulta: " . $e->getMessage();

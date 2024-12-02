@@ -45,7 +45,7 @@
     <br>
     <br>
     <div class="tabla-responsive">
-      <table id="estudiantes" class="table table-bordered table-striped">
+      <table id="Estudiantes" name="Estudiantes"  class="table table-bordered table-striped">
 
         <thead>
           <tr>
@@ -167,7 +167,7 @@
 
       });
 
-      var dataTable = $('#estudiantes').DataTable({
+      var dataTable = $('#Estudiantes').DataTable({
         "processing": true,
         "serverSide": true,
         "order": [],
