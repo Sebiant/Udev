@@ -212,6 +212,7 @@
               alert(data);
               $('#formulario')[0].reset();
               $('#modalUsuario').modal('hide');
+              $('.modal-backdrop').remove();
               dataTable.ajax.reload();
             }
 
