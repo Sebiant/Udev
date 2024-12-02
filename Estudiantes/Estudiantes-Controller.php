@@ -58,7 +58,7 @@ function crear($conn)
         */
 
         $stmt->bind_param(
-            "sssss",
+            "sssss",//tipado de los datos usados en el bind_param
             
             $_POST["nombre"],
             $_POST["apellidos"],
@@ -283,7 +283,7 @@ function subir_imagen()
 
         $extensiones = explode('.', $_FILES["imagen_estudiante"]['name']);
         $nuevo_nombre = rand() . '.' . $extensiones[1];
-        $ubicacion = '../img/' . $nuevo_nombre;
+        $ubicacion = '../Img/' . $nuevo_nombre;
         move_uploaded_file($_FILES["imagen_estudiante"]['tmp_name'], $ubicacion);
         return $nuevo_nombre;
 
