@@ -117,39 +117,59 @@ function borrar($conn)
 
 function obtener_registros($conn) //Se realizo revision de filtro para mostrar solo estudiantes activos
 {
-    $query = "SELECT * FROM estudiantes WHERE estado = 'activo' ";
+    $query = "SELECT * FROM estudiantes WHERE estado = 'activo' ";//visualizacion de error
+//filtro de busqueda en la tabla
+    if (!empty($_POST["search"]["value"])) {
+        $query .= 'AND (nombre_estudiante LIKE ? OR apellidos_estudiante LIKE ?) ';
+    }//cambio serch por ?
 
-    if (isset($_POST["search"]["value"])) {
-        $query .= 'AND (nombre_estudiante LIKE :search OR apellidos_estudiante LIKE :search) ';
-    }
-
-    if (isset($_POST["order"])) {
+    //ORDENAMIENTO por columna designada
+    if (!empty($_POST["order"])) {
         $query .= 'ORDER BY ' . intval($_POST['order']['0']['column']) . ' ' . $_POST["order"][0]['dir'] . ' ';
     } else {
         $query .= 'ORDER BY codigo_estudiante DESC ';
     }
 
-    if (isset($_POST["length"]) && isset($_POST["start"])) {
-        $query .= 'LIMIT :start, :length';
+    //PAGINACION
+
+    if (!empty($_POST["length"]) && $_POST["length"] != -1) {
+        $query .= 'LIMIT ?, ?'; //cambios de star y length por ?
     }
 
+    //preparacion de la consulta
+
     $stmt = $conn->prepare($query);
+    $param_types = '';
+    $params = [];
 
     if (isset($_POST["search"]["value"])) {
         $search = "%" . $_POST["search"]["value"] . "%";
-        $stmt->bindParam(':search', $search, PDO::PARAM_STR);
-    }
-    if (isset($_POST["length"]) && isset($_POST["start"])) {
-        $stmt->bindParam(':start', $_POST["start"], PDO::PARAM_INT);
-        $stmt->bindParam(':length', $_POST["length"], PDO::PARAM_INT);
+        //$stmt->bindParam(':search', $search, PDO::PARAM_STR);
+    
+        if (isset($_POST["length"]) && $_POST["length"] != -1) {
+            //$stmt->bindParam(':start', $_POST["start"], PDO::PARAM_INT);
+            //$stmt->bindParam(':length', $_POST["length"], PDO::PARAM_INT);
+            $start = intval($_POST["start"]);
+            $length = intval($_POST["length"]);
+            $stmt->bind_param("ssii", $search, $search, $start, $length);
+        } else {
+            $stmt->bind_param("ss", $search, $search);
+        }
+    } else {
+        if (isset($_POST["length"]) && $_POST["length"] != -1) {
+            $start = intval($_POST["start"]);
+            $length = intval($_POST["length"]);
+            $stmt->bind_param("ii", $start, $length);
+        }
     }
 
     try {
         $stmt->execute();
-        $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //$resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultado = $stmt->get_result();
         $datos = array();
-        $filtered_rows = $stmt->rowCount();
-        $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
+        //$filtered_rows = $stmt->rowCount();
+        //$draw = isset($_POST['draw']) ? intval($_POST['draw']) : 0;
 
         foreach ($resultado as $fila) {
             $imagen = $fila["imagen"] != '' ? '<img src="../img/' . $fila["imagen"] . '" class="img-thumbnail" width="50" height="35" />' : '';
@@ -167,16 +187,18 @@ function obtener_registros($conn) //Se realizo revision de filtro para mostrar s
         
 
         $salida = array(
-            "draw" => $draw,
-            "recordsTotal" => $filtered_rows,
+            //"draw" => $draw,
+           // "recordsTotal" => $filtered_rows,
+            "draw" => isset($_POST['draw']) ? intval($_POST['draw']) : 0,
+            "recordsTotal" => $stmt->num_rows,
             "recordsFiltered" => obtener_todos_registros($conn),
             "data" => $datos
         );
 
-        
+        echo json_encode($salida);
 
 
-    } catch (PDOException $e) {
+    } /*catch (PDOException $e)*/catch (mysqli_sql_exception $e) {
         echo "Error en la consulta: " . $e->getMessage();
     }
 }
