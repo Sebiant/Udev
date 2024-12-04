@@ -275,7 +275,7 @@ function obtener_todos_registros($conn)
     return $result->fetch_assoc()["total"] ?? 0;
 }
 
-
+//SI
 
 function subir_imagen()
 {
