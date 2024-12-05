@@ -97,22 +97,32 @@ function editar($conn)
         }
 
 
-        $stmt = $conn->prepare("UPDATE estudiantes SET nombre_estudiante=:nombre, apellidos_estudiante=:apellidos,fecha_nacimiento_estudiante=:fecha_nacimiento_estudiante, 
-        imagen=:imagen_estudiante,estado=:estado WHERE codigo_estudiante = :codigo_estudiante");
-
+        $stmt = $conn->prepare("UPDATE estudiantes SET nombre_estudiante=?, apellidos_estudiante=?,fecha_nacimiento_estudiante=?, 
+        imagen=?,estado=? WHERE codigo_estudiante = ?");
+/*
         $stmt->bindParam(':nombre', $_POST["nombre"]);
         $stmt->bindParam(':apellidos', $_POST["apellidos"]);
         $stmt->bindParam(':fecha_nacimiento_estudiante', $_POST["fecha_nacimiento_estudiante"]);
         $stmt->bindParam(':imagen_estudiante', $imagen);
         $stmt->bindParam(':estado', $_POST["estado"]);
         $stmt->bindParam(':codigo_estudiante', $codigo);
+*/
+        $stmt->bind_param(
+            "sssssi",
+            $_POST["nombre"],
+            $_POST["apellidos"],
+            $_POST["fecha_nacimiento_estudiante"],
+            $imagen,
+            $_POST["estado"],
+            $_POST["codigo_estudiante"]
+        );
 
-        $resultado = $stmt->execute();
+        //$resultado = $stmt->execute();
 
-        if ($resultado) {
+        if ($stmt->execute()) {
             echo 'Registro actualizado';
         } else {
-            echo 'Error al actualizar el registro';
+            echo 'Error al actualizar el registro' . $conn->error;
             print_r($stmt->errorInfo());
         }
     }
@@ -231,26 +241,50 @@ function obtener_registros($conn) //Se realizo revision de filtro para mostrar s
 function obtener_registro($conn)
 {
     if (isset($_POST["codigo_estudiante"])) {
-        $stmt = $conn->prepare("SELECT * FROM estudiantes WHERE codigo_estudiante = :codigo_estudiante LIMIT 1");
-        $stmt->bindParam(':codigo_estudiante', $_POST["codigo_estudiante"], PDO::PARAM_INT);
+        //consulta con marcador de posicion
+        $stmt = $conn->prepare("SELECT * FROM estudiantes WHERE codigo_estudiante = ? LIMIT 1");
+        //vinculacion de parametro
+        $codigo_estudiante = intval($_POST["codigo_estudiante"]);
+        $stmt->bind_param("i", $codigo_estudiante);
 
         try {
+            //ejecucion de la consulta
             $stmt->execute();
-            $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $resultado = $stmt->get_result();//obtiene resultados
+            
             $salida = array();
 
-            foreach ($resultado as $fila) {
+            /*foreach ($resultado as $fila) {
                 $salida["nombre_estudiante"] = $fila["nombre_estudiante"];
                 $salida["apellidos_estudiante"] = $fila["apellidos_estudiante"];
                 $salida["fecha_nacimiento_estudiante"] = $fila["fecha_nacimiento_estudiante"];
                 $salida["imagen_estudiante"] = $fila["imagen"] != "" ? '<img src="../img/' . $fila["imagen"] . '" class="img-thumbnail" width="100" height="" /><input type="hidden" name="imagen_estudiante_oculta" value="' . $fila["imagen"] . '"/>' : '<input type="hidden" name="imagen_estudiante_oculta" value=""/>';
                 $salida["estado"] = $fila["estado"];
+            }*/
+            if ($fila = $resultado->fetch_assoc()) {//si enccuentra algun registro los asocia
+                $salida["nombre_estudiante"] = $fila["nombre_estudiante"];
+                $salida["apellidos_estudiante"] = $fila["apellidos_estudiante"];
+                $salida["fecha_nacimiento_estudiante"] = $fila["fecha_nacimiento_estudiante"];
+                $salida["imagen_estudiante"] = !empty($fila["imagen"])
+                    ? '<img src="../img/' . $fila["imagen"] . '" class="img-thumbnail" width="100" height="" /><input type="hidden" name="imagen_estudiante_oculta" value="' . $fila["imagen"] . '"/>'
+                    : '<input type="hidden" name="imagen_estudiante_oculta" value=""/>';
+                $salida["estado"] = $fila["estado"];
             }
 
+
+//retorna los datos en formato JSON
             echo json_encode($salida);
+
+
         } catch (mysqli_sql_exception $e) {
-            echo "Error en la consulta: " . $e->getMessage();
+            error_log("Error en la consulta: " . $e->getMessage());
+            echo json_encode(["error" => "Ocurrió un error al procesar la solicitud."]);
+        } finally {
+            $stmt->close();
         }
+        
+    } else{
+        echo json_encode(["error" => "Código de estudiante no proporcionado."]);
     }
 }
 

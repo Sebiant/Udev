@@ -228,7 +228,7 @@
         var codigo_estudiante = $(this).attr("id");
 
         $.ajax({
-          url: "estudiantes.controller.php",
+          url: "Estudiantes-Controller.php",
           method: "POST",
           data:
           {
