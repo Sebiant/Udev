@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
   <!-- Bootstrap Icons CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="../css/style.css">
+  <!-- Custom CSS 
+  <link rel="stylesheet" href="../css/style.css">-->
 </head>
 <body>
-<?php include_once '../componentes/header.php' ?>
+<?php include_once '../Componentes/header.php' ?>
   <div>
     <h1 class="text-center">SERVICIOS</h1>
     <div class="row">
@@ -78,6 +78,7 @@
         </form>
       </div>
     </div>
+    <?php include_once '../Componentes/footer.php' ?>
   </div>
 
   <!-- jQuery -->
@@ -100,7 +101,7 @@
   "serverSide": true,
   "order": [],
   "ajax": {
-    url: "servicios.controller.php",
+    url: "Servicios-Controller.php",
     type: "POST"
   },
   "columnDefs": [
@@ -127,7 +128,7 @@
         
         if (descripcion_servicio != '' && valor_total_servicio != '' && estado != '') {
           $.ajax({
-            url: "servicios.controller.php",
+            url: "Servicios-Controller.php",
             method: 'POST',
             data: new FormData(this),
             contentType: false,
@@ -148,7 +149,7 @@
       $(document).on('click', '.editar', function() {
         var codigo_servicio = $(this).attr("id");
         $.ajax({
-          url: "servicios.controller.php",
+          url: "Servicios-Controller.php",
           method: "POST",
           data: {codigo_servicio: codigo_servicio,operacion:'obtener_registro'},
           dataType: "json",

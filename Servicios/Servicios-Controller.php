@@ -44,7 +44,7 @@ function borrar($conn)
 
 function crear($conn)
 {
-    $stmt = $conn->prepare("INSERT INTO servicios(codigo_servicio, descripcion_servicio, valor_total_servicio, estado) VALUES(:codigo_servicio, :descripcion_servicio, :valor_total_servicio, :estado)");
+    $stmt = $conn->prepare("INSERT INTO servicios(codigo_servicio, descripcion_servicio, valor_total_servicio, estado) VALUES(?, :?, ?, ?)");
 
     $resultado = $stmt->execute(
         array(
