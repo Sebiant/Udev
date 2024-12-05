@@ -68,6 +68,8 @@ function crear($conn)
         echo 'Registro creado';
     } else{
         
+            echo "Error en la consulta: " . $conn->getMessage();
+
     }
 }
 
