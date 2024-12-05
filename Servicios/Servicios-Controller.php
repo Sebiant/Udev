@@ -44,18 +44,30 @@ function borrar($conn)
 
 function crear($conn)
 {
-    $stmt = $conn->prepare("INSERT INTO servicios(codigo_servicio, descripcion_servicio, valor_total_servicio, estado) VALUES(?, :?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO programas(id_programa, nombre, cant_modulos, estado) VALUES(?, :?, ?, ?)");
 
-    $resultado = $stmt->execute(
+    /*$resultado = $stmt->execute(
         array(
             ':codigo_servicio'  => $_POST["codigo_servicio"],
             ':descripcion_servicio'  => $_POST["descripcion_servicio"],
             ':valor_total_servicio'  => $_POST["valor_total_servicio"],
             ':estado'  => $_POST["estado"],
         )
-    );
-    if (!empty($resultado)) {
+    );*/
+    $stmt->execute(
+        $stmt->bind_param(
+            "ssis",
+            $_POST["codigo_servicio"] = "?",
+            $_POST["descripcion_servicio"] = "?",
+            $_POST["valor_total_servicio"] = "?",
+            $_POST["estado"] = "?",
+        )
+        );
+
+    if ($stmt->execute()){
         echo 'Registro creado';
+    } else{
+        
     }
 }
 
