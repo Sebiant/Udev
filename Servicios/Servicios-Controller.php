@@ -44,7 +44,7 @@ function borrar($conn)
 
 function crear($conn)
 {
-    $stmt = $conn->prepare("INSERT INTO programas(id_programa, nombre, cant_modulos, estado) VALUES(?, :?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO programas(id_programa, nombre, cant_modulos, estado) VALUES(?, ?, ?, ?)");
 
     /*$resultado = $stmt->execute(
         array(
@@ -198,11 +198,12 @@ try {
 
     while($fila=$resultado->fetch_assoc()){
         $sub_array=[
-            $fila["id_programa"],
-            $fila["nombre"],
-            $fila["cant_modulos"],
+            $fila["codigo_servicio"],
+            $fila["descripcion_servicio"],//nombre clave para la relacion de conde va a ir dirigida la informacion
+
+            $fila["valor_total_servicio"],
             $fila["estado"],
-            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalUsuario" name="editar" id="' . $fila["codigo_estudiante"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="editar" id="' . $fila["codigo_servicio"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
         ];
 
         $datos[]=$sub_array;
@@ -229,7 +230,7 @@ try {
 
 function obtener_todos_registros (){
     include("../Conexion.php");
-    $stmt = $conn->prepare("SELECT COUNT (*) as total FROM programas");
+    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM programas  WHERE estado = 'activo'");
     try{
     $stmt ->execute();
 

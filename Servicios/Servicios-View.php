@@ -70,7 +70,7 @@
               <br>
             </div>
             <div class="modal-footer">
-              <input type="hidden" name="id_servicio" id="id_servicio">
+              <input type="hidden" name="codigo_servicio" id="codigo_servicio">
               <input type="hidden" name="operacion" id="operacion">
               <input type="submit" name="action" id="action" class="btn btn-primary" value="Crear">
             </div>
