@@ -118,17 +118,17 @@ function obtener_registro($conn)
 
 function obtener_registros($conn)
 {
-    
-    $query = "";
-$salida = array();
-$query = "SELECT * FROM servicios ";
 
-if (isset($_POST["search"]["value"])) {
-    $query .= 'WHERE codigo_servicio LIKE "%' . $_POST["search"]["value"] . '%" ';
-    $query .= 'OR valor_total_servicio LIKE "%' . $_POST["search"]["value"] . '%" ';
+$query = "";
+$salida = array();
+$query = "SELECT * FROM servicios  WHERE estado = 'activo'";
+
+if (!empty($_POST["search"]["value"])) {
+    $query .= 'WHERE codigo_servicio LIKE ? . $_POST["search"]["value"] . ? ';
+    $query .= 'OR valor_total_servicio LIKE ? . $_POST["search"]["value"] . ? ';
 }
 
-if (isset($_POST["order"])) {
+if (!empty($_POST["order"])) {
     $query .= 'ORDER BY ' . $_POST['order']['0']['column'] . ' ' . 
     $_POST["order"][0]['dir'] . ' ';
 } else {
@@ -136,12 +136,15 @@ if (isset($_POST["order"])) {
 }
 
 
-if (isset($_POST["length"]) && isset($_POST["start"])) {
-    $query .= 'LIMIT ' . $_POST["start"] . ', ' . $_POST["length"];
+if (!empty($_POST["length"]) && $_POST["length"] != -1) {
+    $query .= 'LIMIT ?, ?' ;
 }
 
 $stmt = $conn->prepare($query);
 
+
+
+/*
 try {
     $stmt->execute();
     $resultado = $stmt->fetchAll();
@@ -163,28 +166,85 @@ try {
         //$sub_array[] = '<div class="text-center"><button type="button" name="borrar" id="' . $fila["codigo_servicio"] . '" class="btn btn-danger btn-xs borrar"><i class="bi bi-trash-fill"></i></button></div>';
         
         $datos[] = $sub_array;
+    }*/
+
+    $param_types='';
+    $params=[];
+
+    if(!empty($_POST["search"]["value"])){
+        $search="%" . $_POST["search"]["value"] . "%";
+        $param_types .='ss';
+        $params[] = &$search;
+        $params[] = &$search;
+
     }
 
-    $salida = array(
+    if(!empty($_POST["length"]) && $_POST["length"] != -1){
+        $start = intval($_POST["start"]);
+        $length = intval($_POST["length"]);
+        $param_types .= 'ii';
+        $params[] = &$start;
+        $params[] = &$length;
+    }
+
+    if($param_types){
+        $stmt->bind_param($param_types, ...$params);
+
+    }
+
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    $datos = [];
+
+    while($fila=$resultado->fetch_assoc()){
+        $sub_array=[
+            $fila["id_programa"],
+            $fila["nombre"],
+            $fila["cant_modulos"],
+            $fila["estado"],
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalUsuario" name="editar" id="' . $fila["codigo_estudiante"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
+        ];
+
+        $datos[]=$sub_array;
+
+    }
+
+    /*$salida = array(
         "draw"              => $draw,
         "recordsTotal"      => $filtered_rows,
         "recordsFiltered"   => obtener_todos_registros(),
         'data'              => $datos
-    );
+    );*/
+    $salida=[
+        "draw"=>intval($_POST["draw"] ?? 0),
+        "recordsTotal" => obtener_todos_registros($conn),
+        "recordsFiltered" => $resultado->num_rows,
+        "data" => $datos
+    ];
 
-echo json_encode($salida);
+    echo json_encode($salida);
 
-} catch (PDOException $e) {
-    echo "Error en la consulta: " . $e->getMessage();
-}
+
 }
 
 function obtener_todos_registros (){
-    include("../conexion.php");
-    $stmt = $conn->prepare("SELECT * FROM servicios");
+    include("../Conexion.php");
+    $stmt = $conn->prepare("SELECT COUNT (*) as total FROM programas");
+    try{
     $stmt ->execute();
-    $resutlado = $stmt->fetchAll();
-    return $stmt ->rowCount();
+
+
+    $stmt->bind_result($total);
+
+    $stmt ->fetch();
+
+    return $total ?? 0;
+    } catch(mysqli_sql_exception $e){
+        error_log("Error en la consulta: " . $e->getMessage());
+        return 0;
+    } finally{
+        $stmt->close();
+    }
 
 }
 
