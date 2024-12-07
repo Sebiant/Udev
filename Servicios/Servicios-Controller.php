@@ -54,15 +54,15 @@ function crear($conn)
             ':estado'  => $_POST["estado"],
         )
     );*/
-    $stmt->execute(
+    
         $stmt->bind_param(
             "ssis",
-            $_POST["codigo_servicio"] = "?",
-            $_POST["descripcion_servicio"] = "?",
-            $_POST["valor_total_servicio"] = "?",
-            $_POST["estado"] = "?",
-        )
+            $_POST["id_programa"] ,
+            $_POST["descripcion_servicio"],
+            $_POST["valor_total_servicio"],
+            $_POST["estado"],
         );
+        
 
     if ($stmt->execute()){
         echo 'Registro creado';
