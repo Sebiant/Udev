@@ -75,7 +75,7 @@ function crear($conn)
 
 function editar($conn)
 {
-    $stmt = $conn->prepare("UPDATE servicios SET descripcion_servicio=:descripcion_servicio, valor_total_servicio=:valor_total_servicio, estado=:estado WHERE codigo_servicio = :codigo_servicio");
+    $stmt = $conn->prepare("UPDATE servicios SET descripcion_servicio=?, valor_total_servicio=?, estado=? WHERE codigo_servicio = ?");
 
     $resultado = $stmt->execute(
         array(
@@ -99,7 +99,7 @@ function obtener_registro($conn)
     
 
     try {
-        $stmt = $conn->prepare("SELECT * FROM servicios WHERE codigo_servicio = :codigo_servicio LIMIT 1");
+        $stmt = $conn->prepare("SELECT * FROM servicios WHERE codigo_servicio = ? LIMIT 1");
         $stmt->bindParam(':codigo_servicio', $_POST['codigo_servicio'], PDO::PARAM_INT);
         $stmt->execute();
 
