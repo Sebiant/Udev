@@ -134,11 +134,22 @@
             contentType: false,
             processData: false,
             success: function(data) {
-              alert(data);
+              alert(data);//muestra la respuesta del servidor
+             
+             //limpia y cierra el modal
               $('#formulario')[0].reset();
               $('#modalServicio').modal('hide');
-              dataTable.ajax.reload();
+              $('.modal-backdrop').remove();//Se asegura que se quite la pantalla gris 
+              
+              //Recarga los datos de la tabla
+              dataTable.ajax.reload(null, false);// sin reiniciar la paginacion
+            },
+
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+                alert("Hubo un error al procesar la solicitud.");
             }
+
           });
         } else {
           alert("Todos los campos son obligatorios");
