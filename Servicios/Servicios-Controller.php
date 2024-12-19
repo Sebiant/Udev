@@ -77,35 +77,60 @@ function editar($conn)
 {
     $stmt = $conn->prepare("UPDATE servicios SET descripcion_servicio=?, valor_total_servicio=?, estado=? WHERE codigo_servicio = ?");
 
-    $resultado = $stmt->execute(
+    /*$resultado = $stmt->execute(
         array(
             ':descripcion_servicio' => $_POST["descripcion_servicio"],
             ':valor_total_servicio' => $_POST["valor_total_servicio"],
             ':estado' => $_POST["estado"],
             ':codigo_servicio' => $_POST["codigo_servicio"]
         )
+    );*/
+
+    $stmt->bind_param(
+        "sisi",
+        $_POST["descripcion_servicio"],
+        $_POST["valor_total_servicio"],
+        $_POST["estado"],
+        $_POST["codigo_servicio"]
     );
 
-    if (!empty($resultado)) {
+    if ($stmt->execute()) {
         echo 'Registro actualizado';
     } else {
+        echo 'Error al actualizar el registro' . $conn->error;
         echo "No se pudo actualizar el registro";
     }
 }
 
 function obtener_registro($conn)
 {
+
+    if(isset($_POST["codigo_servicio"])){
+
+        
+        
+
+
+    
+
+
     $salida = array();
     
 
-    try {
+    
+        //consulta marcador de posicion
         $stmt = $conn->prepare("SELECT * FROM servicios WHERE codigo_servicio = ? LIMIT 1");
-        $stmt->bindParam(':codigo_servicio', $_POST['codigo_servicio'], PDO::PARAM_INT);
-        $stmt->execute();
+        //vinculacion
+        $codigo_servicio = intval($_POST["codigo_servicio"]);
 
-        if ($stmt->rowCount() > 0) {
-            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-            $salida = $resultado;
+        $stmt->bind_param('i', $codigo_servicio);
+    try {  
+        //ejecucion de consulta
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($fila = $resultado->fetch_assoc()) { //si algun registro lso asocia
+            $salida[""]
         } else {
             $salida["error"] = "No se encontraron resultados";
         }
@@ -113,9 +138,10 @@ function obtener_registro($conn)
         $salida["error"] = "Error en la ejecución de la consulta: " . $e->getMessage();
     }
 
+
     echo json_encode($salida);
 }
-
+}
 function obtener_registros($conn)
 {
 
