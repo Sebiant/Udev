@@ -121,18 +121,18 @@ function obtener_registros($conn)
 
 $query = "";
 $salida = array();
-$query = "SELECT * FROM servicios  WHERE estado = 'activo'";
+$query = "SELECT * FROM programas  WHERE estado = 'activo'";
 
 if (!empty($_POST["search"]["value"])) {
-    $query .= 'WHERE codigo_servicio LIKE ? . $_POST["search"]["value"] . ? ';
-    $query .= 'OR valor_total_servicio LIKE ? . $_POST["search"]["value"] . ? ';
+    $query .= 'WHERE id_programa LIKE ? . $_POST["search"]["value"] . ? ';
+    $query .= 'OR nombre LIKE ? . $_POST["search"]["value"] . ? ';
 }
 
 if (!empty($_POST["order"])) {
     $query .= 'ORDER BY ' . $_POST['order']['0']['column'] . ' ' . 
     $_POST["order"][0]['dir'] . ' ';
 } else {
-    $query .= 'ORDER BY codigo_servicio DESC ';
+    $query .= 'ORDER BY id_programa DESC ';
 }
 
 
@@ -198,12 +198,12 @@ try {
 
     while($fila=$resultado->fetch_assoc()){
         $sub_array=[
-            $fila["codigo_servicio"],
-            $fila["descripcion_servicio"],//nombre clave para la relacion de conde va a ir dirigida la informacion
+            $fila["id_programa"],
+            $fila["nombre"],//nombre clave para la relacion de conde va a ir dirigida la informacion la tabla sql
 
-            $fila["valor_total_servicio"],
+            $fila["cant_modulos"],
             $fila["estado"],
-            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="editar" id="' . $fila["codigo_servicio"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="editar" id="' . $fila["id_programa"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
         ];
 
         $datos[]=$sub_array;
