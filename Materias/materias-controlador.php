@@ -8,7 +8,6 @@ switch ($accion) {
     case 'crear':
         $nombre= $_POST['nombre'];
         $descripcion = $_POST['descripcion'];
-        $estado = isset($_POST['estado']) ? 1 : 0;
 
         $sql = "INSERT INTO materias (nombre, descripcion) 
                 VALUES ('$nombre', '$descripcion')";

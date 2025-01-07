@@ -17,7 +17,7 @@
         </div>
         <br />
         <br />
-
+\
         <div class="table-responsive">
             <table id="datos_materia" class="table table-bordered table-striped">
                 <thead>
@@ -43,20 +43,22 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+            
             <form id="formMateria">
                 <div class="mb-3">
           <input type="hidden" name="accion" value="crear" id="accion">
           <input type="hidden" name="id_materia" id="id_materia">
 
           <div class="mb-3">
-            <label for="tipo_documento" class="form-label">Nombre de la materia:</label>
-            <input type="text" name="tipo_documento" id="tipo_documento" class="form-control">
+            <label for="nombre" class="form-label">Nombre de la materia:</label>
+            <input type="text" name="nombre" id="nombre" class="form-control">
           </div>
           <div class="mb-3">
-            <label for="numero_documento" class="form-label">Descripcion de la materia:</label>
-            <input type="text" name="numero_documento" id="numero_documento" class="form-control">
+            <label for="descripcion" class="form-label">Descripcion de la materia:</label>
+            <input type="text" name="descripcion" id="descripcion" class="form-control">
           </div>
         </form>
+
       </div>
         </div>
         <div class="modal-footer">
