@@ -51,11 +51,11 @@
 
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre de la materia:</label>
-            <input type="text" name="nombre" id="nombre" class="form-control">
+            <input type="text" name="nombre" id="nombre" class="form-control" required>
           </div>
           <div class="mb-3">
             <label for="descripcion" class="form-label">Descripcion de la materia:</label>
-            <input type="text" name="descripcion" id="descripcion" class="form-control">
+            <input type="text" name="descripcion" id="descripcion" class="form-control" required>
           </div>
         </form>
 
@@ -103,3 +103,31 @@
     ?>
     <script src="js/Consultas-Materias.js"></script>
     <script src="js/Datatables-Materias.js"></script>
+
+    <script>
+    function crearMateria() {
+    // Validar el formulario antes de enviar
+    const form = document.getElementById('formMateria');
+    
+    if (form.checkValidity()) {
+        // Si el formulario es válido, proceder a enviar los datos
+        $('#modalMaterias').modal('hide'); // Cierra el modal antes de enviar
+        // Aquí puedes agregar tu lógica para enviar el formulario, por ejemplo, usando AJAX
+        $.ajax({
+            url: 'Materias-Controlador.php',
+            type: 'POST',
+            data: $(form).serialize(), // Serializa el formulario
+            success: function(response) {
+                // Manejar la respuesta del servidor
+                alert('Módulo creado exitosamente.');
+            },
+            error: function() {
+                alert('Hubo un error al crear el módulo.');
+            }
+        });
+    } else {
+        // Si el formulario no es válido, mostrar los mensajes de error
+        form.classList.add('was-validated');
+    }
+}
+</script>

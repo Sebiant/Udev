@@ -25,24 +25,29 @@ $(document).ready(function() {
         ]
     });
 
-    $('#datos_materia').on('click', 'btn-modify', function() {
+    // Evento para modificar una materia
+    $('#datos_materia').on('click', '.btn-modify', function() {
         var data = table.row($(this).parents('tr')).data();
         var idMateria = data.id_materia;
 
         $.ajax({
-            url: 'Materias-Controlador.php?accion=modificar',
+            url: 'Materias-Controlador.php',
             type: 'POST',
-            data: { id_salon: idSalon },
+            data: { id_materia: idMateria },
             success: function(response) {
-                var Materia = response.data[0];
-                $('#editForm [name="id_materia"]').val(Materia.id_materia);
-                $('#editForm [name="nombre"]').val(Materia.nombre);
-                $('#editForm [name="descripcion"]').val(Materia.descripcion);
-                $('#editForm [name="estado"]').prop('checked', Materia.estado === "Sí");
-                $('#editModal').modal('show');
+                if (response.data && response.data.length > 0) {
+                    var Materia = response.data[0];
+                    $('#editForm [name="id_materia"]').val(Materia.id_materia);
+                    $('#editForm [name="nombre"]').val(Materia.nombre);
+                    $('#editForm [name="descripcion"]').val(Materia.descripcion);
+                    $('#editForm [name="estado"]').prop('checked', Materia.estado === "Sí");
+                    $('#editModal').modal('show');
+                } else {
+                    alert('No se encontraron datos para esta materia.');
+                }
             },
             error: function() {
-                alert('Error al obtener los datos del salón.');
+                alert('Error al obtener los datos de la materia.');
             }
         });
     });
@@ -60,7 +65,7 @@ $(document).ready(function() {
                 $('#editModal').modal('hide');
             },
             error: function() {
-                alert('Error al actualizar el salón.');
+                alert('Error al actualizar la materia.');
             }
         });
     });
