@@ -147,9 +147,9 @@ function borrar($conn)
 }
 
 
-function obtener_registros($conn) //Se realizo revision de filtro para mostrar solo estudiantes activos
+function obtener_registros($conn) 
 {
-    $query = "SELECT * FROM estudiantes WHERE estado = 'activo' ";//visualizacion de error
+    $query = "SELECT * FROM estudiantes ";//visualizacion de error
 //filtro de busqueda en la tabla
     if (!empty($_POST["search"]["value"])) {
         $query .= 'AND (nombre_estudiante LIKE ? OR apellidos_estudiante LIKE ?) ';
