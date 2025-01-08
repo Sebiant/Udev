@@ -30,12 +30,11 @@ switch ($accion) {
             // Otros campos
             $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $materia['nombre'];
             $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : $materia['descripcion'];
-            $estado = isset($_POST['estado']) ? $_POST['estado'] : $materia['estado'];
-
+            
             $sql_update = "UPDATE materias SET 
                             nombre='$nombre', 
                             descripcion='$descripcion', 
-                            estado='$estado'
+                            
                             WHERE id_materia='$id_materia'";
 
             if ($conn->query($sql_update) === TRUE) {

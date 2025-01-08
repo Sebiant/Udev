@@ -17,7 +17,7 @@
         </div>
         <br />
         <br />
-\
+
         <div class="table-responsive">
             <table id="datos_materia" class="table table-bordered table-striped">
                 <thead>
@@ -52,10 +52,13 @@
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre de la materia:</label>
             <input type="text" name="nombre" id="nombre" class="form-control" required>
+            <div class="invalid-feedback">El nombre es obligatorio.</div>
           </div>
           <div class="mb-3">
             <label for="descripcion" class="form-label">Descripcion de la materia:</label>
-            <input type="text" name="descripcion" id="descripcion" class="form-control" required>
+            <input type="text" name="descripcion" id="descripcion" class="form-control" maxlength="100" required oninput="actualizarContador()">
+            <small id="contador" class="contador-texto">100 caracteres disponibles</small>
+            <div class="invalid-feedback">La descripcion es obligatoria.</div>
           </div>
         </form>
 
@@ -76,18 +79,21 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Editar materia</h5>
+                    <h5 class="modal-title">Editar Materia</h5>
                 </div>
                 <form id="editForm">
                     <div class="modal-body">
                         <input type="hidden" name="id_materia">
+
                         <div class="form-group">
-                            <label for="tipo_documento">Nombre de la materia</label>
-                            <input type="text" class="form-control" name="tipo_documento">
+                            <label for="nombre">Nombre de la materia</label>
+                            <input type="text" class="form-control" name="nombre" required title="Ingrese nombre de la materia">
+                            
                         </div>
                         <div class="form-group">
-                            <label for="numero_documento">Descripcion de la materia</label>
-                            <input type="text" class="form-control" name="numero_documento">
+                            <label for="descripcion">Descripcion de la materia</label>
+                            <input type="text" class="form-control" name="descripcion"  maxlength="100" required oninput="actualizarContador()">
+                            <small id="contador" class="contador-contexto">100 caracteres disponibles</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -104,30 +110,4 @@
     <script src="js/Consultas-Materias.js"></script>
     <script src="js/Datatables-Materias.js"></script>
 
-    <script>
-    function crearMateria() {
-    // Validar el formulario antes de enviar
-    const form = document.getElementById('formMateria');
     
-    if (form.checkValidity()) {
-        // Si el formulario es válido, proceder a enviar los datos
-        $('#modalMaterias').modal('hide'); // Cierra el modal antes de enviar
-        // Aquí puedes agregar tu lógica para enviar el formulario, por ejemplo, usando AJAX
-        $.ajax({
-            url: 'Materias-Controlador.php',
-            type: 'POST',
-            data: $(form).serialize(), // Serializa el formulario
-            success: function(response) {
-                // Manejar la respuesta del servidor
-                alert('Módulo creado exitosamente.');
-            },
-            error: function() {
-                alert('Hubo un error al crear el módulo.');
-            }
-        });
-    } else {
-        // Si el formulario no es válido, mostrar los mensajes de error
-        form.classList.add('was-validated');
-    }
-}
-</script>
