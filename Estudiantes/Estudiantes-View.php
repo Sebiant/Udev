@@ -92,7 +92,7 @@
                 <input type="text" name="apellidos" id="apellidos" class="form-control">
                 <br>
                 <label for="fecha_nacimiento_estudiante">Fecha de nacimiento</label>
-                <input type="text" name="fecha_nacimiento_estudiante" id="fecha_nacimiento_estudiante"
+                <input type="date" name="fecha_nacimiento_estudiante" id="fecha_nacimiento_estudiante"
                   class="form-control">
                 <br>
 
