@@ -19,13 +19,13 @@ function crearDocente() {
     });
 }
 
-function editarDocente() {
+function guardarCambiosDocente() {
     const formData = new FormData(document.getElementById('formDocente'));
 
     console.log('Acción: Editar');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('Docentes-Controlador.php?accion=editar', {
+    fetch('Docentes-Controlador.php?accion=modificar', {
         method: 'POST',
         body: formData
     })

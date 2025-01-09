@@ -35,7 +35,7 @@ $(document).ready(function() {
     
     
         $.ajax({
-            url: 'Docentes-Controlador.php',
+            url: 'Docentes-Controlador.php?accion=seleccionarId',
             type: 'POST',
             data: { id_docente: idDocente },
             success: function(response) {
@@ -47,7 +47,10 @@ $(document).ready(function() {
                     $('#editForm [name="id_docente"]').val(docente.id_docente);
                     $('#editForm [name="tipo_documento"]').val(docente.tipo_documento);
                     $('#editForm [name="numero_documento"]').val(docente.numero_documento);
-                    $('#editForm [name="nombres"]').val(docente.nombre_completo);
+                   
+                    $('#editForm [name="nombres"]').val(docente.nombres);
+                    $('#editForm [name="apellidos"]').val(docente.apellidos);
+
                     $('#editForm [name="especialidad"]').val(docente.especialidad);
                     $('#editForm [name="descripcion_especialidad"]').val(docente.descripcion_especialidad);
                     $('#editForm [name="telefono"]').val(docente.telefono);
@@ -72,7 +75,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         $.ajax({
-            url: 'Docentes-Controlador.php?accion=editar',
+            url: 'Docentes-Controlador.php?accion=modificar',
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
