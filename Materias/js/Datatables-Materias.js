@@ -5,7 +5,7 @@ $(document).ready(function() {
         ajax: {
             url: "Materias-Controlador.php",
             type: "POST",
-            dataSrc: 'data'  
+            dataSrc: 'data'
         },
         columns: [
             { "data": "id_materia" },
@@ -31,10 +31,11 @@ $(document).ready(function() {
         var idMateria = data.id_materia;
 
         $.ajax({
-            url: 'Materias-Controlador.php',
+            url: 'Materias-Controlador.php?accion=busquedaPorId',
             type: 'POST',
             data: { id_materia: idMateria },
             success: function(response) {
+                  
                 if (response.data && response.data.length > 0) {
                     var Materia = response.data[0];
                     $('#editForm [name="id_materia"]').val(Materia.id_materia);
@@ -46,12 +47,15 @@ $(document).ready(function() {
                     alert('No se encontraron datos para esta materia.');
                 }
             },
+
             error: function() {
+                console.log(response.data);
                 alert('Error al obtener los datos de la materia.');
             }
         });
     });
 
+    // Evento para enviar el formulario de edición
     $('#editForm').on('submit', function(e) {
         e.preventDefault();
 

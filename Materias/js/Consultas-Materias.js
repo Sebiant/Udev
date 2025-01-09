@@ -8,7 +8,7 @@ function crearMateria() {
             type: 'POST',
             data: $(form).serialize(), // Serializa el formulario
             success: function(response) {
-                alert('Módulo creado exitosamente.');
+                alert('Materia creada exitosamente.');
                 console.log('Recargando la página...');
                 location.reload();
             },

@@ -6,7 +6,7 @@ $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
     case 'crear':
-        $nombre= $_POST['nombre'];
+        $nombre = $_POST['nombre'];
         $descripcion = $_POST['descripcion'];
 
         $sql = "INSERT INTO materias (nombre, descripcion) 
@@ -33,8 +33,7 @@ switch ($accion) {
             
             $sql_update = "UPDATE materias SET 
                             nombre='$nombre', 
-                            descripcion='$descripcion', 
-                            
+                            descripcion='$descripcion'
                             WHERE id_materia='$id_materia'";
 
             if ($conn->query($sql_update) === TRUE) {
@@ -45,8 +44,7 @@ switch ($accion) {
         } else {
             echo "No se encontró el registro de la materia.";
         }
-    break;
-
+        break;
 
     case 'eliminar':
         $id_materia = $_POST['id_materia'];
@@ -60,35 +58,56 @@ switch ($accion) {
         }
         break;
 
-        case 'activar':
-            $id_materia = $_POST['id_materia'];
+    case 'activar':
+        $id_materia = $_POST['id_materia'];
     
-            $sql = "UPDATE materias SET estado=1 WHERE id_materia='$id_materia'";
+        $sql = "UPDATE materias SET estado=1 WHERE id_materia='$id_materia'";
     
-            if ($conn->query($sql) === TRUE) {
-                echo "Registro activado exitosamente.";
-            } else {
-                echo "Error al activar el registro: " . $conn->error;
-            }
-            break;
+        if ($conn->query($sql) === TRUE) {
+            echo "Registro activado exitosamente.";
+        } else {
+            echo "Error al activar el registro: " . $conn->error;
+        }
+        break;
+        
+    case 'busquedaPorId':
+        $id_materia = $_POST['id_materia'];
 
-            default:
-            $sql = "SELECT * FROM materias";
-            $result = $conn->query($sql);
-        
-            $data = [];
-        
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
-                    $data[] = $row;
-                }
+        $sql = "SELECT * FROM materias WHERE id_materia='$id_materia'";
+        $result = $conn->query($sql);
+
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
             }
-        
-            header('Content-Type: application/json');
-            echo json_encode(['data' => $data]);
-            break;
-        
-    }
-    $conn->close();
+            echo "Registro encontrado exitosamente.";
+        } else {
+            echo "Registro no encontrado: " . $conn->error;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['data' => $data]);
+        break;
+
+    default:
+        $sql = "SELECT * FROM materias";
+        $result = $conn->query($sql);
+    
+        $data = [];
+    
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
+                $data[] = $row;
+            }
+        }
+    
+        header('Content-Type: application/json');
+        echo json_encode(['data' => $data]);
+        break;
+}
+
+$conn->close();
 ?>
