@@ -27,7 +27,9 @@ $(document).ready(function() {
 
     // Evento para modificar una materia
     $('#datos_materia').on('click', '.btn-modify', function() {
+        console.log('Botón modificar clickeado');
         var data = table.row($(this).parents('tr')).data();
+        console.log(data);                                                                                 
         var idMateria = data.id_materia;
 
         $.ajax({
@@ -42,16 +44,14 @@ $(document).ready(function() {
                     $('#editForm [name="nombre"]').val(Materia.nombre);
                     $('#editForm [name="descripcion"]').val(Materia.descripcion);
                     $('#editForm [name="estado"]').prop('checked', Materia.estado === "Sí");
+                    console.log('Intentando abrir el modal');
                     $('#editModal').modal('show');
                 } else {
                     alert('No se encontraron datos para esta materia.');
                 }
             },
 
-            error: function() {
-                console.log(response.data);
-                alert('Error al obtener los datos de la materia.');
-            }
+            
         });
     });
 

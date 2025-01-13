@@ -71,7 +71,7 @@ include_once '../componentes/header.php';
     </div>
 </div>
 
-<!-- Modal de edición -->
+ <!-- Modal de edición -->
 <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -80,26 +80,27 @@ include_once '../componentes/header.php';
             </div>
             <form id="editForm">
                 <div class="modal-body">
-                <input type="hidden" name="id_materia" id="id_materia_edit">
-
-
-                    <div class="form-group">
-                        <label for="nombre">Nombre de la materia</label>
-                        <input type="text" class="form-control" name="nombre" required title="Ingrese nombre de la materia">
+                        <input type="hidden" name="id_materia">
+                        
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre de la materia:</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripcion de la materia:</label>
+                            <input type="text" name="descripcion" id="descripcion" class="form-control" maxlength="100" required oninput="actualizarContador()">
+                            <small id="contador" class="contador-texto">100 caracteres disponibles</small>
+                        </div>
+                    
                     </div>
-                    <div class="form-group">
-                        <label for="descripcion">Descripcion de la materia</label>
-                        <input type="text" class="form-control" name="descripcion" maxlength="100" required oninput="actualizarContador()">
-                        <small id="contador" class="contador-contexto">100 caracteres disponibles</small>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
 include_once '../componentes/footer.php';
