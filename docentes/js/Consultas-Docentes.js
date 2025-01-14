@@ -19,27 +19,6 @@ function crearDocente() {
     });
 }
 
-function guardarCambiosDocente() {
-    const formData = new FormData(document.getElementById('formDocente'));
-
-    console.log('Acción: Editar');
-    console.log('Datos del Formulario:', ...formData.entries());
-
-    fetch('Docentes-Controlador.php?accion=modificar', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        //alert(data);
-        alert('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
 function activarDocente() {
     const id_docente = document.getElementById('id_docente_eliminar').value;
 

@@ -35,9 +35,10 @@ $(document).ready(function() {
     
     
         $.ajax({
-            url: 'Docentes-Controlador.php?accion=seleccionarId',
+            url: 'Docentes-Controlador.php?accion=buscarPorId',
             type: 'POST',
             data: { id_docente: idDocente },
+            dataType: 'json',
             success: function(response) {
                     
     
@@ -70,43 +71,100 @@ $(document).ready(function() {
             }
         });
     });
-    
-    $('#editForm').on('submit', function(e) {
-        e.preventDefault();
+});
 
+function guardarCambiosDocente() {
+    // Obtener todos los valores de los campos del formulario
+    var id_docente = $('#editForm [name="id_docente"]').val();
+    var tipo_documento = $('#editForm [name="tipo_documento"]').val();
+    var numero_documento = $('#editForm [name="numero_documento"]').val();
+    var nombres = $('#editForm [name="nombres"]').val();
+    var apellidos = $('#editForm [name="apellidos"]').val();
+    var especialidad = $('#editForm [name="especialidad"]').val();
+    var descripcion_especialidad = $('#editForm [name="descripcion_especialidad"]').val();
+    var telefono = $('#editForm [name="telefono"]').val();
+    var direccion = $('#editForm [name="direccion"]').val();
+    var email = $('#editForm [name="email"]').val();
+    var declara_renta = $('#editForm [name="declara_renta"]').prop('checked') ? 'Sí' : 'No';
+    var retenedor_iva = $('#editForm [name="retenedor_iva"]').prop('checked') ? 'Sí' : 'No';
+    var estado = $('#editForm [name="estado"]').prop('checked') ? 'Si' : 'No';
+
+    const formElement = document.getElementById('formDocente');  // Obtener el formulario
+
+    if (!formElement) {
+        alert('No se encontró el formulario.');
+        return;
+    }
+
+    // Crear un objeto FormData y agregar todos los datos
+    const formData = new FormData(formElement);
+
+    // Agregar los valores manualmente al FormData
+    formData.append('id_docente', id_docente);
+    formData.append('tipo_documento', tipo_documento);
+    formData.append('numero_documento', numero_documento);
+    formData.append('nombres', nombres);
+    formData.append('apellidos', apellidos);
+    formData.append('especialidad', especialidad);
+    formData.append('descripcion_especialidad', descripcion_especialidad);
+    formData.append('telefono', telefono);
+    formData.append('direccion', direccion);
+    formData.append('email', email);
+    formData.append('declara_renta', declara_renta);
+    formData.append('retenedor_iva', retenedor_iva);
+    formData.append('estado', estado);
+
+    console.log('Acción: Modificar');
+    console.log('Datos del Formulario:', Object.fromEntries(formData.entries()));
+
+    // Realizar la solicitud Fetch
+    fetch('Docentes-Controlador.php?accion=Modificar', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        try {
+            const jsonData = JSON.parse(data);
+            if (jsonData.error) {
+                alert(`Error: ${jsonData.error}`);
+            } else {
+                alert('Cambios guardados exitosamente.');
+                location.reload();
+            }
+        } catch {
+            alert('Cambios guardados exitosamente.');
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al guardar los cambios. Por favor, inténtalo de nuevo.');
+    });
+}
+
+$('#datos_docente').on('click', '.btn-delete', function() {
+    var data = table.row($(this).parents('tr')).data();
+    var idDocente = data.id_docente;
+
+    if (confirm('¿Estás seguro de que quieres desactivar a este docente?')) {
         $.ajax({
-            url: 'Docentes-Controlador.php?accion=modificar',
+            url: 'Docentes-Controlador.php?accion=eliminar',
             type: 'POST',
-            data: $(this).serialize(),
+            data: { id_docente: idDocente },
             success: function(response) {
-                alert('Docente actualizado exitosamente.');
-                table.ajax.reload(); // Recargar la tabla para reflejar los cambios
-                $('#editModal').modal('hide');
+                table.ajax.reload();
+                alert('Docente desactivado exitosamente.');
             },
             error: function() {
-                alert('Error al actualizar el docente.');
+                alert('Error al desactivar el docente.');
             }
         });
-    });
-
-
-    $('#datos_docente').on('click', '.btn-delete', function() {
-        var data = table.row($(this).parents('tr')).data();
-        var idDocente = data.id_docente;
-
-        if (confirm('¿Estás seguro de que quieres desactivar a este docente?')) {
-            $.ajax({
-                url: 'Docentes-Controlador.php?accion=eliminar',
-                type: 'POST',
-                data: { id_docente: idDocente },
-                success: function(response) {
-                    table.ajax.reload();
-                    alert('Docente desactivado exitosamente.');
-                },
-                error: function() {
-                    alert('Error al desactivar el docente.');
-                }
-            });
-        }
-    });
+    }
 });

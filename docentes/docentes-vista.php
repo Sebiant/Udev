@@ -123,7 +123,10 @@ include_once '../componentes/header.php';
                 <form id="editForm">
                     <input type="hidden" name="accion" value="editar" id="accion_editar">
                     <input type="hidden" name="id_docente" id="id_docente_editar">
-
+                    <div class="mb-3">
+                        <label for="id_docenten" class="form-label">id :</label>
+                        <input type="text" name="id_docente" id="id_docente" class="form-control">
+                    </div>
                     <div class="mb-3">
                         <label for="tipo_documento_editar" class="form-label">Tipo de Documento:</label>
                         <select name="tipo_documento" id="tipo_documento_editar" class="form-control" required>
