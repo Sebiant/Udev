@@ -99,25 +99,29 @@ $result = $conn->query($sql);
                 <div class="modal-body">
                     <input type="hidden" name="id_modulo">
                     <div class="form-group">
-                        <label for="edit_fecha_inicio">Fecha Inicio</label>
-                        <input type="date" class="form-control" id="edit_fecha_inicio" name="fecha_inicio" required>
+                        <label for="fecha_inicio">Fecha Inicio</label>
+                        <input type="date" class="form-control" name="fecha_inicio" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit_fecha_fin">Fecha Fin</label> 
-                        <input type="date" class="form-control" id="edit_fecha_fin" name="fecha_fin" required>
+                        <label for="fecha_fin">Fecha Fin</label> 
+                        <input type="date" class="form-control" name="fecha_fin" required>
                     </div>
-                    <div>
+                      <div>
                         <label for="id_programa">Programa:</label>
-                        <select id="id_programa" name="id_programa" class="form-control" required title="Selecciona un programa">
+                        <select name="id_programa" class="form-control" required title="Selecciona un programa">
                             <option value="">-- Selecciona un programa --</option>
                             <?php
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
-                                }
-                            } else {
-                                echo '<option value="">No hay programas disponibles</option>';
-                            }
+                             $sql = "SELECT id_programa, nombre FROM programas";
+                             $result = $conn->query($sql);
+                     
+                             if ($result->num_rows > 0) {
+                                 while ($row = $result->fetch_assoc()) {
+                                     // Genera las opciones del select
+                                     echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
+                                 }
+                             } else {
+                                 echo '<option value="">No hay programas disponibles</option>';
+                             }
                             ?>
                         </select>
                     </div>

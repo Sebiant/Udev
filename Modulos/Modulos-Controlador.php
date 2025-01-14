@@ -8,16 +8,15 @@ switch ($accion) {
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_fin = $_POST['fecha_fin'];
         $id_programa = $_POST['id_programa'];
-        $estado = isset($_POST['estado']) ? 1 : 0;
-
+      
         // Validar que las fechas no estén vacías
     if (empty($fecha_inicio) || empty($fecha_fin)) {
         echo "Error: Las fechas son obligatorias.";
         exit; // Termina la ejecución si hay un error
     }
 
-        $sql = "INSERT INTO modulos (fecha_inicio, fecha_fin, estado, id_programa) 
-                VALUES ('$fecha_inicio', '$fecha_fin', '$estado', '$id_programa')";
+        $sql = "INSERT INTO modulos (fecha_inicio, fecha_fin, id_programa) 
+                VALUES ('$fecha_inicio', '$fecha_fin', '$id_programa')";
         
         if ($conn->query($sql) === TRUE) {
             echo "Nuevo módulo creado exitosamente.";
@@ -38,12 +37,10 @@ switch ($accion) {
             $fecha_inicio = isset($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : $modulo['fecha_inicio'];
             $fecha_fin = isset($_POST['fecha_fin']) ? $_POST['fecha_fin'] : $modulo['fecha_fin'];
             $id_programa = isset($_POST['id_programa']) ? $_POST['id_programa'] : $modulo['id_programa'];
-            $estado = isset($_POST['estado']) ? 1 : $modulo['estado'];
 
             $sql_update = "UPDATE modulos SET 
                             fecha_inicio='$fecha_inicio', 
                             fecha_fin='$fecha_fin', 
-                            estado='$estado',
                             id_programa='$id_programa'
                             WHERE id_modulo='$id_modulo'";
 
@@ -80,6 +77,28 @@ switch ($accion) {
             echo "Error al activar el módulo: " . $conn->error;
         }
         break;
+    
+    case 'BusquedaPorId':
+        $id_modulo = $_POST['id_modulo'];
+
+        $sql = "SELECT * FROM modulos WHERE id_modulo='$id_modulo'";
+        $result = $conn->query($sql);
+        if ($result === false) {
+            die("Error en la consulta SQL: " . $conn->error);
+        }
+    
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+            echo json_encode(['data' => $data]);
+        } else {
+            echo json_encode(['error' => 'Registro no encontrado']);
+        }
+        break;
+
 
     default:
         $sql = "SELECT modulos.*, programas.nombre AS nombre_programa 

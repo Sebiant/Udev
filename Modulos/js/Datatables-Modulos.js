@@ -34,20 +34,29 @@ $(document).ready(function() {
 
 // Función para editar un módulo
 function editarModulo(id) {
+    if (!id) {
+        alert("ID no válido");
+        return;
+    }
     if (confirm('¿Está seguro de que desea editar este módulo ' + id + '?')) {
         $.ajax({
-            url: 'Modulos-Controlador.php', // URL del controlador
+            url: 'Modulos-Controlador.php?accion=BusquedaPorId', // Asegúrate de que la acción sea la correcta
             type: 'POST', // Cambiado a POST
             data: { accion: 'obtener', id_modulo: id }, // Enviar el ID
+            dataType: 'json',
             success: function(response) {
                 if (response.data && response.data.length > 0) {
                     var modulo = response.data[0]; // Suponiendo que recibes un objeto con un array 'data'
+                    
+                    // Actualizar los campos del formulario con los datos del módulo
                     $('#editForm input[name="id_modulo"]').val(modulo.id_modulo);
                     $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
-                    $('#editForm input[name="fecha_final"]').val(modulo.fecha_fin);
-                    $('#editForm select[name="id_programa"]').val(modulo.id_programa);
-                    $('#editForm select[name="estado"]').val(modulo.estado);
-                    $('#editModuloModal').modal('show'); // Mostrar modal
+                    $('#editForm input[name="fecha_fin"]').val(modulo.fecha_fin);
+                    $('#editForm select[name="id_programa"]').val(modulo.id_programa); // Asegúrate de que el id_programa es el correcto
+                    $('#editForm select[name="estado"]').val(modulo.estado); // Asegúrate de que el estado es el correcto
+                    
+                    // Mostrar el modal después de actualizar los campos
+                    $('#editModuloModal').modal('show');
                 } else {
                     alert("No se encontraron datos para este módulo.");
                 }
@@ -58,6 +67,7 @@ function editarModulo(id) {
         });
     }
 }
+
 
 // Manejar el envío del formulario de edición
 $('#editForm').on('submit', function(event) {
