@@ -70,26 +70,24 @@ switch ($accion) {
         }
         break;
         
-    case 'busquedaPorId':
-        $id_materia = $_POST['id_materia'];
-
-        $sql = "SELECT * FROM materias WHERE id_materia='$id_materia'";
-        $result = $conn->query($sql);
-
-        $data = [];
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $data[] = $row;
+        case 'busquedaPorId':
+            $id_materia = $_POST['id_materia'];
+        
+            $sql = "SELECT * FROM materias WHERE id_materia='$id_materia'";
+            $result = $conn->query($sql);
+        
+            $data = [];
+        
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+                echo json_encode(['data' => $data]);
+            } else {
+                echo json_encode(['error' => 'Registro no encontrado']);
             }
-            echo "Registro encontrado exitosamente.";
-        } else {
-            echo "Registro no encontrado: " . $conn->error;
-        }
-
-        header('Content-Type: application/json');
-        echo json_encode(['data' => $data]);
-        break;
+            break;
+        
 
     default:
         $sql = "SELECT * FROM materias";

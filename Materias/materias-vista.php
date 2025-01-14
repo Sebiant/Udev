@@ -91,11 +91,10 @@ include_once '../componentes/header.php';
                             <input type="text" name="descripcion" id="descripcion" class="form-control" maxlength="100" required oninput="actualizarContador()">
                             <small id="contador" class="contador-texto">100 caracteres disponibles</small>
                         </div>
-                    
                     </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
                     </div>
                 </form>
             </div>
