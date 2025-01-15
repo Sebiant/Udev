@@ -52,24 +52,25 @@ include_once '../componentes/header.php';
                         <input type="hidden" name="id_programa" id="id_programa">
 
                         <div class="mb-3">
-                            <label for="tipo_programa" class="form-label">Tipo de Programa:</label>
-                            <input type="text" name="tipo_programa" id="tipo_programa" class="form-control" required>
+                            <label for="tipo" class="form-label">Tipo de Programa:</label>
+                            <input type="text" name="tipo_programa" id="tipo" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nombre_programa" class="form-label">Nombre del programa:</label>
-                            <input type="text" name="nombre_programa" id="nombre_programa" class="form-control" required>
+                            <label for="nombre" class="form-label">Nombre del programa:</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="duracion_programa" class="form-label">Duracion:</label>
-                            <input type="text" name="duracion_programa" id="duracion_programa" class="form-control" required>
+                            <label for="duracion_mes" class="form-label">Duracion:</label>
+                            <input type="number" name="duracion_mes" id="duracion_mes" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="cantidad_modulos" class="form-label">Cant de modulos:</label>
-                            <input type="text" name="cantidad_modulos" id="cantidad_modulos" class="form-control" required>
+                            <label for="cant_modulos" class="form-label">Cant de modulos:</label>
+                            <input type="number" name="cant_modulos" id="cant_modulos" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="descripcion_programa" class="form-label">Descripcion:</label>
-                            <input type="text" name="descripcion_programa" id="descripcion_programa" class="form-control" required>
+                            <label for="descripcion" class="form-label">Descripcion:</label>
+                            <input type="text" name="descripcion" id="descripcion" class="form-control" maxlength="100" required oninput="actualizarContador()">
+                            <small id="contador" class="contador-texto">100 caracteres disponibles</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -95,8 +96,8 @@ include_once '../componentes/header.php';
                 <div class="modal-body">
                     <input type="hidden" name="id_programa">
                     <div class="form-group">
-                        <label for="tipo_programa">Tipo</label>
-                        <input type="text" class="form-control" name="tipo_programa" required>
+                        <label for="tipo">Tipo</label>
+                        <input type="text" class="form-control" name="tipo" required>
                     </div>
                     <div class="form-group">
                         <label for="nombre_programa">Nombre del programa</label>
@@ -104,7 +105,7 @@ include_once '../componentes/header.php';
                     </div>
                     <div class="form-group">
                         <label for="duracion_programa">Duracion</label>
-                        <input type="text" class="form-control" name="duracion_programa" required>
+                        <input type="number" class="form-control" name="duracion_programa" required>
                     </div>
                     <div class="form-group">
                         <label for="cantidad_modulos">Cant de modulos</label>

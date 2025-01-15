@@ -45,11 +45,11 @@ $(document).ready(function() {
 
                     // Rellenar el formulario de edición con los datos
                     $('#editForm [name="id_programa"]').val(programa.id_programa);
-                    $('#editForm [name="tipo_programa"]').val(programa.tipo);
-                    $('#editForm [name="nombre_programa"]').val(programa.nombre);
-                    $('#editForm [name="duracion_programa"]').val(programa.duracion_mes);
-                    $('#editForm [name="cantidad_modulos"]').val(programa.cant_modulos);
-                    $('#editForm [name="descripcion_programa"]').val(programa.descripcion);
+                    $('#editForm [name="tipo"]').val(programa.tipo);
+                    $('#editForm [name="nombre"]').val(programa.nombre);
+                    $('#editForm [name="duracion_mes"]').val(programa.duracion_mes);
+                    $('#editForm [name="cant_modulos"]').val(programa.cant_modulos);
+                    $('#editForm [name="descripcion"]').val(programa.descripcion);
                     
                     // Mostrar el modal de edición
                     $('#editModal').modal('show');

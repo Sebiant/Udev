@@ -55,3 +55,19 @@ function activarPrograma() {
         console.error('Error:', error);
     });
 }
+
+function actualizarContador() {
+    const descripcion = document.getElementById('descripcion');
+    const contador = document.getElementById('contador');
+    const maxLength = descripcion.getAttribute('maxlength');
+    const caracteresRestantes = maxLength - descripcion.value.length;
+
+    contador.textContent = `${caracteresRestantes} caracteres disponibles`;
+
+    // Cambiar el estilo si el límite está cerca o alcanzado
+    if (caracteresRestantes <= 20) {
+        contador.classList.add('alerta');
+    } else {
+        contador.classList.remove('alerta');
+    }
+}
