@@ -5,7 +5,7 @@ function crearPrograma() {
     console.log('Datos del Formulario:', ...formData.entries());
     
     $.ajax({
-        url: 'Controlador-Programas.php?accion=crear',
+        url: 'Programas-Controlador.php?accion=crear',
         type: 'POST',
         data: formData,
         error: function(xhr, status, error) {
@@ -21,7 +21,7 @@ function editarPrograma() {
     console.log('Acción: editar');
     console.log('Datos del Formulario:', ...formData.entries());
 
-    fetch('Controlador-Programas.php?accion=editar', {
+    fetch('Programas-Controlador.php?accion=editar', {
         method: 'POST',
         body: formData
     })
@@ -41,7 +41,7 @@ function activarPrograma() {
 
     console.log('ID Programa a Activar:', id_programa);
 
-    fetch('Controlador-Programas.php?accion=activar', {
+    fetch('Programas-Controlador.php?accion=activar', {
         method: 'POST',
         body: new URLSearchParams({ id_programa })
     })

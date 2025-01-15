@@ -3,7 +3,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "Controlador-Programas.php",
+            url: "Programas-Controlador.php",
             type: "POST",
             dataSrc: 'data'
         },
@@ -34,7 +34,7 @@ $(document).ready(function() {
         var idPrograma = data.id_programa;
 
         $.ajax({
-            url: 'Controlador-Programas.php?accion=editar',
+            url: 'Programas-Controlador.php?accion=editar',
             type: 'POST',
             data: { id_programa: idPrograma },
             success: function(response) {
@@ -70,7 +70,7 @@ $(document).ready(function() {
         var formData = $(this).serialize(); // Obtener los datos del formulario
 
         $.ajax({
-            url: 'Controlador-Programas.php?accion=actualizar',
+            url: 'Programas-Controlador.php?accion=actualizar',
             type: 'POST',
             data: formData,
             success: function(response) {
