@@ -78,6 +78,38 @@ switch ($accion) {
             }
             break;
 
+
+
+
+     case 'buscarPorId':     
+        
+        if (empty($_POST['id_institucion'])) {
+            echo json_encode(["error" => "ID de docente no proporcionado"]);
+            exit;
+        }
+
+        $sql = "SELECT * FROM instituciones WHERE id_institucion=?";
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Error en la preparación de la consulta: " . $conn->error);
+        }
+
+        $stmt->bind_param('i', $_POST['id_institucion']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+            echo json_encode(['data' => $data]);
+        } else {
+            echo json_encode(['error' => 'Registro no encontrado']);
+        }
+        $stmt->close();
+
+     
+     break;
+
     default:
         $sql = "SELECT * FROM instituciones";
         $result = $conn->query($sql);

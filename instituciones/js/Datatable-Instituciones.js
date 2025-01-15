@@ -30,13 +30,14 @@ $(document).ready(function() {
         var idInstitucion = data.id_institucion;
 
         $.ajax({
-            url: 'instituciones-controlador.php?accion=modificar',
+            url: 'instituciones-controlador.php?accion=buscarPorId',
             type: 'POST',
             data: { id_institucion: idInstitucion },
+            dataType:'json',
             success: function(response) {
                 var institucion = response.data[0];
                 $('#editForm [name="id_institucion"]').val(institucion.id_institucion);
-                $('#editForm [name="nombres"]').val(institucion.nombres);
+                $('#editForm [name="nombre"]').val(institucion.nombre);
                 $('#editForm [name="direccion"]').val(institucion.direccion);
                 $('#editForm [name="estado"]').prop('checked', institucion.estado === "Sí");
                 $('#editModal').modal('show');
