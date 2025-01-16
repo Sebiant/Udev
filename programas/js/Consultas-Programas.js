@@ -3,16 +3,20 @@ function crearPrograma() {
 
     console.log('Acción: crear');
     console.log('Datos del Formulario:', ...formData.entries());
-    
+
     $.ajax({
         url: 'Programas-Controlador.php?accion=crear',
         type: 'POST',
         data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('Programa creado:', response);
+        },
         error: function(xhr, status, error) {
             console.error('Error:', error);
         }
     });
-    
 }
 
 function editarPrograma() {
@@ -27,7 +31,6 @@ function editarPrograma() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
         console.log('Recargando la página...');
         location.reload();
     })
@@ -47,7 +50,6 @@ function activarPrograma() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
         console.log('Recargando la página...');
         location.reload();
     })
@@ -71,3 +73,4 @@ function actualizarContador() {
         contador.classList.remove('alerta');
     }
 }
+

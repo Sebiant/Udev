@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var table = $('#datos_programa').DataTable({
         processing: true,
         serverSide: true,
@@ -29,15 +29,16 @@ $(document).ready(function() {
     });
 
     // Acción de "Modificar" (Editar)
-    $('#datos_programa').on('click', '.btn-modify', function() {
+    $('#datos_programa').on('click', '.btn-modify', function () {
         var data = table.row($(this).parents('tr')).data();
         var idPrograma = data.id_programa;
 
         $.ajax({
-            url: 'Programas-Controlador.php?accion=editar',
+            url: 'Programas-Controlador.php?accion=BusquedaPorId',
             type: 'POST',
             data: { id_programa: idPrograma },
-            success: function(response) {
+            dataType: 'json',
+            success: function (response) {
                 console.log(response); // Verifica la respuesta completa del servidor
 
                 if (response.data && response.data.length > 0) {
@@ -50,41 +51,50 @@ $(document).ready(function() {
                     $('#editForm [name="duracion_mes"]').val(programa.duracion_mes);
                     $('#editForm [name="cant_modulos"]').val(programa.cant_modulos);
                     $('#editForm [name="descripcion"]').val(programa.descripcion);
-                    
+
                     // Mostrar el modal de edición
                     $('#editModal').modal('show');
                 } else {
                     alert('No se encontraron datos para editar.');
                 }
             },
-            error: function() {
+            error: function () {
                 alert('Error al obtener los datos.');
             }
         });
     });
 
     // Guardar los cambios (cuando se edita un programa)
-    $('#editForm').on('submit', function(e) {
-        e.preventDefault();
+    function GuardarPrograma(event) {
+        event.preventDefault(); // Evita el envío predeterminado del formulario
 
-        var formData = $(this).serialize(); // Obtener los datos del formulario
-
+        // Obtén los datos del formulario
+        const formData = $('#editForm').serialize(); 
+        console.log("Datos del formulario:", formData);
+        // Realiza la solicitud AJAX
         $.ajax({
-            url: 'Programas-Controlador.php?accion=actualizar',
-            type: 'POST',
-            data: formData,
-            success: function(response) {
+            url: 'Programas-Controlador.php?accion=editar', // URL del controlador
+            type: 'POST',                                   // Método HTTP
+            data: formData,                                 // Datos del formulario
+            dataType: 'json',                               // Tipo de datos esperado
+            success: function (response) {
+                console.log(response);
+                // Verifica si la respuesta indica éxito
                 if (response.success) {
                     alert('Programa actualizado correctamente.');
-                    $('#editModal').modal('hide'); // Ocultar el modal
-                    table.ajax.reload(); // Recargar la tabla
+                    $('#editModal').modal('hide'); // Oculta el modal
+                    if ($.fn.DataTable.isDataTable('#datos_programa')) {
+                        $('#datos_programa').DataTable().ajax.reload(); // Recarga la tabla
+                    }
                 } else {
-                    alert('Error al actualizar el programa.');
+                    // Muestra el mensaje de error recibido
+                    alert(response.message || 'Error al actualizar el programa.');
                 }
             },
-            error: function() {
-                alert('Error al realizar la solicitud.');
+            error: function (xhr, status, error) {
+                console.error('Error en la solicitud:', error);
+                alert('Ocurrió un error al realizar la solicitud. Intenta nuevamente.');
             }
         });
-    });
+    }
 });

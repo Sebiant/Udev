@@ -29,14 +29,14 @@ switch ($accion) {
         $result = $conn->query($sql_select);
 
         if ($result->num_rows > 0) {
-            $programa =   $result->fetch_assoc();
+            $programa = $result->fetch_assoc();
 
             // Otros campos
-            $tipo = isset($_POST['tipo']) ? $_POST['tipo'] : $programa['tipo'];
-            $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $programa['nombre'];
-            $duracion_mes = isset($_POST['duracion_mes']) ? $_POST['duracion_mes'] : $programa['duracion_mes'];
-            $cant_modulos = isset($_POST['cant_modulos']) ? $_POST['cant_modulos'] : $programa['cant_modulos'];
-            $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : $programa['descripcion'];
+            $tipo = $_POST['tipo'] ?? $programa['tipo'];
+            $nombre = $_POST['nombre'] ?? $programa['nombre'];
+            $duracion_mes = $_POST['duracion_mes'] ?? $programa['duracion_mes'];
+            $cant_modulos = $_POST['cant_modulos'] ?? $programa['cant_modulos'];
+            $descripcion = $_POST['descripcion'] ?? $programa['descripcion'];
            
             $sql_update = "UPDATE programas SET 
                             tipo='$tipo', 
@@ -55,8 +55,7 @@ switch ($accion) {
         } else {
             echo "No se encontró el registro.";
         }
-    break;
-
+        break;
 
     case 'eliminar':
         $id_programa = $_POST['id_programa'];
@@ -70,34 +69,57 @@ switch ($accion) {
         }
         break;
 
-        case 'activar':
-            $id_programa = $_POST['id_programa'];
+    case 'activar':
+        $id_programa = $_POST['id_programa'];
+
+        $sql = "UPDATE programas SET estado=1 WHERE id_programa='$id_programa'";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "Registro activado exitosamente.";
+        } else {
+            echo "Error al activar el registro: " . $conn->error;
+        }
+        break;
+
+    case 'BusquedaPorId':
+        $id_programa = $_POST['id_programa'];
+
+        $sql = "SELECT * FROM programas WHERE id_programa='$id_programa'";
+        $result = $conn->query($sql);
+
+        if ($result === false) {
+            die("Error en la consulta SQL: " . $conn->error);
+        }
     
-            $sql = "UPDATE programas SET estado=1 WHERE id_programa='$id_programa'";
-    
-            if ($conn->query($sql) === TRUE) {
-                echo "Registro activado exitosamente.";
-            } else {
-                echo "Error al activar el registro: " . $conn->error;
+        $data = [];
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
             }
-            break;
+            echo json_encode(['data' => $data]);
+        } else {
+            echo json_encode(['error' => 'Registro no encontrado']);
+        }
+        break;
 
     default:
         $sql = "SELECT * FROM programas";
         $result = $conn->query($sql);
 
-            $data = [];
+        $data = [];
 
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $row['estado'] = $row['estado'] ? "activo" : "innactivo";
-                    $data[] = $row;
-                }
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $row['estado'] = $row['estado'] ? "activo" : "innactivo";
+                $data[] = $row;
             }
+        }
 
-            header('Content-Type: application/json');
-            echo json_encode(['data' => $data]);
-            break;
-    }
-    $conn->close();
+        header('Content-Type: application/json');
+        echo json_encode(['data' => $data]);
+        break;
+}
+
+$conn->close();
 ?>
