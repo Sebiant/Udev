@@ -70,24 +70,36 @@ switch ($accion) {
         }
         break;
         
-        case 'busquedaPorId':
-            $id_materia = $_POST['id_materia'];
+    case 'cambiarEstado':
+        $id_materia = $_POST['id_materia'];
+        $estado = $_POST['estado'];
+    
+        $sql = "UPDATE materias SET estado=$estado WHERE id_materia='$id_materia'";
+    
+        if ($conn->query($sql) === TRUE) {
+            echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
+        } else {
+            echo "Error al cambiar el estado: " . $conn->error;
+        }
+        break;
         
-            $sql = "SELECT * FROM materias WHERE id_materia='$id_materia'";
-            $result = $conn->query($sql);
-        
-            $data = [];
-        
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $data[] = $row;
-                }
-                echo json_encode(['data' => $data]);
-            } else {
-                echo json_encode(['error' => 'Registro no encontrado']);
+    case 'busquedaPorId':
+        $id_materia = $_POST['id_materia'];
+    
+        $sql = "SELECT * FROM materias WHERE id_materia='$id_materia'";
+        $result = $conn->query($sql);
+    
+        $data = [];
+    
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
             }
-            break;
-        
+            echo json_encode(['data' => $data]);
+        } else {
+            echo json_encode(['error' => 'Registro no encontrado']);
+        }
+        break;
 
     default:
         $sql = "SELECT * FROM materias";

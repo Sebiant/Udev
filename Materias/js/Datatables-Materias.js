@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var table = $('#datos_materia').DataTable({
         processing: true,
         serverSide: true,
@@ -19,15 +19,39 @@ $(document).ready(function() {
             },
             {
                 data: null,
-                defaultContent: '<button class="btn btn-danger w-100 btn-delete">Borrar</button>',
+                render: function (data, type, row) {
+                    var buttonClass = row.estado === "Activo" ? "btn-danger" : "btn-success";
+                    var buttonText = row.estado === "Activo" ? "Inactivar" : "Activar";
+                    return `<button class="btn ${buttonClass} w-100 btn-toggle-state">${buttonText}</button>`;
+                },
                 orderable: false
             }
         ]
     });
 
+    // Evento para cambiar el estado dinámico (Eliminar/Cambiar Estado)
+    $('#datos_materia').on('click', '.btn-toggle-state', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var idMateria = data.id_materia;
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+
+        $.ajax({
+            url: 'Materias-Controlador.php?accion=cambiarEstado',
+            type: 'POST',
+            data: { id_materia: idMateria, estado: nuevoEstado },
+            success: function (response) {
+                alert(`El estado de la materia se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+                table.ajax.reload();
+            },
+            error: function () {
+                alert("Hubo un error al cambiar el estado.");
+            }
+        });
+    });
+
     // Evento para modificar una materia
-    $('#datos_materia').on('click', '.btn-modify', function() {
-        var data = table.row($(this).parents('tr')).data();                                                                            
+    $('#datos_materia').on('click', '.btn-modify', function () {
+        var data = table.row($(this).parents('tr')).data();
         var idMateria = data.id_materia;
 
         $.ajax({
@@ -35,38 +59,35 @@ $(document).ready(function() {
             type: 'POST',
             data: { id_materia: idMateria },
             dataType: 'json',
-            success: function(response) {
-                  
+            success: function (response) {
                 if (response.data && response.data.length > 0) {
-                    var Materia = response.data[0];
-                    $('#editForm [name="id_materia"]').val(Materia.id_materia);
-                    $('#editForm [name="nombre"]').val(Materia.nombre);
-                    $('#editForm [name="descripcion"]').val(Materia.descripcion);
-                    $('#editForm [name="estado"]').prop('checked', Materia.estado === "1");
+                    var materia = response.data[0];
+                    $('#editForm [name="id_materia"]').val(materia.id_materia);
+                    $('#editForm [name="nombre"]').val(materia.nombre);
+                    $('#editForm [name="descripcion"]').val(materia.descripcion);
+                    $('#editForm [name="estado"]').prop('checked', materia.estado === "1");
                     $('#editModal').modal('show');
                 } else {
                     alert('No se encontraron datos para esta materia.');
                 }
-            },
-
-            
+            }
         });
     });
 
     // Evento para enviar el formulario de edición
-    $('#editForm').on('submit', function(e) {
+    $('#editForm').on('submit', function (e) {
         e.preventDefault();
 
         $.ajax({
             url: 'Materias-Controlador.php?accion=editar',
             type: 'POST',
             data: $(this).serialize(),
-            success: function(response) {
+            success: function (response) {
                 alert('Materia actualizada exitosamente.');
                 table.ajax.reload();
                 $('#editModal').modal('hide');
             },
-            error: function() {
+            error: function () {
                 alert('Error al actualizar la materia.');
             }
         });
