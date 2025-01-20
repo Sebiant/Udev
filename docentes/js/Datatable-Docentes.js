@@ -89,7 +89,28 @@ function guardarCambiosDocente() {
     var retenedor_iva = $('#editForm [name="retenedor_iva"]').prop('checked') ? 'Sí' : 'No';
     var estado = $('#editForm [name="estado"]').prop('checked') ? 'Si' : 'No';
 
-    const formElement = document.getElementById('formDocente');  // Obtener el formulario
+    // Validar campos obligatorios
+    var camposFaltantes = [];
+    if (!tipo_documento) camposFaltantes.push("Tipo de documento");
+    if (!numero_documento) camposFaltantes.push("Número de documento");
+    if (!nombres) camposFaltantes.push("Nombres");
+    if (!apellidos) camposFaltantes.push("Apellidos");
+    if (!especialidad) camposFaltantes.push("Especialidad");
+    if (!descripcion_especialidad) camposFaltantes.push("Descripcion Especialidad");
+    if (!telefono) camposFaltantes.push("Teléfono");
+    if (!direccion) camposFaltantes.push("Dirección");
+    if (!email) camposFaltantes.push("Correo electrónico");
+
+    if (camposFaltantes.length > 0) {
+        alert(`Por favor completa los siguientes campos:\n- ${camposFaltantes.join("\n- ")}`);
+        return;
+    }
+
+    var declara_renta = $('#editForm [name="declara_renta"]').prop('checked') ? 'Sí' : 'No';
+    var retenedor_iva = $('#editForm [name="retenedor_iva"]').prop('checked') ? 'Sí' : 'No';
+    var estado = $('#editForm [name="estado"]').prop('checked') ? 'Si' : 'No';
+
+    const formElement = document.getElementById('formDocente');
 
     if (!formElement) {
         alert('No se encontró el formulario.');
@@ -148,6 +169,7 @@ function guardarCambiosDocente() {
         alert('Ocurrió un error al guardar los cambios. Por favor, inténtalo de nuevo.');
     });
 }
+
 
 $('#datos_docente').on('click', '.btn-delete', function() {
     var data = table.row($(this).parents('tr')).data();

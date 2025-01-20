@@ -43,7 +43,7 @@ switch ($accion) {
         $stmt->close();
         break;
 
-        case 'Modificar':
+    case 'Modificar':
             if (empty($_POST['id_docente'])) {
                 echo json_encode(["error" => "ID de docente no proporcionado"]);
                 exit;
