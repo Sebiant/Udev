@@ -23,35 +23,53 @@ $(document).ready(function() {
             },
             {
                 data: null,
-                defaultContent: '<button class="btn btn-danger w-100 btn-delete">Desactivar</button>',
+                render: function (data, type, row) {
+                    var buttonClass = row.estado === "Activo" ? "btn-danger" : "btn-success";
+                    var buttonText = row.estado === "Activo" ? "Inactivar" : "Activar";
+                    return `<button class="btn ${buttonClass} w-100 btn-toggle-state">${buttonText}</button>`;
+                },
                 orderable: false
             }
         ]
     });
-    
+
+    // Evento para cambiar el estado dinámico (Eliminar/Cambiar Estado)
+    $('#datos_docente').on('click', '.btn-toggle-state', function () {  // Cambié '#datos_materia' por '#datos_docente'
+        var data = table.row($(this).parents('tr')).data();
+        var idDocente = data.id_docente;
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+
+        $.ajax({
+            url: 'Docentes-Controlador.php?accion=cambiarEstado',
+            type: 'POST',
+            data: { id_docente: idDocente, estado: nuevoEstado },
+            success: function (response) {
+                alert(`El estado del docente se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+                table.ajax.reload();
+            },
+            error: function () {
+                alert("Hubo un error al cambiar el estado.");
+            }
+        });
+    });
+
     $('#datos_docente').on('click', '.btn-modify', function() {
         var data = table.row($(this).parents('tr')).data();
         var idDocente = data.id_docente;
-    
-    
+
         $.ajax({
             url: 'Docentes-Controlador.php?accion=buscarPorId',
             type: 'POST',
             data: { id_docente: idDocente },
             dataType: 'json',
             success: function(response) {
-                    
-    
                 if (response.data && response.data.length > 0) {
                     var docente = response.data[0];
-    
                     $('#editForm [name="id_docente"]').val(docente.id_docente);
                     $('#editForm [name="tipo_documento"]').val(docente.tipo_documento);
                     $('#editForm [name="numero_documento"]').val(docente.numero_documento);
-                   
                     $('#editForm [name="nombres"]').val(docente.nombres);
                     $('#editForm [name="apellidos"]').val(docente.apellidos);
-
                     $('#editForm [name="especialidad"]').val(docente.especialidad);
                     $('#editForm [name="descripcion_especialidad"]').val(docente.descripcion_especialidad);
                     $('#editForm [name="telefono"]').val(docente.telefono);
@@ -60,7 +78,7 @@ $(document).ready(function() {
                     $('#editForm [name="declara_renta"]').prop('checked', docente.declara_renta === "Sí");
                     $('#editForm [name="retenedor_iva"]').prop('checked', docente.retenedor_iva === "Sí");
                     $('#editForm [name="estado"]').prop('checked', docente.estado === "Si");
-    
+
                     $('#editModal').modal('show');
                 } else {
                     alert('No se encontraron datos para el docente.');
@@ -105,10 +123,6 @@ function guardarCambiosDocente() {
         alert(`Por favor completa los siguientes campos:\n- ${camposFaltantes.join("\n- ")}`);
         return;
     }
-
-    var declara_renta = $('#editForm [name="declara_renta"]').prop('checked') ? 'Sí' : 'No';
-    var retenedor_iva = $('#editForm [name="retenedor_iva"]').prop('checked') ? 'Sí' : 'No';
-    var estado = $('#editForm [name="estado"]').prop('checked') ? 'Si' : 'No';
 
     const formElement = document.getElementById('formDocente');
 
@@ -169,7 +183,6 @@ function guardarCambiosDocente() {
         alert('Ocurrió un error al guardar los cambios. Por favor, inténtalo de nuevo.');
     });
 }
-
 
 $('#datos_docente').on('click', '.btn-delete', function() {
     var data = table.row($(this).parents('tr')).data();

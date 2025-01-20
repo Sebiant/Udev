@@ -112,31 +112,19 @@ switch ($accion) {
         
             $stmt->close();
             break;
+            
+            case 'cambiarEstado':
+                $id_docente = $_POST['id_docente'];
+                $estado = $_POST['estado'];
         
-    case 'activar':
-        if (empty($_POST['id_docente'])) {
-            echo json_encode(["error" => "ID de docente no proporcionado"]);
-            exit;
-        }
-
-        $estado = ($accion === 'eliminar') ? 0 : 1;
-
-        $sql = "UPDATE docentes SET estado=? WHERE id_docente=?";
-        $stmt = $conn->prepare($sql);
-
-        if (!$stmt) {
-            die("Error en la preparación de la consulta: " . $conn->error);
-        }
-
-        $stmt->bind_param('ii', $estado, $_POST['id_docente']);
-
-        if ($stmt->execute()) {
-            echo $accion === 'eliminar' ? "Registro desactivado exitosamente." : "Registro activado exitosamente.";
-        } else {
-            echo "Error al cambiar el estado del registro: " . $stmt->error;
-        }
-        $stmt->close();
-        break;
+                $sql = "UPDATE docentes SET estado=$estado WHERE id_docente='$id_docente'";
+        
+                if ($conn->query($sql) === TRUE) {
+                    echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
+                } else {
+                    echo "Error al cambiar el estado: " . $conn->error;
+                }
+                break;
 
     case 'buscarPorId':
         if (empty($_POST['id_docente'])) {
@@ -179,7 +167,7 @@ switch ($accion) {
 
         $data = [];
         while ($row = $result->fetch_assoc()) {
-            $row['estado'] = $row['estado'] ? "activo" : "inactivo";
+            $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
             $data[] = $row;
         }
 
