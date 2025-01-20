@@ -8,7 +8,6 @@ $(document).ready(function() {
             dataSrc: 'data'
         },
         columns: [
-            { "data": "id_institucion" },
             { "data": "nombre" },
             { "data": "direccion" },
             { "data": "estado" },
@@ -19,12 +18,37 @@ $(document).ready(function() {
             },
             {
                 data: null,
-                defaultContent: '<button class="btn btn-danger w-100 btn-delete">Borrar</button>',
+                render: function (data, type, row) {
+                    var buttonClass = row.estado === "Activo" ? "btn-danger" : "btn-success";
+                    var buttonText = row.estado === "Activo" ? "Inactivar" : "Activar";
+                    return `<button class="btn ${buttonClass} w-100 btn-toggle-state">${buttonText}</button>`;
+                },
                 orderable: false
             }
         ]
     });
-    
+
+    // Evento para cambiar el estado dinámico (Inactivar/Activar)
+    $('#datos_instituciones').on('click', '.btn-toggle-state', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var idInstitucion = data.id_institucion;
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+
+        $.ajax({
+            url: 'instituciones-controlador.php?accion=cambiarEstado',
+            type: 'POST',
+            data: { id_institucion: idInstitucion, estado: nuevoEstado },
+            success: function(response) {
+                alert(`El estado de la institución se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+                table.ajax.reload();
+            },
+            error: function() {
+                alert("Hubo un error al cambiar el estado.");
+            }
+        });
+    });
+
+    // Evento para mostrar el formulario de edición con los datos de la institución
     $('#datos_instituciones').on('click', '.btn-modify', function() {
         var data = table.row($(this).parents('tr')).data();
         var idInstitucion = data.id_institucion;
@@ -33,20 +57,22 @@ $(document).ready(function() {
             url: 'instituciones-controlador.php?accion=buscarPorId',
             type: 'POST',
             data: { id_institucion: idInstitucion },
-            dataType:'json',
+            dataType: 'json',
             success: function(response) {
                 var institucion = response.data[0];
                 $('#editForm [name="id_institucion"]').val(institucion.id_institucion);
                 $('#editForm [name="nombre"]').val(institucion.nombre);
                 $('#editForm [name="direccion"]').val(institucion.direccion);
-                $('#editForm [name="estado"]').prop('checked', institucion.estado === "Sí");
+                $('#editForm [name="estado"]').prop('checked', institucion.estado === "Activo");
                 $('#editModal').modal('show');
             },
             error: function() {
-                alert('Error al obtener los datos de la institucion.');
+                alert('Error al obtener los datos de la institución.');
             }
         });
     });
+
+    // Evento para guardar los cambios en el formulario de edición
     $('#editForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -55,32 +81,32 @@ $(document).ready(function() {
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-                alert('Institucion actualizada exitosamente.');
+                alert('Institución actualizada exitosamente.');
                 table.ajax.reload();
                 $('#editModal').modal('hide');
             },
             error: function() {
-                alert('Error al actualizar la institucion.');
+                alert('Error al actualizar la institución.');
             }
         });
     });
 
-
+    // Evento para eliminar una institución (desactivarla)
     $('#datos_instituciones').on('click', '.btn-delete', function() {
         var data = table.row($(this).parents('tr')).data();
         var idInstitucion = data.id_institucion;
 
-        if (confirm('¿Estás seguro de que quieres desactivar la institucion?')) {
+        if (confirm('¿Estás seguro de que quieres desactivar la institución?')) {
             $.ajax({
                 url: 'instituciones-controlador.php?accion=eliminar',
                 type: 'POST',
                 data: { id_institucion: idInstitucion },
                 success: function(response) {
                     table.ajax.reload();
-                    alert('Institucion desactivada exitosamente.');
+                    alert('Institución desactivada exitosamente.');
                 },
                 error: function() {
-                    alert('Error al desactivar la institucion.');
+                    alert('Error al desactivar la institución.');
                 }
             });
         }

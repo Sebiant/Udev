@@ -22,7 +22,6 @@
         <table id="datos_instituciones" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Nombres</th>
                     <th>Dirección</th>
                     <th>Estado</th>

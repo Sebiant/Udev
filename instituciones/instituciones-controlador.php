@@ -10,6 +10,7 @@ switch ($accion) {
         $Direccion = $_POST['direccion'];
         $Estado = isset($_POST['estado']) ? 1 : 0;
         
+        // Inserción en la tabla de instituciones
         $sql = "INSERT INTO instituciones (nombre, direccion, estado) 
                 VALUES ('$Nombre', '$Direccion','$Estado')";
         
@@ -29,8 +30,7 @@ switch ($accion) {
         if ($result->num_rows > 0) {
             $instituto = $result->fetch_assoc();
 
-            
-             // Si no está seleccionado, valor es 0   
+            // Si no está seleccionado, valor es 0   
             // Otros campos         
             $Nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $instituto['nombre'];
             $Direccion = isset($_POST['direccion']) ? $_POST['direccion'] : $instituto['direccion'];
@@ -40,7 +40,6 @@ switch ($accion) {
                             nombre='$Nombre', 
                             direccion='$Direccion', 
                             estado='$Estado'
-                            
                             WHERE id_institucion='$id_institucion'";
 
             if ($conn->query($sql_update) === TRUE) {
@@ -49,42 +48,27 @@ switch ($accion) {
                 echo "Error al actualizar el registro: " . $conn->error;
             }
         } else {
-            echo "No se encontró el registro de la institucion.";
+            echo "No se encontró el registro de la institución.";
         }
     break;
 
-
-    case 'eliminar':
+    case 'cambiarEstado':
         $id_institucion = $_POST['id_institucion'];
-
-        $sql = "UPDATE instituciones SET estado=0 WHERE id_institucion='$id_institucion'";
-
+        $estado = $_POST['estado'];
+    
+        $sql = "UPDATE instituciones SET estado=$estado WHERE id_institucion='$id_institucion'";
+    
         if ($conn->query($sql) === TRUE) {
-            echo "Registro desactivado exitosamente.";
+            echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
         } else {
-            echo "Error al desactivar el registro: " . $conn->error;
+            echo "Error al cambiar el estado: " . $conn->error;
         }
         break;
-
-        case 'activar':
-            $id_institucion = $_POST['id_institucion'];
-    
-            $sql = "UPDATE instituciones SET estado=1 WHERE id_institucion='$id_institucion'";
-    
-            if ($conn->query($sql) === TRUE) {
-                echo "Registro activado exitosamente.";
-            } else {
-                echo "Error al activar el registro: " . $conn->error;
-            }
-            break;
-
-
-
 
      case 'buscarPorId':     
         
         if (empty($_POST['id_institucion'])) {
-            echo json_encode(["error" => "ID de docente no proporcionado"]);
+            echo json_encode(["error" => "ID de institución no proporcionado"]);
             exit;
         }
 
@@ -107,25 +91,25 @@ switch ($accion) {
         }
         $stmt->close();
 
-     
      break;
 
     default:
         $sql = "SELECT * FROM instituciones";
         $result = $conn->query($sql);
 
-            $data = [];
+        $data = [];
 
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $row['estado'] = $row['estado'] ? "activo" : "innactivo";
-                    $data[] = $row;
-                }
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
+                $data[] = $row;
             }
+        }
 
-            header('Content-Type: application/json');
-            echo json_encode(['data' => $data]);
-            break;
-    }
-    $conn->close();
+        header('Content-Type: application/json');
+        echo json_encode(['data' => $data]);
+        break;
+}
+
+$conn->close();
 ?>
