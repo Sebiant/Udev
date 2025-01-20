@@ -1,6 +1,5 @@
 $(document).ready(function() {
-    // Inicializar DataTable
-    $('#datos_modulo').DataTable({
+    var table = $('#datos_modulo').DataTable({
         "ajax": {
             "url": "Modulos-Controlador.php",
             "type": "GET",
@@ -8,7 +7,6 @@ $(document).ready(function() {
             "dataSrc": "data"
         },
         "columns": [
-            { "data": "id_modulo" },
             { "data": "fecha_inicio" },
             { "data": "fecha_fin" },
             { "data": "nombre_programa" },
@@ -20,10 +18,13 @@ $(document).ready(function() {
                 }
             },
             {
-                "data": "id_modulo",
-                "render": function(data) {
-                    return `<button class="btn btn-danger w-100 btn-delete" onclick="borrarModulo(${data})">Borrar</button>`;
-                }
+                data: null,
+                render: function (data, type, row) {
+                    var buttonClass = row.estado === "Activo" ? "btn-danger" : "btn-success";
+                    var buttonText = row.estado === "Activo" ? "Inactivar" : "Activar";
+                    return `<button class="btn ${buttonClass} w-100 btn-toggle-state">${buttonText}</button>`;
+                },
+                orderable: false
             }
         ],
         "language": {
@@ -32,44 +33,54 @@ $(document).ready(function() {
     });
 });
 
-// Función para editar un módulo
+$('#datos_modulo').on('click', '.btn-toggle-state', function () {
+    var data = $('#datos_modulo').DataTable().row($(this).parents('tr')).data();
+    var idModulo = data.id_modulo;
+    var nuevoEstado = data.estado === "Activo" ? 0 : 1;
+
+    $.ajax({
+        url: 'Modulos-Controlador.php?accion=cambiarEstado',
+        type: 'POST',
+        data: { id_modulo: idModulo, estado: nuevoEstado },
+        success: function (response) {
+            alert(`El estado del módulo se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+            $('#datos_modulo').DataTable().ajax.reload();
+        },
+        error: function () {
+            alert("Hubo un error al cambiar el estado.");
+        }
+    });
+});
+
 function editarModulo(id) {
     if (!id) {
         alert("ID no válido");
         return;
     }
-    if (confirm('¿Está seguro de que desea editar este módulo ' + id + '?')) {
-        $.ajax({
-            url: 'Modulos-Controlador.php?accion=BusquedaPorId', // Asegúrate de que la acción sea la correcta
-            type: 'POST', // Cambiado a POST
-            data: { accion: 'obtener', id_modulo: id }, // Enviar el ID
-            dataType: 'json',
-            success: function(response) {
-                if (response.data && response.data.length > 0) {
-                    var modulo = response.data[0]; // Suponiendo que recibes un objeto con un array 'data'
-                    
-                    // Actualizar los campos del formulario con los datos del módulo
-                    $('#editForm input[name="id_modulo"]').val(modulo.id_modulo);
-                    $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
-                    $('#editForm input[name="fecha_fin"]').val(modulo.fecha_fin);
-                    $('#editForm select[name="id_programa"]').val(modulo.id_programa); // Asegúrate de que el id_programa es el correcto
-                    $('#editForm select[name="estado"]').val(modulo.estado); // Asegúrate de que el estado es el correcto
-                    
-                    // Mostrar el modal después de actualizar los campos
-                    $('#editModuloModal').modal('show');
-                } else {
-                    alert("No se encontraron datos para este módulo.");
-                }
-            },
-            error: function() {
-                alert("Hubo un error al obtener los datos del módulo.");
+    $.ajax({
+        url: 'Modulos-Controlador.php?accion=BusquedaPorId',
+        type: 'POST',
+        data: {id_modulo: id },
+        dataType: 'json',
+        success: function(response) {
+            if (response.data && response.data.length > 0) {
+                var modulo = response.data[0];
+                $('#editForm input[name="id_modulo"]').val(modulo.id_modulo);
+                $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
+                $('#editForm input[name="fecha_fin"]').val(modulo.fecha_fin);
+                $('#editForm select[name="id_programa"]').val(modulo.id_programa);
+                $('#editForm select[name="estado"]').val(modulo.estado);
+                $('#editModuloModal').modal('show');
+            } else {
+                alert("No se encontraron datos para este módulo.");
             }
-        });
-    }
+        },
+        error: function() {
+            alert("Hubo un error al obtener los datos del módulo.");
+        }
+    });
 }
 
-
-// Manejar el envío del formulario de edición
 $('#editForm').on('submit', function(event) {
     event.preventDefault();
     $.ajax({
@@ -78,8 +89,8 @@ $('#editForm').on('submit', function(event) {
         data: $(this).serialize(),
         success: function(response) {
             alert('Módulo actualizado exitosamente.');
-            $('#editModuloModal').modal('hide'); // Cerrar modal
-            $('#datos_modulo').DataTable().ajax.reload(); // Recargar datos
+            $('#editModuloModal').modal('hide');
+            $('#datos_modulo').DataTable().ajax.reload();
         },
         error: function() {
             alert('Error al actualizar el módulo.');
@@ -87,25 +98,21 @@ $('#editForm').on('submit', function(event) {
     });
 });
 
-// Función para borrar un módulo
 function borrarModulo(id) {
-    if (confirm('¿Está seguro de que desea desactivar este módulo?')) {
-        $.ajax({
-            url: 'Modulos-Controlador.php?accion=eliminar',
-            type: 'POST',
-            data: { id_modulo: id },
-            success: function(response) {
-                alert('Módulo desactivado exitosamente.');
-                $('#datos_modulo').DataTable().ajax.reload(); // Recargar datos
-            },
-            error: function() {
-                alert('Error al eliminar el módulo.');
-            }
-        });
-    }
+    $.ajax({
+        url: 'Modulos-Controlador.php?accion=eliminar',
+        type: 'POST',
+        data: { id_modulo: id },
+        success: function(response) {
+            alert('Módulo desactivado exitosamente.');
+            $('#datos_modulo').DataTable().ajax.reload();
+        },
+        error: function() {
+            alert('Error al eliminar el módulo.');
+        }
+    });
 }
 
-// Función para crear un módulo
 function crearModulo() {
     const datosFormulario = $('#formModulo').serialize();
     $.ajax({
@@ -114,13 +121,11 @@ function crearModulo() {
         data: datosFormulario,
         success: function(response) {
             alert('Módulo creado exitosamente.');
-            $('#modalModulos').modal('hide'); // Cerrar modal
-            $('#datos_modulo').DataTable().ajax.reload(); // Recargar datos
+            $('#modalModulos').modal('hide');
+            $('#datos_modulo').DataTable().ajax.reload();
         },
         error: function() {
             alert('Error al crear el módulo.');
         }
     });
 }
-
-

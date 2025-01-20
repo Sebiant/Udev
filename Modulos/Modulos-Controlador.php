@@ -8,11 +8,10 @@ switch ($accion) {
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_fin = $_POST['fecha_fin'];
         $id_programa = $_POST['id_programa'];
-      
-        // Validar que las fechas no estén vacías
+
     if (empty($fecha_inicio) || empty($fecha_fin)) {
         echo "Error: Las fechas son obligatorias.";
-        exit; // Termina la ejecución si hay un error
+        exit;
     }
 
         $sql = "INSERT INTO modulos (fecha_inicio, fecha_fin, id_programa) 
@@ -54,29 +53,18 @@ switch ($accion) {
         }
         break;
 
-    case 'eliminar':
-        $id_modulo = $_POST['id_modulo'];
-
-        $sql = "UPDATE modulos SET estado=0 WHERE id_modulo='$id_modulo'";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Módulo desactivado exitosamente.";
-        } else {
-            echo "Error al desactivar el módulo: " . $conn->error;
-        }
-        break;
-
-    case 'activar':
-        $id_modulo = $_POST['id_modulo'];
-
-        $sql = "UPDATE modulos SET estado=1 WHERE id_modulo='$id_modulo'";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Módulo activado exitosamente.";
-        } else {
-            echo "Error al activar el módulo: " . $conn->error;
-        }
-        break;
+        case 'cambiarEstado':
+            $id_modulo = $_POST['id_modulo'];
+            $estado = $_POST['estado'];
+        
+            $sql = "UPDATE modulos SET estado=$estado WHERE id_modulo='$id_modulo'";
+        
+            if ($conn->query($sql) === TRUE) {
+                echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
+            } else {
+                echo "Error al cambiar el estado: " . $conn->error;
+            }
+            break;
     
     case 'BusquedaPorId':
         $id_modulo = $_POST['id_modulo'];
@@ -114,7 +102,7 @@ switch ($accion) {
     
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $row['estado'] = $row['estado'] ? "activo" : "inactivo";
+                $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
                 $row['id_programa'] = $row['nombre_programa'];
                 $data[] = $row;
             }

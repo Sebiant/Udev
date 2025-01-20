@@ -27,13 +27,12 @@ $result = $conn->query($sql);
         <table id="datos_modulo" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Id Modulo</th>
                     <th>Fecha Inicio</th>
-                    <th>Fecha Fin</th> <!-- Corregido -->
+                    <th>Fecha Fin</th>
                     <th>Programa</th>
                     <th>Estado</th>
                     <th>Editar</th>
-                    <th>Borrar</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
         </table>
