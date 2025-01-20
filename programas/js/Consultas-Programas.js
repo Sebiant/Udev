@@ -12,6 +12,7 @@ function crearPrograma() {
         contentType: false,
         success: function(response) {
             console.log('Programa creado:', response);
+            location.reload();
         },
         error: function(xhr, status, error) {
             console.error('Error:', error);

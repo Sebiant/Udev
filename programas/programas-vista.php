@@ -56,7 +56,7 @@ include_once '../componentes/header.php';
 
                     <div class="mb-3">
                         <label for="tipo" class="form-label">Tipo de Programa:</label>
-                        <input type="text" name="tipo_programa" id="tipo" class="form-control" required>
+                        <input type="text" name="tipo" id="tipo" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del programa:</label>
