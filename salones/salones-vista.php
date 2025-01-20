@@ -25,8 +25,7 @@
             <table id="datos_salones" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Id Salon</th>
-                        <th>Nombre_salon</th>
+                        <th>Nombre salon</th>
                         <th>Capacidad</th>
                         <th>Descripcion</th>
                         <th>Instituciones</th>
