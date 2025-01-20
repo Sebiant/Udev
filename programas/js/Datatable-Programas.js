@@ -8,10 +8,14 @@ $(document).ready(function () {
             dataSrc: 'data'
         },
         columns: [
-            { "data": "id_programa" },
             { "data": "tipo" },
             { "data": "nombre" },
-            { "data": "duracion_mes" },
+            {
+                "data": "duracion_mes",
+                "render": function(data) {
+                    return data + " Meses";
+                }
+            },
             { "data": "cant_modulos" },
             { "data": "descripcion" },
             { "data": "estado" },
@@ -22,10 +26,34 @@ $(document).ready(function () {
             },
             {
                 data: null,
-                defaultContent: '<button class="btn btn-danger w-100 btn-delete">Borrar</button>',
+                render: function (data, type, row) {
+                    var buttonClass = row.estado === "Activo" ? "btn-danger" : "btn-success";
+                    var buttonText = row.estado === "Activo" ? "Inactivar" : "Activar";
+                    return `<button class="btn ${buttonClass} w-100 btn-toggle-state">${buttonText}</button>`;
+                },
                 orderable: false
             }
         ]
+    });
+
+    // Evento para cambiar el estado dinámico (Eliminar/Cambiar Estado)
+    $('#datos_programa').on('click', '.btn-toggle-state', function () {
+        var data = table.row($(this).parents('tr')).data();
+        var idPrograma = data.id_programa;
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+
+        $.ajax({
+            url: 'Programas-Controlador.php?accion=cambiarEstado',
+            type: 'POST',
+            data: { id_programa: idPrograma, estado: nuevoEstado },
+            success: function (response) {
+                alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+                table.ajax.reload();
+            },
+            error: function () {
+                alert("Hubo un error al cambiar el estado.");
+            }
+        });
     });
 
     // Acción de "Modificar" (Editar)
@@ -65,12 +93,13 @@ $(document).ready(function () {
     });
 
     // Guardar los cambios (cuando se edita un programa)
-    function GuardarPrograma(event) {
+    $('#editForm').on('submit', function (event) {
         event.preventDefault(); // Evita el envío predeterminado del formulario
 
         // Obtén los datos del formulario
-        const formData = $('#editForm').serialize(); 
+        const formData = $(this).serialize(); 
         console.log("Datos del formulario:", formData);
+        
         // Realiza la solicitud AJAX
         $.ajax({
             url: 'Programas-Controlador.php?accion=editar', // URL del controlador
@@ -83,9 +112,7 @@ $(document).ready(function () {
                 if (response.success) {
                     alert('Programa actualizado correctamente.');
                     $('#editModal').modal('hide'); // Oculta el modal
-                    if ($.fn.DataTable.isDataTable('#datos_programa')) {
-                        $('#datos_programa').DataTable().ajax.reload(); // Recarga la tabla
-                    }
+                    table.ajax.reload(); // Recarga la tabla
                 } else {
                     // Muestra el mensaje de error recibido
                     alert(response.message || 'Error al actualizar el programa.');
@@ -96,5 +123,5 @@ $(document).ready(function () {
                 alert('Ocurrió un error al realizar la solicitud. Intenta nuevamente.');
             }
         });
-    }
+    });
 });

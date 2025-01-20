@@ -26,7 +26,6 @@ include_once '../componentes/header.php';
         <table id="datos_programa" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Tipo</th>
                     <th>Nombre</th>
                     <th>Duración</th>
@@ -34,7 +33,7 @@ include_once '../componentes/header.php';
                     <th>Descripción</th>
                     <th>Estado</th>
                     <th>Modificar</th>
-                    <th>Borrar</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
         </table>

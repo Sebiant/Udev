@@ -37,14 +37,15 @@ switch ($accion) {
             $duracion_mes = $_POST['duracion_mes'] ?? $programa['duracion_mes'];
             $cant_modulos = $_POST['cant_modulos'] ?? $programa['cant_modulos'];
             $descripcion = $_POST['descripcion'] ?? $programa['descripcion'];
-           
+            $estado = $_POST['estado'] ?? $programa['estado'];  // Se añade estado en caso de que venga de la solicitud
+            
             $sql_update = "UPDATE programas SET 
                             tipo='$tipo', 
                             nombre='$nombre', 
                             duracion_mes='$duracion_mes', 
                             cant_modulos='$cant_modulos', 
                             descripcion='$descripcion', 
-                            estado='$estado'
+                            estado='$estado' 
                             WHERE id_programa='$id_programa'";
 
             if ($conn->query($sql_update) === TRUE) {
@@ -57,27 +58,16 @@ switch ($accion) {
         }
         break;
 
-    case 'eliminar':
-        $id_programa = $_POST['id_programa'];
+    case 'cambiarEstado':
+        $id_programa = $_POST['id_programa']; // Cambiar id_materia por id_programa
+        $estado = $_POST['estado'];
 
-        $sql = "UPDATE programas SET estado=0 WHERE id_programa='$id_programa'";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Registro desactivado exitosamente.";
-        } else {
-            echo "Error al desactivar el registro: " . $conn->error;
-        }
-        break;
-
-    case 'activar':
-        $id_programa = $_POST['id_programa'];
-
-        $sql = "UPDATE programas SET estado=1 WHERE id_programa='$id_programa'";
+        $sql = "UPDATE programas SET estado=$estado WHERE id_programa='$id_programa'"; // Actualizar en la tabla programas
 
         if ($conn->query($sql) === TRUE) {
-            echo "Registro activado exitosamente.";
+            echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
         } else {
-            echo "Error al activar el registro: " . $conn->error;
+            echo "Error al cambiar el estado: " . $conn->error;
         }
         break;
 
@@ -111,7 +101,7 @@ switch ($accion) {
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $row['estado'] = $row['estado'] ? "activo" : "innactivo";
+                $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
                 $data[] = $row;
             }
         }
