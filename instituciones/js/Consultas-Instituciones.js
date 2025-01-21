@@ -10,8 +10,6 @@ function crearInstitucion() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
         location.reload();
     })
     .catch(error => {
@@ -31,8 +29,6 @@ function editarInstitucion() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
         location.reload();
     })
     .catch(error => {
@@ -51,8 +47,6 @@ function activarInstitucion() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
         location.reload();
     })
     .catch(error => {

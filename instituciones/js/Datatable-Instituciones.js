@@ -10,7 +10,6 @@ $(document).ready(function() {
         columns: [
             { "data": "nombre" },
             { "data": "direccion" },
-            { "data": "estado" },
             {
                 data: null,
                 defaultContent: '<button class="btn btn-primary w-100 btn-modify">Modificar</button>',
@@ -28,11 +27,10 @@ $(document).ready(function() {
         ]
     });
 
-    // Evento para cambiar el estado dinámico (Inactivar/Activar)
     $('#datos_instituciones').on('click', '.btn-toggle-state', function () {
         var data = table.row($(this).parents('tr')).data();
         var idInstitucion = data.id_institucion;
-        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1;
 
         $.ajax({
             url: 'instituciones-controlador.php?accion=cambiarEstado',
@@ -48,7 +46,6 @@ $(document).ready(function() {
         });
     });
 
-    // Evento para mostrar el formulario de edición con los datos de la institución
     $('#datos_instituciones').on('click', '.btn-modify', function() {
         var data = table.row($(this).parents('tr')).data();
         var idInstitucion = data.id_institucion;
@@ -72,7 +69,6 @@ $(document).ready(function() {
         });
     });
 
-    // Evento para guardar los cambios en el formulario de edición
     $('#editForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -91,7 +87,6 @@ $(document).ready(function() {
         });
     });
 
-    // Evento para eliminar una institución (desactivarla)
     $('#datos_instituciones').on('click', '.btn-delete', function() {
         var data = table.row($(this).parents('tr')).data();
         var idInstitucion = data.id_institucion;
@@ -103,7 +98,6 @@ $(document).ready(function() {
                 data: { id_institucion: idInstitucion },
                 success: function(response) {
                     table.ajax.reload();
-                    alert('Institución desactivada exitosamente.');
                 },
                 error: function() {
                     alert('Error al desactivar la institución.');

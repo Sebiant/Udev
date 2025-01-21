@@ -1,7 +1,6 @@
 <?php
 include '../conexion.php';
 
-// Obtener la acción de la solicitud (puede ser 'crear', 'editar', 'eliminar', 'consultar' o 'default')
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
@@ -10,12 +9,10 @@ switch ($accion) {
         $Direccion = $_POST['direccion'];
         $Estado = isset($_POST['estado']) ? 1 : 0;
         
-        // Inserción en la tabla de instituciones
         $sql = "INSERT INTO instituciones (nombre, direccion, estado) 
                 VALUES ('$Nombre', '$Direccion','$Estado')";
         
         if ($conn->query($sql) === TRUE) {
-            echo "Nuevo registro creado exitosamente.";
         } else {
             echo "Error al crear el registro: " . $conn->error;
         }
@@ -30,8 +27,6 @@ switch ($accion) {
         if ($result->num_rows > 0) {
             $instituto = $result->fetch_assoc();
 
-            // Si no está seleccionado, valor es 0   
-            // Otros campos         
             $Nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $instituto['nombre'];
             $Direccion = isset($_POST['direccion']) ? $_POST['direccion'] : $instituto['direccion'];
             $Estado = isset($_POST['estado']) ? $_POST['estado'] : $instituto['estado'];
@@ -43,7 +38,6 @@ switch ($accion) {
                             WHERE id_institucion='$id_institucion'";
 
             if ($conn->query($sql_update) === TRUE) {
-                echo "Registro actualizado exitosamente.";
             } else {
                 echo "Error al actualizar el registro: " . $conn->error;
             }
@@ -59,7 +53,6 @@ switch ($accion) {
         $sql = "UPDATE instituciones SET estado=$estado WHERE id_institucion='$id_institucion'";
     
         if ($conn->query($sql) === TRUE) {
-            echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
         } else {
             echo "Error al cambiar el estado: " . $conn->error;
         }

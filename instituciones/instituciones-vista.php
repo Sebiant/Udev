@@ -24,9 +24,8 @@
                 <tr>
                     <th>Nombres</th>
                     <th>Dirección</th>
-                    <th>Estado</th>
                     <th>Modificar</th>
-                    <th>Borrar</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
         </table>
@@ -55,10 +54,7 @@
                             <label for="direccion" class="form-label">Dirección:</label>
                             <input type="text" name="direccion" id="direccion" class="form-control" required>
                         </div>
-                        <div class="form-check mb-3">
-                            <input type="checkbox" class="form-check-input" name="estado" id="estado">
-                            <label class="form-check-label" for="estado">Estado</label>
-                        </div>
+                        
                         <div class="modal-footer">
                             <button class="btn btn-success" onclick="crearInstitucion()">Guardar</button>
                         </div>
@@ -87,10 +83,6 @@
                     <div class="form-group">
                         <label for="direccion">Dirección</label>
                         <input type="text" class="form-control" name="direccion" required>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" name="estado" id="estado">
-                        <label class="form-check-label" for="estado">Estado</label>
                     </div>
                 </div>
                 <div class="modal-footer">
