@@ -6,6 +6,11 @@
     <title>Udev</title>
     <link rel="stylesheet" href="../css/bootstrap.rtl.css">
     <link rel="stylesheet" href="../css/bootstrap.css">
+    <style>
+        .error { color: red; font-size: 0.9em; }
+        #contador { font-size: 0.9em; margin-top: 5px; }
+        .alerta { color: orange; font-weight: bold; }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
