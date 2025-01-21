@@ -30,7 +30,7 @@ include_once '../componentes/header.php';
                     <th>Email</th>
                     <th>Estado</th>
                     <th>Modificar</th>
-                    <th>Borrar</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
         </table>
