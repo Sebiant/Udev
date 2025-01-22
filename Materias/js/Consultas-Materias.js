@@ -6,10 +6,8 @@ function crearMateria() {
         $.ajax({
             url: 'Materias-Controlador.php?accion=crear',
             type: 'POST',
-            data: $(form).serialize(), // Serializa el formulario
+            data: $(form).serialize(), 
             success: function(response) {
-                alert('Materia creada exitosamente.');
-                console.log('Recargando la página...');
                 location.reload();
             },
             error: function() {
@@ -33,8 +31,6 @@ function editarMateria() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
         location.reload();
     })
     .catch(error => {
@@ -53,8 +49,6 @@ function activarMateria() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
         location.reload();
     })
     .catch(error => {
@@ -70,7 +64,6 @@ function actualizarContador() {
 
     contador.textContent = `${caracteresRestantes} caracteres disponibles`;
 
-    // Cambiar el estilo si el límite está cerca o alcanzado
     if (caracteresRestantes <= 20) {
         contador.classList.add('alerta');
     } else {

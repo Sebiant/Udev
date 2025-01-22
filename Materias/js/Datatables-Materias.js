@@ -29,11 +29,10 @@ $(document).ready(function () {
         ]
     });
 
-    // Evento para cambiar el estado dinámico (Eliminar/Cambiar Estado)
     $('#datos_materia').on('click', '.btn-toggle-state', function () {
         var data = table.row($(this).parents('tr')).data();
         var idMateria = data.id_materia;
-        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1; 
 
         $.ajax({
             url: 'Materias-Controlador.php?accion=cambiarEstado',
@@ -49,7 +48,6 @@ $(document).ready(function () {
         });
     });
 
-    // Evento para modificar una materia
     $('#datos_materia').on('click', '.btn-modify', function () {
         var data = table.row($(this).parents('tr')).data();
         var idMateria = data.id_materia;
@@ -74,7 +72,6 @@ $(document).ready(function () {
         });
     });
 
-    // Evento para enviar el formulario de edición
     $('#editForm').on('submit', function (e) {
         e.preventDefault();
 

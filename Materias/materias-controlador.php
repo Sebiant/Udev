@@ -1,7 +1,6 @@
 <?php
 include '../conexion.php';
 
-// Obtener la acción de la solicitud (puede ser 'crear', 'editar', 'eliminar', 'consultar' o 'default')
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
@@ -13,7 +12,6 @@ switch ($accion) {
                 VALUES ('$nombre', '$descripcion')";
         
         if ($conn->query($sql) === TRUE) {
-            echo "Nuevo registro creado exitosamente.";
         } else {
             echo "Error al crear el registro: " . $conn->error;
         }
@@ -27,7 +25,6 @@ switch ($accion) {
 
         if ($result->num_rows > 0) {
             $materia = $result->fetch_assoc();
-            // Otros campos
             $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $materia['nombre'];
             $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : $materia['descripcion'];
             
@@ -52,7 +49,6 @@ switch ($accion) {
         $sql = "UPDATE materias SET estado=0 WHERE id_materia='$id_materia'";
 
         if ($conn->query($sql) === TRUE) {
-            echo "Registro desactivado exitosamente.";
         } else {
             echo "Error al desactivar el registro: " . $conn->error;
         }
