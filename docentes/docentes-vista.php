@@ -28,7 +28,6 @@ include_once '../componentes/header.php';
                     <th>Teléfono</th>
                     <th>Dirección</th>
                     <th>Email</th>
-                    <th>Estado</th>
                     <th>Modificar</th>
                     <th>Acciones</th>
                 </tr>
@@ -110,9 +109,6 @@ include_once '../componentes/header.php';
                             <input type="checkbox" class="form-check-input" name="retenedor_iva" id="retenedor_iva">
                             <label class="form-check-label" for="retenedor_iva">Retenedor IVA</label>
                         </div>
-                        <div class="form-group">
-                            <input type="checkbox" name="estado"> Activo
-                        </div>
                     </div>
                 </form>
             </div>
@@ -175,7 +171,7 @@ include_once '../componentes/header.php';
                     </div>
                     <div class="mb-3">
                         <label for="descripcion_especialidad_editar" class="form-label">Descripción Especialidad:</label>
-                        <input type="text" name="descripcion_especialidad" id="descripcion_especialidad_editar" class="form-control" required oninput="actualizarContadorEditar()>
+                        <input type="text" name="descripcion_especialidad" id="descripcion_especialidad_editar" class="form-control" required oninput="actualizarContadorEditar()">
                         <small id="contador" class="contador-texto">100 caracteres disponibles</small>
                         <div class="invalid-feedback">Por favor, Ingrese Descripción Especialidad</div>
                         <div id="camposFaltantes" style="color: red; display: none; margin-top: 10px;"></div>
@@ -205,10 +201,6 @@ include_once '../componentes/header.php';
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" name="retenedor_iva" id="retenedor_iva_editar">
                         <label class="form-check-label" for="retenedor_iva_editar">Retenedor IVA</label>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" name="estado" id="estado_editar">
-                        <label class="form-check-label" for="estado_editar">Estado</label>
                     </div>
                 </form>
             </div>

@@ -1,19 +1,14 @@
 function crearDocente() {
-    // Validar el formulario antes de enviar
     const form = document.getElementById('formDocente');
     
     if (form.checkValidity()) {
-        // Si el formulario es válido, proceder a enviar los datos
-        $('#modalDocentes').modal('hide'); // Cierra el modal antes de enviar
-        // Aquí puedes agregar tu lógica para enviar el formulario, por ejemplo, usando AJAX
+        $('#modalDocentes').modal('hide'); 
         $.ajax({
             url: 'Docentes-Controlador.php',
             type: 'POST',
-            data: $(form).serialize(), // Serializa el formulario
+            data: $(form).serialize(),
             success: function(response) {
                 console.log(response);
-                // Manejar la respuesta del servidor
-                alert('Docente creado exitosamente.');
                 console.log('Recargando la página...');
                 location.reload();
             },
@@ -22,7 +17,6 @@ function crearDocente() {
             }
         });
     } else {
-        // Si el formulario no es válido, mostrar los mensajes de error
         form.classList.add('was-validated');
     }
 }
@@ -38,7 +32,6 @@ function activarDocente() {
     })
     .then(response => response.text())
     .then(data => {
-        //alert(data);
         console.log('Recargando la página...');
         location.reload();
     })
@@ -55,7 +48,6 @@ function actualizarContador() {
 
     contador.textContent = `${caracteresRestantes} caracteres disponibles`;
 
-    // Cambiar el estilo si el límite está cerca o alcanzado
     if (caracteresRestantes <= 20) {
         contador.classList.add('alerta');
     } else {
@@ -72,7 +64,6 @@ function actualizarContadorEditar() {
 
     contador.textContent = `${caracteresRestantes} caracteres disponibles`;
 
-    // Cambiar el estilo si el límite está cerca o alcanzado
     if (caracteresRestantes <= 20) {
         contador.classList.add('alerta');
     } else {
@@ -81,7 +72,6 @@ function actualizarContadorEditar() {
 }
 
 function validarCamposFaltantes() {
-    // Seleccionar los campos del formulario
     const campos = [
         { nombre: "tipo_documento", etiqueta: "Tipo de documento" },
         { nombre: "numero_documento", etiqueta: "Número de documento" },
@@ -96,7 +86,6 @@ function validarCamposFaltantes() {
 
     let camposFaltantes = [];
 
-    // Verificar qué campos están vacíos
     campos.forEach(campo => {
         const valor = $(`#editForm [name="${campo.nombre}"]`).val();
         if (!valor) {
@@ -104,7 +93,6 @@ function validarCamposFaltantes() {
         }
     });
 
-    // Mostrar la lista de campos faltantes
     const listaFaltantes = document.getElementById("camposFaltantes");
     if (camposFaltantes.length > 0) {
         listaFaltantes.innerHTML = `
@@ -117,14 +105,11 @@ function validarCamposFaltantes() {
     }
 }
 
-// Inicializar la validación en tiempo real
 function inicializarValidacionDinamica() {
-    // Escuchar eventos en los campos del formulario
     $('#editForm input, #editForm select').on('input change', validarCamposFaltantes);
 }
 
-// Llamar a esta función al abrir el modal
 function abrirModalModificar() {
-    validarCamposFaltantes(); // Validar al cargar el modal
-    inicializarValidacionDinamica(); // Activar validación dinámica
+    validarCamposFaltantes(); 
+    inicializarValidacionDinamica(); 
 }

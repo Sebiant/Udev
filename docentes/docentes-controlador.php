@@ -1,7 +1,6 @@
 <?php
 include '../conexion.php';
 
-// Obtener la acción de la solicitud
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
@@ -36,7 +35,6 @@ switch ($accion) {
         );
 
         if ($stmt->execute()) {
-            echo "Nuevo registro creado exitosamente.";
         } else {
             echo "Error al crear el registro: " . $stmt->error;
         }
@@ -67,10 +65,8 @@ switch ($accion) {
             $stmt = $conn->prepare($sql);
         
             if (!$stmt) {
-                die("Error en la preparación de la consulta: " . $conn->error);
             }
         
-            // Asignación de valores desde el formulario
             $tipo_documento = $_POST['tipo_documento'];
             $numero_documento = $_POST['numero_documento'];
             $nombres = $_POST['nombres'];
@@ -85,7 +81,6 @@ switch ($accion) {
             $estado = isset($_POST['estado']) ? 1 : 0;
             $id_docente = $_POST['id_docente'];
         
-            // Enlazar parámetros
             $stmt->bind_param(
                 'sssssssssiisi', 
                 $tipo_documento, 
@@ -103,9 +98,7 @@ switch ($accion) {
                 $id_docente
             );
         
-            // Ejecutar consulta
             if ($stmt->execute()) {
-                echo json_encode(["success" => "Registro actualizado exitosamente"]);
             } else {
                 echo json_encode(["error" => "Error al actualizar el registro: " . $stmt->error]);
             }
@@ -120,7 +113,6 @@ switch ($accion) {
                 $sql = "UPDATE docentes SET estado=$estado WHERE id_docente='$id_docente'";
         
                 if ($conn->query($sql) === TRUE) {
-                    echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
                 } else {
                     echo "Error al cambiar el estado: " . $conn->error;
                 }

@@ -15,7 +15,6 @@ $(document).ready(function() {
             { "data": "telefono" },
             { "data": "direccion" },
             { "data": "email" },
-            { "data": "estado" },
             {
                 data: null,
                 defaultContent: '<button class="btn btn-primary w-100 btn-modify">Modificar</button>',
@@ -33,11 +32,10 @@ $(document).ready(function() {
         ]
     });
 
-    // Evento para cambiar el estado dinámico (Eliminar/Cambiar Estado)
-    $('#datos_docente').on('click', '.btn-toggle-state', function () {  // Cambié '#datos_materia' por '#datos_docente'
+    $('#datos_docente').on('click', '.btn-toggle-state', function () {  
         var data = table.row($(this).parents('tr')).data();
         var idDocente = data.id_docente;
-        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1; 
 
         $.ajax({
             url: 'Docentes-Controlador.php?accion=cambiarEstado',
@@ -92,7 +90,6 @@ $(document).ready(function() {
 });
 
 function guardarCambiosDocente() {
-    // Obtener todos los valores de los campos del formulario
     var id_docente = $('#editForm [name="id_docente"]').val();
     var tipo_documento = $('#editForm [name="tipo_documento"]').val();
     var numero_documento = $('#editForm [name="numero_documento"]').val();
@@ -105,9 +102,7 @@ function guardarCambiosDocente() {
     var email = $('#editForm [name="email"]').val();
     var declara_renta = $('#editForm [name="declara_renta"]').prop('checked') ? 'Sí' : 'No';
     var retenedor_iva = $('#editForm [name="retenedor_iva"]').prop('checked') ? 'Sí' : 'No';
-    var estado = $('#editForm [name="estado"]').prop('checked') ? 'Si' : 'No';
 
-    // Validar campos obligatorios
     var camposFaltantes = [];
     if (!tipo_documento) camposFaltantes.push("Tipo de documento");
     if (!numero_documento) camposFaltantes.push("Número de documento");
@@ -131,10 +126,8 @@ function guardarCambiosDocente() {
         return;
     }
 
-    // Crear un objeto FormData y agregar todos los datos
     const formData = new FormData(formElement);
 
-    // Agregar los valores manualmente al FormData
     formData.append('id_docente', id_docente);
     formData.append('tipo_documento', tipo_documento);
     formData.append('numero_documento', numero_documento);
@@ -152,7 +145,6 @@ function guardarCambiosDocente() {
     console.log('Acción: Modificar');
     console.log('Datos del Formulario:', Object.fromEntries(formData.entries()));
 
-    // Realizar la solicitud Fetch
     fetch('Docentes-Controlador.php?accion=Modificar', {
         method: 'POST',
         body: formData,
