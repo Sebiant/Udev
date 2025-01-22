@@ -30,7 +30,6 @@ $result = $conn->query($sql);
                     <th>Fecha Inicio</th>
                     <th>Fecha Fin</th>
                     <th>Programa</th>
-                    <th>Estado</th>
                     <th>Editar</th>
                     <th>Acciones</th>
                 </tr>

@@ -10,7 +10,6 @@ $(document).ready(function() {
             { "data": "fecha_inicio" },
             { "data": "fecha_fin" },
             { "data": "nombre_programa" },
-            { "data": "estado" },
             {
                 "data": "id_modulo",
                 "render": function(data) {
@@ -69,7 +68,6 @@ function editarModulo(id) {
                 $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
                 $('#editForm input[name="fecha_fin"]').val(modulo.fecha_fin);
                 $('#editForm select[name="id_programa"]').val(modulo.id_programa);
-                $('#editForm select[name="estado"]').val(modulo.estado);
                 $('#editModuloModal').modal('show');
             } else {
                 alert("No se encontraron datos para este módulo.");
