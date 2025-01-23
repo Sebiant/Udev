@@ -2,7 +2,6 @@
 include_once '../componentes/header.php';
 include '../conexion.php';
 
-// Consulta para obtener los programas de la base de datos
 $sql = "SELECT id_programa, nombre FROM programas";
 $result = $conn->query($sql);
 ?>
@@ -57,9 +56,9 @@ $result = $conn->query($sql);
                         <div class="invalid-feedback">La fecha es obligatoria.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="fecha_fin" class="form-label">Fecha Fin:</label> <!-- Corregido -->
+                        <label for="fecha_fin" class="form-label">Fecha Fin:</label>
                         <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" min="2024-11-29" max="2026-12-31" required>
-                        <div class="invalid-feedback">La fecha es obligatoria.</div> <!-- Corregido -->
+                        <div class="invalid-feedback">La fecha es obligatoria.</div> 
                     </div>
                     <div>
                         <label for="id_programa">Programa:</label>
@@ -114,7 +113,7 @@ $result = $conn->query($sql);
                      
                              if ($result->num_rows > 0) {
                                  while ($row = $result->fetch_assoc()) {
-                                     // Genera las opciones del select
+                                     
                                      echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
                                  }
                              } else {
