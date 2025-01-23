@@ -146,25 +146,53 @@ switch ($accion) {
 
 
     default:
-        $sql = "SELECT id_docente, tipo_documento, numero_documento, nombres, apellidos,
-                        CONCAT(nombres, ' ', apellidos) AS nombre_completo, especialidad,
-                        descripcion_especialidad, telefono, direccion, email, declara_renta, 
-                        retenedor_iva, estado 
-                FROM docentes";
-        $result = $conn->query($sql);
+// Obtener los parámetros de la paginación desde la solicitud POST
+$page = isset($_POST['page']) ? (int)$_POST['page'] : 1; // Página actual (por defecto 1)
+$pageSize = isset($_POST['pageSize']) ? (int)$_POST['pageSize'] : 10; // Número de registros por página (por defecto 10)
+$offset = ($page - 1) * $pageSize; // Calcular el desplazamiento para la consulta LIMIT
 
-        if (!$result) {
-            die("Error en la consulta: " . $conn->error);
-        }
+// Obtener el total de registros
+$totalRecordsSql = "SELECT COUNT(*) AS total FROM docentes";
+$totalResult = $conn->query($totalRecordsSql);
+if (!$totalResult) {
+    die("Error en la consulta del total de registros: " . $conn->error);
+}
+$totalRecords = $totalResult->fetch_assoc()['total'];
 
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
-            $data[] = $row;
-        }
+// Consulta con LIMIT y OFFSET para la paginación
+$sql = "SELECT id_docente, tipo_documento, numero_documento, nombres, apellidos,
+               CONCAT(nombres, ' ', apellidos) AS nombre_completo, especialidad,
+               descripcion_especialidad, telefono, direccion, email, declara_renta, 
+               retenedor_iva, estado
+        FROM docentes
+        LIMIT ?, ?";
+$stmt = $conn->prepare($sql);
 
-        header('Content-Type: application/json');
-        echo json_encode(['data' => $data]);
+if (!$stmt) {
+    die("Error en la preparación de la consulta: " . $conn->error);
+}
+
+// Vincular los parámetros LIMIT y OFFSET
+$stmt->bind_param('ii', $offset, $pageSize);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
+        $data[] = $row;
+    }
+
+    // Responder con los datos y la información de la paginación
+    echo json_encode([
+        'data' => $data,
+        'recordsTotal' => $totalRecords,  // Total de registros en la base de datos
+        'recordsFiltered' => $totalRecords,  // Total de registros filtrados (igual a total si no hay filtro)
+    ]);
+} else {
+    echo json_encode(['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0]);
+}
         break;
 }
 

@@ -1,12 +1,21 @@
 $(document).ready(function() {
     var table = $('#datos_docente').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
+"searching": false, // Desactiva la búsqueda
+    "paging": true,     // Activa la paginación
+    "lengthChange": true, // Permite cambiar el número de registros por página
+    "pageLength": 10,    // Número de registros por página por defecto
+    "processing": true,
+    "serverSide": true,  // Si estás usando paginación y datos del servidor
+    "ajax": {
             url: "Docentes-Controlador.php",
             type: "POST",
+            data: function(d) {
+                // Asegúrate de enviar estos datos para que el servidor lo maneje correctamente
+                d.page = d.start / d.length + 1; // Página actual
+                d.pageSize = d.length; // Número de registros por página
+            },
             dataSrc: 'data'
-        },
+        },        
         columns: [
             { "data": "numero_documento" },
             { "data": "nombre_completo" },
