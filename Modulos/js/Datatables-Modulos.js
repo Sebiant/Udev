@@ -10,6 +10,7 @@ $(document).ready(function() {
             { "data": "fecha_inicio" },
             { "data": "fecha_fin" },
             { "data": "nombre_programa" },
+            { "data": "estado" },
             {
                 "data": "id_modulo",
                 "render": function(data) {
@@ -28,7 +29,13 @@ $(document).ready(function() {
         ],
         "language": {
             "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
-        }
+        },
+        "searching": true,
+        "paging": true,
+        "lengthChange": true,
+        "pageLength": 10,
+        "processing": true,
+        "serverSide": true
     });
 });
 
