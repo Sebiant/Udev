@@ -29,12 +29,10 @@ switch ($accion) {
             $sql_update = "UPDATE materias SET nombre='$nombre', descripcion='$descripcion' WHERE id_materia='$id_materia'";
 
             if ($conn->query($sql_update) === TRUE) {
-                echo "Registro actualizado exitosamente.";
             } else {
                 echo "Error al actualizar el registro: " . $conn->error;
             }
         } else {
-            echo "No se encontró el registro de la materia.";
         }
         break;
 
@@ -53,7 +51,6 @@ switch ($accion) {
         $sql = "UPDATE materias SET estado=1 WHERE id_materia='$id_materia'";
     
         if ($conn->query($sql) === TRUE) {
-            echo "Registro activado exitosamente.";
         } else {
             echo "Error al activar el registro: " . $conn->error;
         }
@@ -66,7 +63,6 @@ switch ($accion) {
         $sql = "UPDATE materias SET estado=$estado WHERE id_materia='$id_materia'";
     
         if ($conn->query($sql) === TRUE) {
-            echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
         } else {
             echo "Error al cambiar el estado: " . $conn->error;
         }
