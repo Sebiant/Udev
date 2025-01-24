@@ -1,77 +1,141 @@
-function crearPrograma() {
-    const formData = new FormData(document.getElementById('formPrograma'));
-
-    console.log('Acción: crear');
-    console.log('Datos del Formulario:', ...formData.entries());
-
-    $.ajax({
-        url: 'Programas-Controlador.php?accion=crear',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            console.log('Programa creado:', response);
-            location.reload();
+jQuery(document).ready(function($) {
+    $("#formPrograma").validate({
+        rules: {
+            tipo: {
+                required: true,
+                minlength: 3
+            },
+            nombre: {
+                required: true,
+                minlength: 3
+            },
+            duracion_mes: {
+                required: true,
+                number: true,
+                min: 1
+            },
+            cant_modulos: {
+                required: true,
+                number: true,
+                min: 1
+            },
+            descripcion: {
+                required: true,
+                maxlength: 100
+            }
         },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
+        messages: {
+            tipo: {
+                required: "Por favor, ingresa el tipo de programa.",
+                minlength: "Debe tener al menos 3 caracteres."
+            },
+            nombre: {
+                required: "Por favor, ingresa el nombre.",
+                minlength: "Debe tener al menos 3 caracteres."
+            },
+            duracion_mes: {
+                required: "Por favor, ingresa la duración.",
+                number: "Debe ser un número válido.",
+                min: "Debe ser mayor a 0."
+            },
+            cant_modulos: {
+                required: "Por favor, ingresa la cantidad.",
+                number: "Debe ser un número válido.",
+                min: "Debe ser mayor a 0."
+            },
+            descripcion: {
+                required: "Por favor, ingresa una descripción.",
+                maxlength: "No puede exceder 100 caracteres."
+            }
+        },
+        submitHandler: function(form) {
+            console.log("Formulario validado y listo para enviar.");
+            form.submit();
+            crearPrograma();
         }
     });
-}
 
-function editarPrograma() {
-    const formData = new FormData(document.getElementById('formPrograma'));
+    jQuery(document).ready(function($) {
+        $("#editForm").validate({
+            rules: {
+                tipo: {
+                    required: true,
+                    minlength: 3
+                },
+                nombre: {
+                    required: true,
+                    minlength: 3
+                },
+                duracion_mes: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                cant_modulos: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                descripcion: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                tipo: {
+                    required: "Por favor, ingresa el tipo de programa.",
+                    minlength: "Debe tener al menos 3 caracteres."
+                },
+                nombre: {
+                    required: "Por favor, ingresa el nombre.",
+                    minlength: "Debe tener al menos 3 caracteres."
+                },
+                duracion_mes: {
+                    required: "Por favor, ingresa la duración.",
+                    number: "Debe ser un número válido.",
+                    min: "Debe ser mayor a 0."
+                },
+                cant_modulos: {
+                    required: "Por favor, ingresa la cantidad.",
+                    number: "Debe ser un número válido.",
+                    min: "Debe ser mayor a 0."
+                },
+                descripcion: {
+                    required: "Por favor, ingresa una descripción.",
+                    maxlength: "No puede exceder 100 caracteres."
+                }
+            },
+            submitHandler: function(form) {
+                console.log("Formulario validado y listo para enviar.");
+                form.submit();
+                GuardarPrograma();
+            }
+        });
 
-    console.log('Acción: editar');
-    console.log('Datos del Formulario:', ...formData.entries());
+        // Contador de caracteres
+        $('#descripcion').on('input', function() {
+            const maxLength = $(this).attr('maxlength');
+            const restantes = maxLength - $(this).val().length;
+            $('#contadorCrear').text(`${restantes} caracteres disponibles`);
 
-    fetch('Programas-Controlador.php?accion=editar', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+            if (restantes <= 20) {
+                $('#contadorCrear').addClass('alerta');
+            } else {
+                $('#contadorCrear').removeClass('alerta');
+            }
+        });
     });
-}
 
-function activarPrograma() {
-    const id_programa = document.getElementById('id_programa_eliminar').value;
+        // Contador de caracteres
+        $('#descripcion_edit').on('input', function() {
+            const maxLength = $(this).attr('maxlength');
+            const restantes = maxLength - $(this).val().length;
+            $('#contadorEditar').text(`${restantes} caracteres disponibles`);
 
-    console.log('ID Programa a Activar:', id_programa);
-
-    fetch('Programas-Controlador.php?accion=activar', {
-        method: 'POST',
-        body: new URLSearchParams({ id_programa })
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-function actualizarContador() {
-    const descripcion = document.getElementById('descripcion');
-    const contador = document.getElementById('contador');
-    const maxLength = descripcion.getAttribute('maxlength');
-    const caracteresRestantes = maxLength - descripcion.value.length;
-
-    contador.textContent = `${caracteresRestantes} caracteres disponibles`;
-
-    // Cambiar el estilo si el límite está cerca o alcanzado
-    if (caracteresRestantes <= 20) {
-        contador.classList.add('alerta');
-    } else {
-        contador.classList.remove('alerta');
-    }
-}
-
+            if (restantes <= 20) {
+                $('#contadorEditar').addClass('alerta');
+            } else {
+                $('#contadorEditar').removeClass('alerta');
+            }
+        });
+});
