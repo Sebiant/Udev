@@ -55,32 +55,24 @@ include_once '../componentes/header.php';
 
                     <div class="mb-3">
                         <label for="tipo" class="form-label">Tipo de Programa:</label>
-                        <input type="text" name="tipo" id="tipo" class="form-control" required>
+                        <input type="text" name="tipo" id="tipo" class="form-control"  placeholder="Tipo de programa">
                     </div>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del programa:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control" required>
+                        <input type="text" name="nombre" id="nombre" class="form-control"  placeholder="Nombre del programa">
                     </div>
                     <div class="mb-3">
                         <label for="duracion_mes" class="form-label">Duración:</label>
-                        <input type="number" name="duracion_mes" id="duracion_mes" class="form-control" required>
+                        <input type="number" name="duracion_mes" id="duracion_mes" class="form-control"  placeholder="Duración  en meses">
                     </div>
                     <div class="mb-3">
                         <label for="cant_modulos" class="form-label">Cantidad de módulos:</label>
-                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control" required>
+                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control"  placeholder="Cantidad de módulos">
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción:</label>
-                        <input 
-                            type="text" 
-                            name="descripcion" 
-                            id="descripcion" 
-                            class="form-control" 
-                            maxlength="100" 
-                            required 
-                            oninput="actualizarContador()">
-                        <small id="contador" class="contador-texto">100 caracteres disponibles</small>
-                    </div>
+                        <textarea name="descripcion" id="descripcion" maxlength="100" class="form-control"  placeholder="Descripción"></textarea>
+                        <div id="contadorCrear">100 caracteres disponibles</div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -102,28 +94,28 @@ include_once '../componentes/header.php';
                 <div class="modal-body">
                     <input type="hidden" name="id_programa">
                     <div class="form-group">
-                        <label for="tipo">Tipo</label>
-                        <input type="text" class="form-control" name="tipo" required>
+                        <label for="tipo" class="form-label">Tipo de Programa:</label>
+                        <input type="text" name="tipo" id="tipo" class="form-control"  placeholder="Tipo de programa">
                     </div>
                     <div class="form-group">
-                        <label for="nombre">Nombre del programa</label>
-                        <input type="text" class="form-control" name="nombre" required>
+                        <label for="nombre" class="form-label">Nombre del programa:</label>
+                        <input type="text" name="nombre" id="nombre" class="form-control"  placeholder="Nombre del programa">
                     </div>
                     <div class="form-group">
-                        <label for="duracion_mes">Duración</label>
-                        <input type="number" class="form-control" name="duracion_mes" required>
+                        <label for="duracion_mes" class="form-label">Duración:</label>
+                        <input type="number" name="duracion_mes" id="duracion_mes" class="form-control"  placeholder="Duración  en meses">
                     </div>
                     <div class="form-group">
-                        <label for="cant_modulos">Cantidad de módulos</label>
-                        <input type="number" class="form-control" name="cant_modulos" required>
+                        <label for="cant_modulos" class="form-label">Cantidad de módulos:</label>
+                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control"  placeholder="Cantidad de módulos">
                     </div>
                     <div class="form-group">
-                        <label for="descripcion">Descripción</label>
-                        <input type="text" class="form-control" name="descripcion" required>
-                    </div>
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <textarea name="descripcion" id="descripcion_edit" maxlength="100" class="form-control"  placeholder="Descripción"></textarea>
+                        <div id="contadorEditar">100 caracteres disponibles</div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="GuardarPrograma()">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" onclick="GuardarPrograma()">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -135,3 +127,55 @@ include_once '../componentes/footer.php';
 ?>
 <script src="js/Consultas-Programas.js"></script>
 <script src="js/Datatable-Programas.js"></script>
+<script>
+      function crearPrograma() {
+        if (!$("#formPrograma").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('formPrograma'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Programas-Controlador.php?accion=crear',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
+<script>
+      function GuardarPrograma() {
+        if (!$("#editForm").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('editForm'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Programas-Controlador.php?accion=editar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
