@@ -1,5 +1,9 @@
 $(document).ready(function() {
     var table = $('#datos_salones').DataTable({
+        searching: true,
+        paging: true,
+        lengthChange: true,
+        pageLength: 10,
         processing: true,
         serverSide: true,
         ajax: {
@@ -14,7 +18,7 @@ $(document).ready(function() {
             { 
                 "data": "id_institucion",
                 render: function(data, type, row) {
-                    return row.nombre || "Institución no encontrada"; // Muestra el nombre de la institución directamente
+                    return row.nombre || "Institución no encontrada";
                 }
             },
             { "data": "estado" },
@@ -35,7 +39,6 @@ $(document).ready(function() {
         ]
     });
 
-    // Evento para cambiar el estado del salón (activar/inactivar)
     $('#datos_salones').on('click', '.btn-cambiar-estado', function () {
         var data = table.row($(this).parents('tr')).data();
         var idSalon = data.id_salon;
@@ -45,7 +48,7 @@ $(document).ready(function() {
             url: 'Salones-Controlador.php?accion=cambiarEstado',
             type: 'POST',
             data: { id_salon: idSalon, estado: nuevoEstado },
-            success: function (response) {
+            success: function () {
                 alert(`El estado del salón ha sido actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 table.ajax.reload();
             },
@@ -55,7 +58,6 @@ $(document).ready(function() {
         });
     });
 
-    // Evento para obtener los datos de un salón y mostrarlos en el formulario de edición
     $('#datos_salones').on('click', '.btn-modificar', function() {
         var data = table.row($(this).parents('tr')).data();
         var idSalon = data.id_salon;
@@ -80,7 +82,6 @@ $(document).ready(function() {
         });
     });
 
-    // Evento para guardar la edición del salón
     $('#editForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -88,7 +89,7 @@ $(document).ready(function() {
             url: 'Salones-Controlador.php?accion=editar',
             type: 'POST',
             data: $(this).serialize(),
-            success: function(response) {
+            success: function() {
                 alert('Salón actualizado exitosamente.');
                 table.ajax.reload();
                 $('#editModal').modal('hide');
