@@ -18,6 +18,7 @@ $(document).ready(function() {
         columns: [
             { "data": "nombre" },
             { "data": "direccion" },
+            { "data": "estado" },
             {
                 data: null,
                 defaultContent: '<button class="btn btn-primary w-100 btn-modify">Modificar</button>',

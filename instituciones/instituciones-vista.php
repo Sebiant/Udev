@@ -24,6 +24,7 @@
                 <tr>
                     <th>Nombres</th>
                     <th>Dirección</th>
+                    <th>Estado</th>
                     <th>Modificar</th>
                     <th>Acciones</th>
                 </tr>
