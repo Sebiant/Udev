@@ -1,0 +1,137 @@
+<?php
+include_once '../componentes/header.php';
+?>
+
+<div class="container">
+    <h1 class="text-center">Programas</h1>
+
+    <div class="row">
+        <div class="col-2 offset-10">
+            <div class="text-center">
+                <!-- Botón para abrir modal -->
+                <button 
+                    type="button" 
+                    class="btn btn-primary w-100" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalPrograma" 
+                    id="botonCrear">
+                    <i class="bi bi-plus-circle"></i> Crear
+                </button>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="table-responsive">
+        <table id="datos_programa" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Nombre</th>
+                    <th>Duración</th>
+                    <th>Cantidad de módulos</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Modificar</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Crear Programa -->
+<div class="modal fade" id="modalPrograma" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Programa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formPrograma">
+                    <input type="hidden" name="accion" value="crear" id="accion">
+                    <input type="hidden" name="id_programa" id="id_programa">
+
+                    <div class="mb-3">
+                        <label for="tipo" class="form-label">Tipo de Programa:</label>
+                        <input type="text" name="tipo" id="tipo" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del programa:</label>
+                        <input type="text" name="nombre" id="nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duracion_mes" class="form-label">Duración:</label>
+                        <input type="number" name="duracion_mes" id="duracion_mes" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cant_modulos" class="form-label">Cantidad de módulos:</label>
+                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <input 
+                            type="text" 
+                            name="descripcion" 
+                            id="descripcion" 
+                            class="form-control" 
+                            maxlength="100" 
+                            required 
+                            oninput="actualizarContador()">
+                        <small id="contador" class="contador-texto">100 caracteres disponibles</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" onclick="crearPrograma()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Programa -->
+<div id="editModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Programa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editForm">
+                <div class="modal-body">
+                    <input type="hidden" name="id_programa">
+                    <div class="form-group">
+                        <label for="tipo">Tipo</label>
+                        <input type="text" class="form-control" name="tipo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre del programa</label>
+                        <input type="text" class="form-control" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duracion_mes">Duración</label>
+                        <input type="number" class="form-control" name="duracion_mes" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cant_modulos">Cantidad de módulos</label>
+                        <input type="number" class="form-control" name="cant_modulos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" class="form-control" name="descripcion" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" onclick="GuardarPrograma()">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?php
+include_once '../componentes/footer.php';
+?>
+<script src="js/Consultas-Programas.js"></script>
+<script src="js/Datatable-Programas.js"></script>
