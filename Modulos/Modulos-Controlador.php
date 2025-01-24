@@ -18,7 +18,6 @@ switch ($accion) {
         $sql = "INSERT INTO modulos (fecha_inicio, fecha_fin, id_programa) VALUES ('$fecha_inicio', '$fecha_fin', '$id_programa')";
         
         if ($conn->query($sql) === TRUE) {
-            echo "Nuevo módulo creado exitosamente.";
         } else {
             echo "Error al crear el módulo: " . $conn->error;
         }
@@ -40,7 +39,6 @@ switch ($accion) {
             $sql_update = "UPDATE modulos SET fecha_inicio='$fecha_inicio', fecha_fin='$fecha_fin', id_programa='$id_programa' WHERE id_modulo='$id_modulo'";
 
             if ($conn->query($sql_update) === TRUE) {
-                echo "Módulo actualizado exitosamente.";
             } else {
                 echo "Error al actualizar el módulo: " . $conn->error;
             }
@@ -55,7 +53,6 @@ switch ($accion) {
         $sql = "UPDATE modulos SET estado=$estado WHERE id_modulo='$id_modulo'";
 
         if ($conn->query($sql) === TRUE) {
-            echo "Estado cambiado exitosamente.";
         } else {
             echo "Error al cambiar el estado: " . $conn->error;
         }

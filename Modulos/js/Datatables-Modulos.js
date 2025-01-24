@@ -49,7 +49,6 @@ $('#datos_modulo').on('click', '.btn-toggle-state', function () {
         type: 'POST',
         data: { id_modulo: idModulo, estado: nuevoEstado },
         success: function (response) {
-            alert(`El estado del módulo se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
             $('#datos_modulo').DataTable().ajax.reload();
         },
         error: function () {
@@ -80,9 +79,6 @@ function editarModulo(id) {
                 alert("No se encontraron datos para este módulo.");
             }
         },
-        error: function() {
-            alert("Hubo un error al obtener los datos del módulo.");
-        }
     });
 }
 
@@ -93,7 +89,6 @@ $('#editForm').on('submit', function(event) {
         type: 'POST',
         data: $(this).serialize(),
         success: function(response) {
-            alert('Módulo actualizado exitosamente.');
             $('#editModuloModal').modal('hide');
             $('#datos_modulo').DataTable().ajax.reload();
         },
@@ -109,7 +104,6 @@ function borrarModulo(id) {
         type: 'POST',
         data: { id_modulo: id },
         success: function(response) {
-            alert('Módulo desactivado exitosamente.');
             $('#datos_modulo').DataTable().ajax.reload();
         },
         error: function() {
@@ -125,7 +119,6 @@ function crearModulo() {
         type: 'POST',
         data: datosFormulario,
         success: function(response) {
-            alert('Módulo creado exitosamente.');
             $('#modalModulos').modal('hide');
             $('#datos_modulo').DataTable().ajax.reload();
         },
