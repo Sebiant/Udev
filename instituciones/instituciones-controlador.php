@@ -58,7 +58,7 @@ switch ($accion) {
         }
         break;
 
-     case 'buscarPorId':     
+    case 'buscarPorId':     
         
         if (empty($_POST['id_institucion'])) {
             echo json_encode(["error" => "ID de institución no proporcionado"]);
@@ -84,10 +84,33 @@ switch ($accion) {
         }
         $stmt->close();
 
-     break;
+    break;
 
     default:
-        $sql = "SELECT * FROM instituciones";
+        $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+        $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+        $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
+        $searchValue = isset($_POST['search']['value']) ? $conn->real_escape_string($_POST['search']['value']) : '';
+        $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
+        $orderDir = isset($_POST['order'][0]['dir']) && $_POST['order'][0]['dir'] === 'desc' ? 'DESC' : 'ASC';
+
+        $columns = ['nombre', 'direccion', 'estado'];
+        $orderColumn = $columns[$orderColumnIndex];
+
+        $where = "";
+        if (!empty($searchValue)) {
+            $where = "WHERE nombre LIKE '%$searchValue%' OR direccion LIKE '%$searchValue%'";
+        }
+
+        $sqlTotal = "SELECT COUNT(*) as total FROM instituciones";
+        $totalResult = $conn->query($sqlTotal);
+        $totalRecords = $totalResult->fetch_assoc()['total'];
+
+        $sqlFiltered = "SELECT COUNT(*) as total FROM instituciones $where";
+        $filteredResult = $conn->query($sqlFiltered);
+        $filteredRecords = $filteredResult->fetch_assoc()['total'];
+
+        $sql = "SELECT * FROM instituciones $where ORDER BY $orderColumn $orderDir LIMIT $start, $length";
         $result = $conn->query($sql);
 
         $data = [];
@@ -99,8 +122,15 @@ switch ($accion) {
             }
         }
 
+        $response = [
+            "draw" => $draw,
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $filteredRecords,
+            "data" => $data
+        ];
+
         header('Content-Type: application/json');
-        echo json_encode(['data' => $data]);
+        echo json_encode($response);
         break;
 }
 

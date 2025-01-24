@@ -2,6 +2,14 @@ $(document).ready(function() {
     var table = $('#datos_instituciones').DataTable({
         processing: true,
         serverSide: true,
+        paging: true,
+        lengthMenu: [10, 25, 50, 100],
+        pageLength: 10,
+        ordering: true,
+        searching: true,
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+        },
         ajax: {
             url: "instituciones-controlador.php",
             type: "POST",
