@@ -8,8 +8,7 @@ switch ($accion) {
         $nombre = $_POST['nombre'];
         $descripcion = $_POST['descripcion'];
 
-        $sql = "INSERT INTO materias (nombre, descripcion) 
-                VALUES ('$nombre', '$descripcion')";
+        $sql = "INSERT INTO materias (nombre, descripcion) VALUES ('$nombre', '$descripcion')";
         
         if ($conn->query($sql) === TRUE) {
         } else {
@@ -19,7 +18,6 @@ switch ($accion) {
 
     case 'editar':
         $id_materia = $_POST['id_materia'];
-
         $sql_select = "SELECT * FROM materias WHERE id_materia='$id_materia'";
         $result = $conn->query($sql_select);
 
@@ -28,10 +26,7 @@ switch ($accion) {
             $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $materia['nombre'];
             $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : $materia['descripcion'];
             
-            $sql_update = "UPDATE materias SET 
-                            nombre='$nombre', 
-                            descripcion='$descripcion'
-                            WHERE id_materia='$id_materia'";
+            $sql_update = "UPDATE materias SET nombre='$nombre', descripcion='$descripcion' WHERE id_materia='$id_materia'";
 
             if ($conn->query($sql_update) === TRUE) {
             } else {
@@ -43,7 +38,6 @@ switch ($accion) {
 
     case 'eliminar':
         $id_materia = $_POST['id_materia'];
-
         $sql = "UPDATE materias SET estado=0 WHERE id_materia='$id_materia'";
 
         if ($conn->query($sql) === TRUE) {
@@ -54,7 +48,6 @@ switch ($accion) {
 
     case 'activar':
         $id_materia = $_POST['id_materia'];
-    
         $sql = "UPDATE materias SET estado=1 WHERE id_materia='$id_materia'";
     
         if ($conn->query($sql) === TRUE) {
@@ -77,7 +70,6 @@ switch ($accion) {
         
     case 'busquedaPorId':
         $id_materia = $_POST['id_materia'];
-    
         $sql = "SELECT * FROM materias WHERE id_materia='$id_materia'";
         $result = $conn->query($sql);
     
@@ -94,20 +86,32 @@ switch ($accion) {
         break;
 
     default:
-        $sql = "SELECT * FROM materias";
+        $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+        $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
+        $search = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
+        
+        $sql = "SELECT * FROM materias WHERE nombre LIKE '%$search%' OR descripcion LIKE '%$search%' LIMIT $start, $length";
         $result = $conn->query($sql);
     
         $data = [];
-    
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
                 $data[] = $row;
             }
         }
+        
+        $sql_count = "SELECT COUNT(*) AS total FROM materias WHERE nombre LIKE '%$search%' OR descripcion LIKE '%$search%'";
+        $result_count = $conn->query($sql_count);
+        $totalData = $result_count->fetch_assoc()['total'];
     
         header('Content-Type: application/json');
-        echo json_encode(['data' => $data]);
+        echo json_encode([
+            'draw' => isset($_POST['draw']) ? intval($_POST['draw']) : 1,
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalData,
+            'data' => $data
+        ]);
         break;
 }
 
