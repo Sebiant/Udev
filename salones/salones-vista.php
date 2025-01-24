@@ -55,19 +55,19 @@
 
           <div class="mb-3">
             <label for="nombre_salon" class="form-label">Nombre salon:</label>
-            <input type="text" name="nombre_salon" id="nombre_salon" class="form-control" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Escribe el nombre del salón.">
+            <input type="text" name="nombre_salon" id="nombre_salon" class="form-control" placeholder="Nombre del Salón">
           </div>
           <div class="mb-3">
             <label for="capacidad" class="form-label">Capacidad:</label>
-            <input type="number" name="capacidad" id="capacidad" class="form-control" min="0" step="1" required>
+            <input type="number" name="capacidad" id="capacidad" class="form-control" min="0" step="1" placeholder="Capacidad">
           </div>
           <div class="mb-3">
             <label for="descripcion" class="form-label">Descripcion:</label>
-            <input type="text" name="descripcion" id="descripcion" class="form-control" required>
+            <input type="text" name="descripcion" id="descripcion" class="form-control" placeholder="Descripcion">
           </div>
           <div class="form-group">
                         <label for="id_institucion">Institución:</label>
-                        <select class="form-control" name="id_institucion" required>
+                        <select class="form-control" name="id_institucion">
                             <option value="">-- Selecciona una institución --</option>
                             <?php
                             // Cargar las instituciones en las opciones del select
@@ -84,7 +84,7 @@
                         </select>
                     </div>
           <div class="modal-footer">
-              <button type="submit" class="btn btn-success">Guardar</button>
+              <button type="submit" class="btn btn-success" onclick="CrearSalon()">Guardar</button>
           </div>
         </form>
       </div>
@@ -108,19 +108,19 @@
                         
                     <div class="mb-3">
                         <label for="nombre_salon" class="form-label">Nombre_salon:</label>
-                        <input type="text"  class="form-control" name="nombre_salon" required>
+                        <input type="text"  class="form-control" name="nombre_salon" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Escribe el nombre del salón." placeholder="Nombre Salon">
                     </div>
                     <div class="mb-3">
                         <label for="capacidad" class="form-label">Capacidad:</label>
-                        <input type="number"   class="form-control" name="capacidad" min="0" step="1" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Escribe el nombre del salón.">
+                        <input type="number"   class="form-control" name="capacidad" min="0" step="1" placeholder="Capacidad">
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripcion:</label>
-                        <input type="text"   class="form-control" name="descripcion" required>
+                        <input type="text"   class="form-control" name="descripcion" placeholder="Descripcion">
                     </div>
                     <div class="form-group">
                         <label for="id_institucion">Institución:</label>
-                        <select class="form-control" name="id_institucion" required>
+                        <select class="form-control" name="id_institucion">
                             <option value="">-- Selecciona una institución --</option>
                             <?php
                             // Cargar las instituciones en las opciones del select
@@ -138,7 +138,7 @@
                     </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" class="btn btn-primary" onclick="GuardarSalon()">Guardar Cambios</button>
                     </div>
                 </form>
             </div>
@@ -151,3 +151,47 @@
     ?>
     <script src="js/Consultas-Salones.js"></script>
     <script src="js/Datatables-Salones.js"></script>
+    <script>
+    function crearSalon() {
+    const formData = new FormData(document.getElementById('formSalones'));
+
+    console.log('Acción: Crear');
+    console.log('Datos del Formulario:', ...formData.entries());
+
+    fetch('Salones-Controlador.php?accion=crear', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        //alert(data);
+        console.log('Recargando la página...');
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+    </script>
+    <script>
+    function GuardarSalon() {
+    const formData = new FormData(document.getElementById('formSalones'));
+
+    console.log('Acción: Editar');
+    console.log('Datos del Formulario:', ...formData.entries());
+
+    fetch('Salones-Controlador.php?accion=editar', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        //alert(data);
+        console.log('Recargando la página...');
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+    </script>

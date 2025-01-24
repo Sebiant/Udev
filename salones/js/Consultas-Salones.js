@@ -1,61 +1,94 @@
-function crearSalon() {
-    const formData = new FormData(document.getElementById('formSalones'));
-
-    console.log('Acción: Crear');
-    console.log('Datos del Formulario:', ...formData.entries());
-
-    fetch('salones-controlador.php?accion=crear', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+jQuery(document).ready(function($) {
+    $("#formSalones").validate({
+        rules: {
+            nombre_salon: {
+                required: true,
+                pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/ // Solo letras y espacios
+            },
+            capacidad: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            descripcion: {
+                required: true,
+                maxlength: 30 // Longitud máxima opcional
+            },
+            id_institucion: {
+                required: true
+            }
+        },
+        messages: {
+            nombre_salon: {
+                required: "Por favor, ingresa el nombre del salón.",
+                pattern: "El nombre solo puede contener letras y espacios."
+            },
+            capacidad: {
+                required: "Por favor, ingresa la capacidad del salón.",
+                number: "La capacidad debe ser un número válido.",
+                min: "La capacidad debe ser mayor o igual a 0."
+            },
+            descripcion: {
+                required: "Por favor, ingresa una descripción.",
+                maxlength: "La descripción no puede superar los 30 caracteres."
+            },
+            id_institucion: {
+                required: "Por favor, selecciona una institución."
+            }
+        },
+        submitHandler: function(form) {
+            console.log("Formulario validado y listo para enviar.");
+            form.submit();
+            CrearSalon();
+        }
     });
-}
+});
 
-function editarSalon() {
-    const formData = new FormData(document.getElementById('formSalones'));
-
-    console.log('Acción: Editar');
-    console.log('Datos del Formulario:', ...formData.entries());
-
-    fetch('salones-controlador.php?accion=editar', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+jQuery(document).ready(function($) {
+    $("#editForm").validate({
+        rules: {
+            nombre_salon: {
+                required: true,
+                pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/ // Solo letras y espacios
+            },
+            capacidad: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            descripcion: {
+                required: true,
+                maxlength: 30 // Longitud máxima opcional
+            },
+            id_institucion: {
+                required: true
+            }
+        },
+        messages: {
+            nombre_salon: {
+                required: "Por favor, ingresa el nombre del salón.",
+                pattern: "El nombre solo puede contener letras y espacios."
+            },
+            capacidad: {
+                required: "Por favor, ingresa la capacidad del salón.",
+                number: "La capacidad debe ser un número válido.",
+                min: "La capacidad debe ser mayor o igual a 0."
+            },
+            descripcion: {
+                required: "Por favor, ingresa una descripción.",
+                maxlength: "La descripción no puede superar los 30 caracteres."
+            },
+            id_institucion: {
+                required: "Por favor, selecciona una institución."
+            }
+        },
+        submitHandler: function(form) {
+            console.log("Formulario validado y listo para enviar.");
+            form.submit();
+            GuardarSalon();
+        }
     });
-}
+});
 
-function activarSalon() {
-    const id_salon = document.getElementById('id_salon_eliminar').value;
 
-    console.log('ID Salon a Activar:', id_salon);
 
-    fetch('salones-controlador.php?accion=activar', {
-        method: 'POST',
-        body: new URLSearchParams({ id_salon })
-    })
-    .then(response => response.text())
-    .then(data => {
-        //alert(data);
-        console.log('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
