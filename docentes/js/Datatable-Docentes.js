@@ -1,5 +1,8 @@
 $(document).ready(function() {
     var table = $('#datos_docente').DataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+        },
         "searching": true,
         "paging": true,
         "lengthChange": true,
