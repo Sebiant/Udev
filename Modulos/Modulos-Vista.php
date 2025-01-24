@@ -53,17 +53,15 @@ $result = $conn->query($sql);
 
                     <div class="mb-3">
                         <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
-                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" min="2024-11-29" max="2026-12-31" required>
-                        <div class="invalid-feedback">La fecha es obligatoria.</div>
+                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" min="2024-11-29" max="2026-12-31" placeholder="Fecha Incio">
                     </div>
                     <div class="mb-3">
                         <label for="fecha_fin" class="form-label">Fecha Fin:</label>
-                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" min="2024-11-29" max="2026-12-31" required>
-                        <div class="invalid-feedback">La fecha es obligatoria.</div> 
+                        <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" min="2024-11-29" max="2026-12-31" placeholder="Fecha Fin">
                     </div>
                     <div>
                         <label for="id_programa">Programa:</label>
-                        <select id="id_programa" name="id_programa" class="form-control" required title="Selecciona un programa">
+                        <select id="id_programa" name="id_programa" class="form-control">
                             <option value="">-- Selecciona un programa --</option>
                             <?php
                             if ($result->num_rows > 0) {
@@ -98,15 +96,15 @@ $result = $conn->query($sql);
                     <input type="hidden" name="id_modulo">
                     <div class="form-group">
                         <label for="fecha_inicio">Fecha Inicio</label>
-                        <input type="date" class="form-control" name="fecha_inicio" required>
+                        <input type="date" class="form-control" name="fecha_inicio" placeholder="Fecha Inicio">
                     </div>
                     <div class="form-group">
                         <label for="fecha_fin">Fecha Fin</label> 
-                        <input type="date" class="form-control" name="fecha_fin" required>
+                        <input type="date" class="form-control" name="fecha_fin" placeholder="Fecha Fin">
                     </div>
-                      <div>
+                    <div>
                         <label for="id_programa">Programa:</label>
-                        <select name="id_programa" class="form-control" required title="Selecciona un programa">
+                        <select name="id_programa" class="form-control">
                             <option value="">-- Selecciona un programa --</option>
                             <?php
                              $sql = "SELECT id_programa, nombre FROM programas";
@@ -114,7 +112,6 @@ $result = $conn->query($sql);
                      
                              if ($result->num_rows > 0) {
                                  while ($row = $result->fetch_assoc()) {
-                                     
                                      echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
                                  }
                              } else {
@@ -125,7 +122,7 @@ $result = $conn->query($sql);
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" onclick="GuardarModulo()">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -135,6 +132,59 @@ $result = $conn->query($sql);
 <?php
 include_once '../componentes/footer.php';
 ?>
+
 <script src="js/Datatables-Modulos.js"></script>
 <script src="js/Consultas-Modulos.js"></script>
+<script>
+    function crearModulo() {
+        if (!$("#formModulo").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('formModulo'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Modulos-Controlador.php?accion=crear',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
 
+<script>
+    function GuardarModulo() {
+        if (!$("#editForm").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('editForm'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Modulos-Controlador.php?accion=editar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
