@@ -28,6 +28,7 @@ include_once '../componentes/header.php';
                     <th>Teléfono</th>
                     <th>Dirección</th>
                     <th>Email</th>
+                    <th>Estado</th>
                     <th>Modificar</th>
                     <th>Acciones</th>
                 </tr>

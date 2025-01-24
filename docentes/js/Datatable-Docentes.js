@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var table = $('#datos_docente').DataTable({
-        "searching": false,
+        "searching": true,
         "paging": true,
         "lengthChange": true,
         "pageLength": 10,
@@ -12,6 +12,7 @@ $(document).ready(function() {
             data: function(d) {
                 d.page = d.start / d.length + 1;
                 d.pageSize = d.length;
+                d.searchTerm = d.search.value;  // Enviamos el término de búsqueda
             },
             dataSrc: 'data'
         },
@@ -23,6 +24,7 @@ $(document).ready(function() {
             { "data": "telefono" },
             { "data": "direccion" },
             { "data": "email" },
+            { "data": "estado" },
             {
                 data: null,
                 defaultContent: '<button class="btn btn-primary w-100 btn-modify">Modificar</button>',

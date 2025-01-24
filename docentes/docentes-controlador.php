@@ -51,7 +51,6 @@ switch ($accion) {
                 especialidad=?, descripcion_especialidad=?, telefono=?, direccion=?,
                 email=?, declara_renta=?, retenedor_iva=?, estado=?
                 WHERE id_docente=?";
-
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             die("Error en la preparación de la consulta: " . $conn->error);
@@ -117,12 +116,17 @@ switch ($accion) {
         break;
 
     default:
+        $search = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
         $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
         $pageSize = isset($_POST['pageSize']) ? (int)$_POST['pageSize'] : 10;
         $offset = ($page - 1) * $pageSize;
 
-        $totalRecordsSql = "SELECT COUNT(*) AS total FROM docentes";
-        $totalResult = $conn->query($totalRecordsSql);
+        $totalRecordsSql = "SELECT COUNT(*) AS total FROM docentes WHERE nombres LIKE ? OR apellidos LIKE ? OR tipo_documento LIKE ? OR numero_documento LIKE ?";
+        $stmt = $conn->prepare($totalRecordsSql);
+        $searchTerm = "%$search%";
+        $stmt->bind_param('ssss', $searchTerm, $searchTerm, $searchTerm, $searchTerm);
+        $stmt->execute();
+        $totalResult = $stmt->get_result();
         $totalRecords = $totalResult->fetch_assoc()['total'];
 
         $sql = "SELECT id_docente, tipo_documento, numero_documento, nombres, apellidos,
@@ -130,9 +134,10 @@ switch ($accion) {
                        descripcion_especialidad, telefono, direccion, email, declara_renta, 
                        retenedor_iva, estado
                 FROM docentes
+                WHERE nombres LIKE ? OR apellidos LIKE ? OR tipo_documento LIKE ? OR numero_documento LIKE ?
                 LIMIT ?, ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ii', $offset, $pageSize);
+        $stmt->bind_param('ssssii', $searchTerm, $searchTerm, $searchTerm, $searchTerm, $offset, $pageSize);
         $stmt->execute();
         $result = $stmt->get_result();
 
