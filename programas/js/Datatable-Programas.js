@@ -33,14 +33,20 @@ $(document).ready(function () {
                 },
                 orderable: false
             }
-        ]
+        ],
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+        },
+        searching: true,
+        paging: true,
+        lengthChange: true,
+        pageLength: 10,
     });
 
-    // Evento para cambiar el estado dinámico (Eliminar/Cambiar Estado)
     $('#datos_programa').on('click', '.btn-toggle-state', function () {
         var data = table.row($(this).parents('tr')).data();
         var idPrograma = data.id_programa;
-        var nuevoEstado = data.estado === "Activo" ? 0 : 1; // Cambiar estado (Activo -> Inactivo o viceversa)
+        var nuevoEstado = data.estado === "Activo" ? 0 : 1;
 
         $.ajax({
             url: 'Programas-Controlador.php?accion=cambiarEstado',
@@ -56,7 +62,6 @@ $(document).ready(function () {
         });
     });
 
-    // Acción de "Modificar" (Editar)
     $('#datos_programa').on('click', '.btn-modify', function () {
         var data = table.row($(this).parents('tr')).data();
         var idPrograma = data.id_programa;
@@ -67,12 +72,9 @@ $(document).ready(function () {
             data: { id_programa: idPrograma },
             dataType: 'json',
             success: function (response) {
-                console.log(response); // Verifica la respuesta completa del servidor
-
                 if (response.data && response.data.length > 0) {
                     var programa = response.data[0];
 
-                    // Rellenar el formulario de edición con los datos
                     $('#editForm [name="id_programa"]').val(programa.id_programa);
                     $('#editForm [name="tipo"]').val(programa.tipo);
                     $('#editForm [name="nombre"]').val(programa.nombre);
@@ -80,7 +82,6 @@ $(document).ready(function () {
                     $('#editForm [name="cant_modulos"]').val(programa.cant_modulos);
                     $('#editForm [name="descripcion"]').val(programa.descripcion);
 
-                    // Mostrar el modal de edición
                     $('#editModal').modal('show');
                 } else {
                     alert('No se encontraron datos para editar.');
@@ -92,29 +93,22 @@ $(document).ready(function () {
         });
     });
 
-    // Guardar los cambios (cuando se edita un programa)
     $('#editForm').on('submit', function (event) {
-        event.preventDefault(); // Evita el envío predeterminado del formulario
+        event.preventDefault();
 
-        // Obtén los datos del formulario
         const formData = $(this).serialize(); 
-        console.log("Datos del formulario:", formData);
         
-        // Realiza la solicitud AJAX
         $.ajax({
-            url: 'Programas-Controlador.php?accion=editar', // URL del controlador
-            type: 'POST',                                   // Método HTTP
-            data: formData,                                 // Datos del formulario
-            dataType: 'json',                               // Tipo de datos esperado
-            success: function (response) {
-                console.log(response);
-                // Verifica si la respuesta indica éxito
+            url: 'Programas-Controlador.php?accion=editar',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {  
                 if (response.success) {
                     alert('Programa actualizado correctamente.');
-                    $('#editModal').modal('hide'); // Oculta el modal
-                    table.ajax.reload(); // Recarga la tabla
+                    $('#editModal').modal('hide');
+                    table.ajax.reload();
                 } else {
-                    // Muestra el mensaje de error recibido
                     alert(response.message || 'Error al actualizar el programa.');
                 }
             },

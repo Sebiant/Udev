@@ -1,7 +1,6 @@
 <?php
 include '../conexion.php';
 
-// Obtener la acción de la solicitud (puede ser 'crear', 'editar', 'eliminar', 'consultar' o 'default')
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
@@ -31,13 +30,12 @@ switch ($accion) {
         if ($result->num_rows > 0) {
             $programa = $result->fetch_assoc();
 
-            // Otros campos
             $tipo = $_POST['tipo'] ?? $programa['tipo'];
             $nombre = $_POST['nombre'] ?? $programa['nombre'];
             $duracion_mes = $_POST['duracion_mes'] ?? $programa['duracion_mes'];
             $cant_modulos = $_POST['cant_modulos'] ?? $programa['cant_modulos'];
             $descripcion = $_POST['descripcion'] ?? $programa['descripcion'];
-            $estado = $_POST['estado'] ?? $programa['estado'];  // Se añade estado en caso de que venga de la solicitud
+            $estado = $_POST['estado'] ?? $programa['estado'];
             
             $sql_update = "UPDATE programas SET 
                             tipo='$tipo', 
@@ -59,10 +57,10 @@ switch ($accion) {
         break;
 
     case 'cambiarEstado':
-        $id_programa = $_POST['id_programa']; // Cambiar id_materia por id_programa
+        $id_programa = $_POST['id_programa'];
         $estado = $_POST['estado'];
 
-        $sql = "UPDATE programas SET estado=$estado WHERE id_programa='$id_programa'"; // Actualizar en la tabla programas
+        $sql = "UPDATE programas SET estado=$estado WHERE id_programa='$id_programa'";
 
         if ($conn->query($sql) === TRUE) {
             echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . ".";
@@ -94,7 +92,16 @@ switch ($accion) {
         break;
 
     default:
-        $sql = "SELECT * FROM programas";
+        $search = isset($_GET['search']['value']) ? $_GET['search']['value'] : '';
+        $start = isset($_GET['start']) ? $_GET['start'] : 0;
+        $length = isset($_GET['length']) ? $_GET['length'] : 10;
+
+        $sql_count = "SELECT COUNT(*) AS total FROM programas WHERE nombre LIKE '%$search%' OR tipo LIKE '%$search%'";
+        $result_count = $conn->query($sql_count);
+        $total_records = $result_count->fetch_assoc()['total'];
+
+        $sql = "SELECT * FROM programas WHERE nombre LIKE '%$search%' OR tipo LIKE '%$search%' 
+                LIMIT $start, $length";
         $result = $conn->query($sql);
 
         $data = [];
@@ -107,7 +114,12 @@ switch ($accion) {
         }
 
         header('Content-Type: application/json');
-        echo json_encode(['data' => $data]);
+        echo json_encode([
+            'draw' => isset($_GET['draw']) ? $_GET['draw'] : 1,
+            'recordsTotal' => $total_records,
+            'recordsFiltered' => $total_records,
+            'data' => $data
+        ]);
         break;
 }
 
