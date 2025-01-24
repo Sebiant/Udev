@@ -49,15 +49,15 @@
 
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre:</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" required>
+                            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre">
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección:</label>
-                            <input type="text" name="direccion" id="direccion" class="form-control" required>
+                            <input type="text" name="direccion" id="direccion" class="form-control" placeholder="Dirección">
                         </div>
                         
                         <div class="modal-footer">
-                            <button class="btn btn-success" onclick="crearInstitucion()">Guardar</button>
+                            <button type="submit" class="btn btn-success" onclick="crearInstitucion()">Guardar</button>
                         </div>
                     </div>
                 </form>
@@ -79,15 +79,15 @@
                     
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
-                        <input type="text" class="form-control" name="nombre" required>
+                        <input type="text" class="form-control" name="nombre" placeholder="Nombre">
                     </div>
                     <div class="form-group">
                         <label for="direccion">Dirección</label>
-                        <input type="text" class="form-control" name="direccion" required>
+                        <input type="text" class="form-control" name="direccion" placeholder="Dirección">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" onclick="GuardarInstitucion()">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -99,3 +99,55 @@
 ?>
 <script src="js/Consultas-Instituciones.js"></script>
 <script src="js/Datatable-Instituciones.js"></script>
+<script>
+      function crearInstitucion() {
+        if (!$("#formInstitucion").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('formInstitucion'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Instituciones-Controlador.php?accion=crear',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
+<script>
+      function GuardarInstitucion() {
+        if (!$("#editForm").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('editForm'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Institucion-Controlador.php?accion=editar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>

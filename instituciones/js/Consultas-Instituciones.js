@@ -1,55 +1,55 @@
-function crearInstitucion() {
-    const formData = new FormData(document.getElementById('formInstituciones'));
-
-    console.log('Acción: Crear');
-    console.log('Datos del Formulario:', ...formData.entries());
-
-    fetch('instituciones-controlador.php?accion=crear', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+jQuery(document).ready(function($) {
+    $("#formInstituciones").validate({
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 3
+            },
+            direccion: {
+                required: true
+            },
+        },
+        messages: {
+            nombre: {
+                required: "Por favor ingresa tu nombre.",
+                minlength: "Debe contener 3 digitos."
+            },
+            direccion: {
+                required: "Por favor ingresa tu dirección."
+            },
+        },
+        submitHandler: function(form) {
+            console.log("Formulario validado y listo para enviar.");
+            form.submit();
+            crearInstitucion();
+        }
     });
-}
 
-function editarInstitucion() {
-    const formData = new FormData(document.getElementById('formInstituciones'));
-
-    console.log('Acción: Editar');
-    console.log('Datos del Formulario:', ...formData.entries());
-
-    fetch('instituciones-controlador.php?accion=editar', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+    jQuery(document).ready(function($) {
+        $("#editForm").validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    minlength: 3
+                },
+                direccion: {
+                    required: true
+                },
+            },
+            messages: {
+                nombre: {
+                    required: "Por favor ingresa tu nombre.",
+                    minlength: "Debe contener 3 digitos."
+                },
+                direccion: {
+                    required: "Por favor ingresa tu dirección."
+                },
+            },
+            submitHandler: function(form) {
+                console.log("Formulario validado y listo para enviar.");
+                form.submit();
+                GuardarInstitucion();
+            }
+        });
     });
-}
-
-function activarInstitucion() {
-    const id_institucion = document.getElementById('id_institucion_eliminar').value;
-
-    console.log('ID Institucion a Activar:', id_institucion);
-
-    fetch('instituciones-controlador.php?accion=activar', {
-        method: 'POST',
-        body: new URLSearchParams({ id_institucion })
-    })
-    .then(response => response.text())
-    .then(data => {
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
+});
