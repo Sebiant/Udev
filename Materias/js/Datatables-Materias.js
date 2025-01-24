@@ -39,7 +39,6 @@ $(document).ready(function () {
             type: 'POST',
             data: { id_materia: idMateria, estado: nuevoEstado },
             success: function (response) {
-                alert(`El estado de la materia se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 table.ajax.reload();
             },
             error: function () {
@@ -80,7 +79,6 @@ $(document).ready(function () {
             type: 'POST',
             data: $(this).serialize(),
             success: function (response) {
-                alert('Materia actualizada exitosamente.');
                 table.ajax.reload();
                 $('#editModal').modal('hide');
             },
