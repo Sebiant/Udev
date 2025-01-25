@@ -130,7 +130,7 @@ function obtener_registro($conn)
         $resultado = $stmt->get_result();
 
         if ($fila = $resultado->fetch_assoc()) { //si algun registro lso asocia
-            $salida[""]
+            $salida=$fila;
         } else {
             $salida["error"] = "No se encontraron resultados";
         }
