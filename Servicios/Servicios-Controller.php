@@ -74,8 +74,10 @@ function crear($conn)
 }
 
 function editar($conn)
+
 {
-    $stmt = $conn->prepare("UPDATE programas SET nombre=?, cant_modulos=?, estado=? WHERE id_programa = ?");
+    $codigo_servicio = intval($_POST['codigo_servicio']);
+    $stmt = $conn->prepare("UPDATE programas SET nombre=?, cant_modulos=?, estado=? WHERE id_programa = ? ");
 
     /*$resultado = $stmt->execute(
         array(
@@ -100,6 +102,7 @@ function editar($conn)
         echo 'Error al actualizar el registro' . $conn->error;
         echo "No se pudo actualizar el registro";
     }
+    $stmt->close();
 }
 
 function obtener_registro($conn)

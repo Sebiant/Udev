@@ -70,7 +70,7 @@
               <br>
             </div>
             <div class="modal-footer">
-              <input type="hidden" name="id_programa" id="codigo_servicio">
+              <input type="hidden" name="codigo_servicio" id="codigo_servicio">
               <input type="hidden" name="operacion" id="operacion">
               <input type="submit" name="action" id="action" class="btn btn-primary" value="Crear">
             </div>
@@ -170,8 +170,8 @@
             $('#valor_total_servicio').val(data.cant_modulos);
             $('#estado').val(data.estado);
             $('.modal-title').text("Editar servicio");
-            $('#id_servicio').val(codigo_servicio);
-            $('#action').val("editar").removeClass('btn-primary').addClass('btn-success');
+            $('#codigo_servicio').val(codigo_servicio);
+            $('#action').val("Editar").removeClass('btn-primary').addClass('btn-success');
             $('#operacion').val("editar");
           },
           error: function(jqXHR, textStatus, errorThrown) {
