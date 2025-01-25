@@ -75,7 +75,7 @@ function crear($conn)
 
 function editar($conn)
 {
-    $stmt = $conn->prepare("UPDATE servicios SET descripcion_servicio=?, valor_total_servicio=?, estado=? WHERE codigo_servicio = ?");
+    $stmt = $conn->prepare("UPDATE programas SET nombre=?, cant_modulos=?, estado=? WHERE id_programa = ?");
 
     /*$resultado = $stmt->execute(
         array(
@@ -119,7 +119,7 @@ function obtener_registro($conn)
 
     
         //consulta marcador de posicion
-        $stmt = $conn->prepare("SELECT * FROM servicios WHERE codigo_servicio = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT * FROM programas WHERE id_programa = ? LIMIT 1");
         //vinculacion
         $codigo_servicio = intval($_POST["codigo_servicio"]);
 
