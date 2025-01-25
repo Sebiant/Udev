@@ -147,7 +147,7 @@ function obtener_registros($conn)
 
 $query = "";
 $salida = array();
-$query = "SELECT * FROM programas  WHERE estado = 'activo'";
+$query = "SELECT * FROM programas  /*WHERE estado = 'activo'*/";
 
 if (!empty($_POST["search"]["value"])) {
     $query .= 'WHERE id_programa LIKE ? . $_POST["search"]["value"] . ? ';
