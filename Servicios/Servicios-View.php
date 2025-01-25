@@ -162,9 +162,11 @@
         $.ajax({
           url: "Servicios-Controller.php",
           method: "POST",
-          data: {codigo_servicio: codigo_servicio,operacion:'obtener_registro'},
+          data: {codigo_programa: codigo_servicio,
+            operacion:'obtener_registro'},
           dataType: "json",
           success: function(data) {
+            console.log(data);
             $('#modalServicio').modal('show');
             $('#descripcion_servicio').val(data.nombre);
             $('#valor_total_servicio').val(data.cant_modulos);

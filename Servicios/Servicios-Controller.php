@@ -77,6 +77,7 @@ function editar($conn)
 
 {
     $codigo_servicio = intval($_POST['codigo_servicio']);
+   // $estado = $_POST["estado"];
     $stmt = $conn->prepare("UPDATE programas SET nombre=?, cant_modulos=?, estado=? WHERE id_programa = ? ");
 
     /*$resultado = $stmt->execute(
@@ -92,23 +93,26 @@ function editar($conn)
         "sisi",
         $_POST["descripcion_servicio"],
         $_POST["valor_total_servicio"],
+        //$estado,
         $_POST["estado"],
-        $_POST["codigo_servicio"]
+        //$_POST["codigo_servicio"]
+        $codigo_servicio
     );
 
     if ($stmt->execute()) {
         echo 'Registro actualizado';
     } else {
-        echo 'Error al actualizar el registro' . $conn->error;
-        echo "No se pudo actualizar el registro";
+        echo 'Error al actualizar el registro: ' . $conn->error; // Error de conexión
+        echo 'Error del statement: ' . $stmt->error; // Error específico de la consulta
     }
+    
     $stmt->close();
 }
 
 function obtener_registro($conn)
 {
 
-    if(isset($_POST["codigo_servicio"])){
+    if(isset($_POST["codigo_programa"])){
 
         
         
@@ -124,9 +128,9 @@ function obtener_registro($conn)
         //consulta marcador de posicion
         $stmt = $conn->prepare("SELECT * FROM programas WHERE id_programa = ? LIMIT 1");
         //vinculacion
-        $codigo_servicio = intval($_POST["codigo_servicio"]);
+        $codigo_program = intval($_POST["codigo_programa"]);
 
-        $stmt->bind_param('i', $codigo_servicio);
+        $stmt->bind_param('i', $codigo_program);
     try {  
         //ejecucion de consulta
         $stmt->execute();
