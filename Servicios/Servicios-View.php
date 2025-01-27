@@ -118,6 +118,16 @@
   }]
 });
 
+$(document).on('click', '.btn-toggle-state', function(){
+  const id = $(this).data('id');
+    const estadoActual = $(this).data('estado');
+    const nuevoEstado = (estadoActual === "Activo") ? "Inactivo" : "Activo";
+
+     // Ejemplo de cómo podrías usar estos datos
+     console.log("ID:", id, "Estado actual:", estadoActual, "Nuevo estado:", nuevoEstado);
+
+});
+
 
       $(document).on('submit', '#formulario', function(event) {
         event.preventDefault();
