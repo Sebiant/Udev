@@ -50,14 +50,12 @@ include_once '../componentes/header.php';
 
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre de la materia:</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" required>
-                            <div class="invalid-feedback">El nombre es obligatorio.</div>
+                            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre de la materia">
                         </div>
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripcion de la materia:</label>
-                            <input type="text" name="descripcion" id="descripcion" class="form-control" maxlength="100" required oninput="actualizarContador()">
-                            <small id="contador" class="contador-texto">100 caracteres disponibles</small>
-                            <div class="invalid-feedback">La descripcion es obligatoria.</div>
+                            <textarea name="descripcion" id="descripcion" maxlength="30" class="form-control"  placeholder="Descripción de la materia"></textarea>
+                            <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
                         </div>
                     </div>
                 </form>
@@ -84,16 +82,16 @@ include_once '../componentes/header.php';
                         
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre de la materia:</label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" required>
+                            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre de la materia">
                         </div>
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripcion de la materia:</label>
-                            <input type="text" name="descripcion" id="descripcion" class="form-control" maxlength="100" required oninput="actualizarContador()">
-                            <small id="contador" class="contador-texto">100 caracteres disponibles</small>
+                            <textarea name="descripcion" id="descripcion_edit" maxlength="30" class="form-control"  placeholder="Descripción de la materia"></textarea>
+                            <small id="contadorEditar" class="contador-texto">30 caracteres disponibles</small>
                         </div>
                     </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            <button type="button" class="btn btn-primary" onclick="GuardarMateria()">Guardar Cambios</button>
                         </div>
                     </div>
                 </form>
@@ -107,3 +105,55 @@ include_once '../componentes/footer.php';
 
 <script src="js/Consultas-Materias.js"></script>
 <script src="js/Datatables-Materias.js"></script>
+<script>
+   function crearMateria() {
+        if (!$("#formMateria").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('formMateria'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Materias-Controlador.php?accion=crear',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
+<script>
+    function GuardarMateria() {
+        if (!$("#editForm").valid()) {
+            console.log("El formulario no es válido.");
+            return; 
+        }
+    
+        const formData = new FormData(document.getElementById('editForm'));
+        console.log('Datos del formulario:', ...formData.entries());
+    
+        $.ajax({
+            url: 'Materias-Controlador.php?accion=editar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>

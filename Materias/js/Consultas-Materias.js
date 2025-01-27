@@ -1,72 +1,89 @@
-function crearMateria() {
-    const form = document.getElementById('formMateria');
-    
-    if (form.checkValidity()) {
-        $('#modalMaterias').modal('hide'); 
-        $.ajax({
-            url: 'Materias-Controlador.php?accion=crear',
-            type: 'POST',
-            data: $(form).serialize(), 
-            success: function(response) {
-                location.reload();
+jQuery(document).ready(function ($) {
+    // Validación del formulario de creación
+    $("#formMateria").validate({
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 3,
+                maxlength: 50
             },
-            error: function() {
-                alert('Hubo un error al crear el módulo.');
+            descripcion: {
+                required: true,
+                maxlength: 30
             }
-        });
-    } else {
-        form.classList.add('was-validated');
-    }
-}
-
-function editarMateria() {
-    const formData = new FormData(document.getElementById('formMateria'));
-
-    console.log('Acción: Editar');
-    console.log('Datos del Formulario:', ...formData.entries());
-
-    fetch('Materias-Controlador.php?accion=editar', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+        },
+        messages: {
+            nombre: {
+                required: "Por favor, ingresa el nombre de la materia.",
+                minlength: "El nombre debe tener al menos 3 caracteres.",
+                maxlength: "El nombre no puede superar los 50 caracteres."
+            },
+            descripcion: {
+                required: "Por favor, ingresa una descripción.",
+                maxlength: "La descripción no puede superar los 30 caracteres."
+            }
+        },
+        submitHandler: function (form) {
+            console.log("Formulario validado y listo para enviar.");
+            form.submit();
+            crearMateria();
+        }
     });
-}
 
-function activarMateria() {
-    const id_materia = document.getElementById('id_materia_eliminar').value;
-
-    console.log('ID Materia a Activar:', id_materia);
-
-    fetch('Materias-Controlador.php?accion=editar', {
-        method: 'POST',
-        body: new URLSearchParams({ id_materia })
-    })
-    .then(response => response.text())
-    .then(data => {
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+    // Validación del formulario de edición
+    $("#editForm").validate({
+        rules: {
+            nombre: {
+                required: true,
+                minlength: 3,
+                maxlength: 50
+            },
+            descripcion: {
+                required: true,
+                maxlength: 30
+            }
+        },
+        messages: {
+            nombre: {
+                required: "Por favor, ingresa el nombre de la materia.",
+                minlength: "El nombre debe tener al menos 3 caracteres.",
+                maxlength: "El nombre no puede superar los 50 caracteres."
+            },
+            descripcion: {
+                required: "Por favor, ingresa una descripción.",
+                maxlength: "La descripción no puede superar los 30 caracteres."
+            }
+        },
+        submitHandler: function (form) {
+            console.log("Formulario validado y listo para enviar.");
+            form.submit();
+            GuardarMateria();
+        }
     });
-}
 
-function actualizarContador() {
-    const descripcion = document.getElementById('descripcion');
-    const contador = document.getElementById('contador');
-    const maxLength = descripcion.getAttribute('maxlength');
-    const caracteresRestantes = maxLength - descripcion.value.length;
+    // Contador de caracteres en el formulario de creación
+    $('#descripcion').on('input', function () {
+        const maxLength = $(this).attr('maxlength');
+        const restantes = maxLength - $(this).val().length;
+        $('#contadorCrear').text(`${restantes} caracteres disponibles`);
 
-    contador.textContent = `${caracteresRestantes} caracteres disponibles`;
+        if (restantes <= 20) {
+            $('#contadorCrear').addClass('alerta');
+        } else {
+            $('#contadorCrear').removeClass('alerta');
+        }
+    });
 
-    if (caracteresRestantes <= 20) {
-        contador.classList.add('alerta');
-    } else {
-        contador.classList.remove('alerta');
-    }
-}
+    // Contador de caracteres en el formulario de edición
+    $('#descripcion_edit').on('input', function () {
+        const maxLength = $(this).attr('maxlength');
+        const restantes = maxLength - $(this).val().length;
+        $('#contadorEditar').text(`${restantes} caracteres disponibles`);
+
+        if (restantes <= 20) {
+            $('#contadorEditar').addClass('alerta');
+        } else {
+            $('#contadorEditar').removeClass('alerta');
+        }
+    });
+});
