@@ -239,7 +239,7 @@ try {
     $resultado = $stmt->get_result();
     $datos = [];
 
-    while($fila=$resultado->fetch_assoc()){
+    /*while($fila=$resultado->fetch_assoc()){
         $sub_array=[
             $fila["id_programa"],
             $fila["nombre"],//nombre clave para la relacion de conde va a ir dirigida la informacion la tabla sql
@@ -251,6 +251,30 @@ try {
 
         $datos[]=$sub_array;
 
+    }*/
+
+    while($fila=$resultado->fetch_assoc()){
+        $estado = $fila["estado"];
+        $id_programa = $fila["id_programa"];
+
+        //cambia clase y texto del boton segun el estado
+
+        $buttonClass = ($estado === "Activo") ? "btn-danger" : "btn-success";
+        $buttonText = ($estado === "Activo") ? "Inactivar" : "Activar";
+
+        $sub_array = [
+            $id_programa,
+            $fila["nombre"],
+            $fila["cant_modulos"],
+            $estado,
+            //boton modificar
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $id_programa . '" class="btn btn-primary w-100 btn-modify">Modificar</button>',
+            // boton dinamico
+            '<button type="button" class="btn ' . $buttonClass . ' w-100 btn-toggle-state"' . $id_programa . '"data-estado"' . $estado . '">' . $buttonText . '</button>'
+
+        ];
+
+        $datos[] = $sub_array;
     }
 
     /*$salida = array(
