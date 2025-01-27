@@ -14,7 +14,7 @@ $(document).ready(function() {
             {
                 "data": "id_modulo",
                 "render": function(data) {
-                    return `<button class="btn btn-primary w-100 btn-modify" onclick="editarModulo(${data})">Editar</button>`;
+                    return `<button class="btn btn-primary w-100 btn-modify" onclick="editarModulo(${data})">Modificar</button>`;
                 }
             },
             {
