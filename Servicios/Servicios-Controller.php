@@ -76,9 +76,14 @@ function crear($conn)
 function editar($conn)
 
 {
-    $codigo_servicio = intval($_POST['codigo_servicio']);
+    //$codigo_servicio = intval($_POST['codigo_programa']);
+    //echo $codigo_servicio;
    // $estado = $_POST["estado"];
-    $stmt = $conn->prepare("UPDATE programas SET nombre=?, cant_modulos=?, estado=? WHERE id_programa = ? ");
+
+    if(isset($_POST["codigo_servicio"])){
+        
+
+    $stmt = $conn->prepare("UPDATE programas SET nombre=?, cant_modulos=?, estado=? WHERE id_programa = ? limit 1");
 
     /*$resultado = $stmt->execute(
         array(
@@ -95,18 +100,23 @@ function editar($conn)
         $_POST["valor_total_servicio"],
         //$estado,
         $_POST["estado"],
-        //$_POST["codigo_servicio"]
-        $codigo_servicio
+        $_POST["codigo_servicio"]
+        //$codigo_servicio
     );
 
     if ($stmt->execute()) {
-        echo 'Registro actualizado';
+        echo 'Registro actualizados';
+        
     } else {
         echo 'Error al actualizar el registro: ' . $conn->error; // Error de conexión
         echo 'Error del statement: ' . $stmt->error; // Error específico de la consulta
     }
     
     $stmt->close();
+} else {
+    echo "no ha llegado ningun codigo";
+}
+
 }
 
 function obtener_registro($conn)

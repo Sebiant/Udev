@@ -54,7 +54,7 @@
         <form method="POST" id="formulario" enctype="multipart/form-data">
           <div class="modal-content">
             <div class="modal-body">
-              <input type="hidden" name="codigo_servicio" id="codigo_servicio">
+              
               <label for="descripcion_servicio">Descripcion</label>
               <input type="text" name="descripcion_servicio" id="descripcion_servicio" class="form-control">
               <br>
@@ -159,6 +159,7 @@
       // Funcionalidad de editar
       $(document).on('click', '.editar', function() {
         var codigo_servicio = $(this).attr("id");
+        
         $.ajax({
           url: "Servicios-Controller.php",
           method: "POST",
@@ -172,6 +173,7 @@
             $('#valor_total_servicio').val(data.cant_modulos);
             $('#estado').val(data.estado);
             $('.modal-title').text("Editar servicio");
+            console.log("Código de servicio asignado:", codigo_servicio);
             $('#codigo_servicio').val(codigo_servicio);
             $('#action').val("Editar").removeClass('btn-primary').addClass('btn-success');
             $('#operacion').val("editar");
