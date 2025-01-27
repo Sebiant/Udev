@@ -1,115 +1,192 @@
-function crearDocente() {
-    const form = document.getElementById('formDocente');
-    
-    if (form.checkValidity()) {
-        $('#modalDocentes').modal('hide'); 
-        $.ajax({
-            url: 'Docentes-Controlador.php',
-            type: 'POST',
-            data: $(form).serialize(),
-            success: function(response) {
-                console.log(response);
-                console.log('Recargando la página...');
-                location.reload();
+jQuery(document).ready(function($) {
+    $("#formDocente").validate({
+        rules: {
+            tipo_documento: {
+                required: true
             },
-            error: function() {
-                alert('Hubo un error al crear el módulo.');
+            numero_documento: {
+                required: true,
+                digits: true,
+                minlength: 10,
+                maxlength: 10
+            },
+            nombres: {
+                required: true
+            },
+            apellidos: {
+                required: true
+            },
+            especialidad: {
+                required: true
+            },
+            descripcion_especialidad: {
+                required: true,
+                maxlength: 20
+            },
+            telefono: {
+                required: true,
+                digits: true,
+                minlength: 10,
+                maxlength: 10
+            },
+            direccion: {
+                required: true
+            },
+            email: {
+                required: true,
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
             }
-        });
-    } else {
-        form.classList.add('was-validated');
-    }
-}
-
-function activarDocente() {
-    const id_docente = document.getElementById('id_docente_eliminar').value;
-
-    console.log('ID Docente a Activar:', id_docente);
-
-    fetch('Docentes-Controlador.php?accion=activar', {
-        method: 'POST',
-        body: new URLSearchParams({ id_docente })
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log('Recargando la página...');
-        location.reload();
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-function actualizarContador() {
-    const descripcion = document.getElementById('descripcion_especialidad');
-    const contador = document.getElementById('contador');
-    const maxLength = descripcion.getAttribute('maxlength');
-    const caracteresRestantes = maxLength - descripcion.value.length;
-
-    contador.textContent = `${caracteresRestantes} caracteres disponibles`;
-
-    if (caracteresRestantes <= 20) {
-        contador.classList.add('alerta');
-    } else {
-        contador.classList.remove('alerta');
-    }
-}
-
-
-function actualizarContadorEditar() {
-    const descripcion = document.getElementById('descripcion_especialidad_editar');
-    const contador = document.getElementById('contador');
-    const maxLength = descripcion.getAttribute('maxlength');
-    const caracteresRestantes = maxLength - descripcion.value.length;
-
-    contador.textContent = `${caracteresRestantes} caracteres disponibles`;
-
-    if (caracteresRestantes <= 20) {
-        contador.classList.add('alerta');
-    } else {
-        contador.classList.remove('alerta');
-    }
-}
-
-function validarCamposFaltantes() {
-    const campos = [
-        { nombre: "tipo_documento", etiqueta: "Tipo de documento" },
-        { nombre: "numero_documento", etiqueta: "Número de documento" },
-        { nombre: "nombres", etiqueta: "Nombres" },
-        { nombre: "apellidos", etiqueta: "Apellidos" },
-        { nombre: "especialidad", etiqueta: "Especialidad" },
-        { nombre: "descripcion_especialidad", etiqueta: "Descripcion Especialidad"},
-        { nombre: "telefono", etiqueta: "Teléfono" },
-        { nombre: "direccion", etiqueta: "Dirección" },
-        { nombre: "email", etiqueta: "Correo electrónico" }
-    ];
-
-    let camposFaltantes = [];
-
-    campos.forEach(campo => {
-        const valor = $(`#editForm [name="${campo.nombre}"]`).val();
-        if (!valor) {
-            camposFaltantes.push(campo.etiqueta);
+        },
+        messages: {
+            tipo_documento: {
+                required: "Por favor selecciona un tipo de documento."
+            },
+            numero_documento: {
+                required: "Por favor ingresa un número de documento.",
+                digits: "Solo se permiten números.",
+                minlength: "Debe contener 10 digitos.",
+                maxlength: "Debe contener 10 dígitos."
+            },
+            nombres: {
+                required: "Por favor ingresa tu nombre."
+            },
+            apellidos: {
+                required: "Por favor ingresa tu apellido."
+            },
+            especialidad: {
+                required: "Por favor ingresa tu especialidad."
+            },
+            descripcion_especialidad: {
+                required: "Por favor ingresa la descripción de la especialidad.",
+                maxlength: "No puedes exceder los 20 caracteres."
+            },
+            telefono: {
+                required: "Por favor ingresa un número de teléfono.",
+                digits: "Solo se permiten números.",
+                minlength: "Debe contener 10 dígitos.",
+                maxlength: "Debe contener 10 dígitos."
+            },
+            direccion: {
+                required: "Por favor ingresa tu dirección."
+            },
+            email: {
+                required: "Por favor ingresa un correo electrónico.",
+                email: "Por favor ingresa un correo válido.",
+                pattern: "El correo debe ser un dominio '@' - '.com'."
+            }
+        },
+        submitHandler: function(form) {
+            console.log("Formulario validado y listo para enviar.");
+            form.submit();
+            crearDocente();
         }
     });
 
-    const listaFaltantes = document.getElementById("camposFaltantes");
-    if (camposFaltantes.length > 0) {
-        listaFaltantes.innerHTML = `
-            <strong>Por favor completa los siguientes campos:</strong>
-            <ul>${camposFaltantes.map(campo => `<li>${campo}</li>`).join("")}</ul>
-        `;
-        listaFaltantes.style.display = "block";
-    } else {
-        listaFaltantes.style.display = "none";
-    }
-}
+    jQuery(document).ready(function($) {
+        $("#editForm").validate({
+            rules: {
+                tipo_documento: {
+                    required: true
+                },
+                numero_documento: {
+                    required: true,
+                    digits: true
+                },
+                nombres: {
+                    required: true
+                },
+                apellidos: {
+                    required: true
+                },
+                especialidad: {
+                    required: true
+                },
+                descripcion_especialidad: {
+                    required: true,
+                    maxlength: 20
+                },
+                telefono: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 10
+                },
+                direccion: {
+                    required: true
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)$/
+                }
+            },
+            messages: {
+                tipo_documento: {
+                    required: "Por favor selecciona un tipo de documento."
+                },
+                numero_documento: {
+                    required: "Por favor ingresa un número de documento.",
+                    digits: "Solo se permiten números."
+                },
+                nombres: {
+                    required: "Por favor ingresa tu nombre."
+                },
+                apellidos: {
+                    required: "Por favor ingresa tu apellido."
+                },
+                especialidad: {
+                    required: "Por favor ingresa tu especialidad."
+                },
+                descripcion_especialidad: {
+                    required: "Por favor ingresa la descripción de la especialidad.",
+                    maxlength: "No puedes exceder los 20 caracteres."
+                },
+                telefono: {
+                    required: "Por favor ingresa un número de teléfono.",
+                    digits: "Solo se permiten números.",
+                    minlength: "Debe contener 10 dígitos.",
+                    maxlength: "Debe contener 10 dígitos."
+                },
+                direccion: {
+                    required: "Por favor ingresa tu dirección."
+                },
+                email: {
+                    required: "Por favor ingresa un correo electrónico.",
+                    email: "Por favor ingresa un correo válido.",
+                    pattern: "El correo debe ser un dominio '.com'."
+                }
+            },
+            submitHandler: function(form) {
+                console.log("Formulario validado y listo para enviar.");
+                form.submit();
+                guardarCambiosDocente();
+            }
+        });
 
-function inicializarValidacionDinamica() {
-    $('#editForm input, #editForm select').on('input change', validarCamposFaltantes);
-}
+        // Contador de caracteres
+        $('#descripcion_especialidad').on('input', function() {
+            const maxLength = $(this).attr('maxlength');
+            const restantes = maxLength - $(this).val().length;
+            $('#contadorCrear').text(`${restantes} caracteres disponibles`);
 
-function abrirModalModificar() {
-    validarCamposFaltantes(); 
-    inicializarValidacionDinamica(); 
-}
+            if (restantes <= 20) {
+                $('#contadorCrear').addClass('alerta');
+            } else {
+                $('#contadorCrear').removeClass('alerta');
+            }
+        });
+    });
+
+        // Contador de caracteres
+        $('#descripcion_especialidad_edit').on('input', function() {
+            const maxLength = $(this).attr('maxlength');
+            const restantes = maxLength - $(this).val().length;
+            $('#contadorEditar').text(`${restantes} caracteres disponibles`);
+
+            if (restantes <= 20) {
+                $('#contadorEditar').addClass('alerta');
+            } else {
+                $('#contadorEditar').removeClass('alerta');
+            }
+        });
+});
