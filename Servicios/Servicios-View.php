@@ -37,7 +37,7 @@
             <th>Valor total</th>
             <th>Estado</th>
             <th>Editar</th>
-            <!--<th>Borrar</th>-->
+            <th>Acciones</th>
           </tr>
         </thead>
       </table>

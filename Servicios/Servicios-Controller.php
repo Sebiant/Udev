@@ -243,9 +243,9 @@ try {
         $sub_array=[
             $fila["id_programa"],
             $fila["nombre"],//nombre clave para la relacion de conde va a ir dirigida la informacion la tabla sql
-
             $fila["cant_modulos"],
             $fila["estado"],
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $fila["id_programa"] . '" class="btn btn-primary w-100 btn-modify"> Modificar</button>',
             '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="editar" id="' . $fila["id_programa"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
         ];
 
