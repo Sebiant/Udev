@@ -16,49 +16,66 @@ switch ($accion) {
         echo ($conn->query($sql) === TRUE) ? "Salón creado con éxito" : "Error al crear el salón: " . $conn->error;
         break;
 
-    case 'modificar':
-        $id_salon = $_POST['id_salon'] ?? null;
-        if (empty($id_salon)) {
-            echo json_encode(["error" => "ID de salón no proporcionado"]);
-            exit;
-        }
-        $sql = "SELECT * FROM Salones WHERE id_salon = '$id_salon'";
-        $result = $conn->query($sql);
-        if ($result === false) {
-            echo json_encode(["error" => "Error en la consulta SQL: " . $conn->error]);
-            exit;
-        }
-        $data = [];
-        if ($result->num_rows > 0) {
-            $salon = $result->fetch_assoc();
-            $salon['estado'] = $salon['estado'] == 1 ? "Activo" : "Inactivo";
-            $data[] = $salon;
-        }
-        header('Content-Type: application/json');
-        echo json_encode(["data" => $data]);
-        break;
+            case 'buscarPorId':
+                $id_salon = $_POST['id_salon'];
 
-    case 'editar':
-        $id_salon = $_POST['id_salon'];
-        $sql_select = "SELECT * FROM Salones WHERE id_salon='$id_salon'";
-        $result = $conn->query($sql_select);
-        if ($result->num_rows > 0) {
-            $salon = $result->fetch_assoc();
-            $nombre_salon = $_POST['nombre_salon'] ?? $salon['nombre_salon'];
-            $capacidad = $_POST['capacidad'] ?? $salon['capacidad'];
-            $descripcion = $_POST['descripcion'] ?? $salon['descripcion'];
-            $id_institucion = $_POST['id_institucion'] ?? $salon['id_institucion'];
-            $estado = isset($_POST['estado']) ? ($_POST['estado'] == 'Sí' ? 1 : 0) : $salon['estado'];
+                $sql = "SELECT * FROM salones WHERE id_salon = '$id_salon'";
+                $result = $conn->query($sql);
+                if ($result === false) {
+                    echo json_encode(["error" => "Error en la consulta SQL: " . $conn->error]);
+                    exit;
+                }
+                $data = [];
+                if ($result->num_rows > 0) {
+                    $salon = $result->fetch_assoc();
+                    $salon['estado'] = $salon['estado'] == 1 ? "Activo" : "Inactivo";
+                    $data[] = $salon;
+                }
+                header('Content-Type: application/json');
+                echo json_encode(["data" => $data]);
+                break;
+        
 
-            $sql_update = "UPDATE Salones 
-                           SET nombre_salon='$nombre_salon', capacidad='$capacidad', 
-                               descripcion='$descripcion', id_institucion='$id_institucion', estado='$estado' 
-                           WHERE id_salon='$id_salon'";
-            echo ($conn->query($sql_update) === TRUE) ? "Registro actualizado exitosamente." : "Error al actualizar el registro: " . $conn->error;
-        } else {
-            echo "No se encontró el registro del salón.";
-        }
-        break;
+                case 'modificar':
+                    // Obtener los datos enviados por POST
+                    $id_salon = $_POST['id_salon'] ?? null;
+                    $nombre_salon = $_POST['nombre_salon'] ?? '';
+                    $capacidad = $_POST['capacidad'] ?? '';
+                    $descripcion = $_POST['descripcion'] ?? '';
+                    $id_institucion = $_POST['id_institucion'] ?? '';
+                    $estado = isset($_POST['estado']) ? 1 : 0; // Si el checkbox está marcado, estado es activo
+                
+                    // Validar si el ID de salón existe
+                    if (empty($id_salon)) {
+                        echo json_encode(["error" => "ID de salón no proporcionado"]);
+                        exit;
+                    }
+                
+                    // Validar que los campos requeridos no estén vacíos
+                    if (empty($nombre_salon) || empty($capacidad) || empty($descripcion) || empty($id_institucion)) {
+                        echo json_encode(["error" => "Faltan datos para actualizar el salón"]);
+                        exit;
+                    }
+                
+                    // Realizar la consulta de actualización
+                    $sql = "UPDATE Salones SET nombre_salon = ?, capacidad = ?, descripcion = ?, id_institucion = ?, estado = ? WHERE id_salon = ?";
+                
+                    // Preparar y ejecutar la consulta
+                    if ($stmt = $conn->prepare($sql)) {
+                        $stmt->bind_param("ssssii", $nombre_salon, $capacidad, $descripcion, $id_institucion, $estado, $id_salon);
+                        
+                        if ($stmt->execute()) {
+                            echo json_encode(["success" => "Salón actualizado correctamente"]);
+                        } else {
+                            echo json_encode(["error" => "Error al actualizar el salón: " . $stmt->error]);
+                        }
+                
+                        $stmt->close();
+                    } else {
+                        echo json_encode(["error" => "Error en la preparación de la consulta SQL: " . $conn->error]);
+                    }
+                    break;
+                
 
     case 'cambiarEstado':
         $id_salon = $_POST['id_salon'];
