@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
             },
             descripcion: {
                 required: true,
-                maxlength: 100
+                maxlength: 30
             }
         },
         messages: {
@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
             },
             descripcion: {
                 required: "Por favor, ingresa una descripción.",
-                maxlength: "No puede exceder 100 caracteres."
+                maxlength: "No puede exceder 30 caracteres."
             }
         },
         submitHandler: function(form) {
@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
                 },
                 descripcion: {
                     required: true,
-                    maxlength: 100
+                    maxlength: 30
                 }
             },
             messages: {
@@ -102,13 +102,13 @@ jQuery(document).ready(function($) {
                 },
                 descripcion: {
                     required: "Por favor, ingresa una descripción.",
-                    maxlength: "No puede exceder 100 caracteres."
+                    maxlength: "No puede exceder 30 caracteres."
                 }
             },
             submitHandler: function(form) {
                 console.log("Formulario validado y listo para enviar.");
                 form.submit();
-                GuardarPrograma();
+                
             }
         });
 
