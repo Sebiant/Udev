@@ -7,10 +7,9 @@ switch ($accion) {
     case 'crear':
         $Nombre = $_POST['nombre'];
         $Direccion = $_POST['direccion'];
-        $Estado = isset($_POST['estado']) ? 1 : 0;
         
-        $sql = "INSERT INTO instituciones (nombre, direccion, estado) 
-                VALUES ('$Nombre', '$Direccion','$Estado')";
+        $sql = "INSERT INTO instituciones (nombre, direccion) 
+                VALUES ('$Nombre', '$Direccion')";
         
         if ($conn->query($sql) === TRUE) {
         } else {
@@ -18,33 +17,51 @@ switch ($accion) {
         }
         break;
 
-    case 'editar':
-        $id_institucion = $_POST['id_institucion'];
-
-        $sql_select = "SELECT * FROM instituciones WHERE id_institucion='$id_institucion'";
-        $result = $conn->query($sql_select);
-
-        if ($result->num_rows > 0) {
-            $instituto = $result->fetch_assoc();
-
-            $Nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $instituto['nombre'];
-            $Direccion = isset($_POST['direccion']) ? $_POST['direccion'] : $instituto['direccion'];
-            $Estado = isset($_POST['estado']) ? $_POST['estado'] : $instituto['estado'];
-            
-            $sql_update = "UPDATE instituciones SET  
-                            nombre='$Nombre', 
-                            direccion='$Direccion', 
-                            estado='$Estado'
-                            WHERE id_institucion='$id_institucion'";
-
-            if ($conn->query($sql_update) === TRUE) {
-            } else {
-                echo "Error al actualizar el registro: " . $conn->error;
+        case 'editar':
+            // Validar que se haya enviado el formulario completo
+            if (!isset($_POST['id_institucion']) || empty($_POST['id_institucion'])) {
+                echo "El ID de la institución es obligatorio.";
+                break;
             }
-        } else {
-            echo "No se encontró el registro de la institución.";
-        }
-    break;
+        
+            // Recibir los datos del formulario
+            $id_institucion = $_POST['id_institucion'];
+            $Nombre = isset($_POST['nombre']) ? $_POST['nombre'] : null;
+            $Direccion = isset($_POST['direccion']) ? $_POST['direccion'] : null;
+           
+            // Validar que al menos un campo adicional esté presente
+            if (is_null($Nombre) && is_null($Direccion)) {
+                echo "No se han enviado datos para actualizar.";
+                break;
+            }
+        
+            // Obtener el registro actual desde la base de datos
+            $sql_select = "SELECT * FROM instituciones WHERE id_institucion = '$id_institucion'";
+            $result = $conn->query($sql_select);
+        
+            if ($result->num_rows > 0) {
+                // Actualizar solo los campos enviados
+                $fieldsToUpdate = [];
+                if (!is_null($Nombre)) {
+                    $fieldsToUpdate[] = "nombre = '$Nombre'";
+                }
+                if (!is_null($Direccion)) {
+                    $fieldsToUpdate[] = "direccion = '$Direccion'";
+                }
+        
+                // Construir la consulta de actualización dinámica
+                $sql_update = "UPDATE instituciones SET " . implode(", ", $fieldsToUpdate) . " WHERE id_institucion = '$id_institucion'";
+        
+                if ($conn->query($sql_update) === TRUE) {
+                    echo "Institución actualizada correctamente.";
+                } else {
+                    echo "Error al actualizar el registro: " . $conn->error;
+                }
+            } else {
+                echo "No se encontró el registro de la institución.";
+            }
+            break;
+        
 
     case 'cambiarEstado':
         $id_institucion = $_POST['id_institucion'];

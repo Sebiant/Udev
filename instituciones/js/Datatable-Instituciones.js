@@ -86,7 +86,6 @@ $(document).ready(function() {
             type: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-                alert('Institución actualizada exitosamente.');
                 table.ajax.reload();
                 $('#editModal').modal('hide');
             },
@@ -100,18 +99,16 @@ $(document).ready(function() {
         var data = table.row($(this).parents('tr')).data();
         var idInstitucion = data.id_institucion;
 
-        if (confirm('¿Estás seguro de que quieres desactivar la institución?')) {
-            $.ajax({
-                url: 'instituciones-controlador.php?accion=eliminar',
-                type: 'POST',
-                data: { id_institucion: idInstitucion },
-                success: function(response) {
-                    table.ajax.reload();
-                },
-                error: function() {
-                    alert('Error al desactivar la institución.');
-                }
-            });
-        }
+        $.ajax({
+            url: 'instituciones-controlador.php?accion=eliminar',
+            type: 'POST',
+            data: { id_institucion: idInstitucion },
+            success: function(response) {
+                table.ajax.reload();
+            },
+            error: function() {
+                alert('Error al desactivar la institución.');
+            }
+        });
     });
 });

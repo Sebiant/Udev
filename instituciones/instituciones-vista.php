@@ -57,7 +57,7 @@
                         </div>
                         
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success" onclick="crearInstitucion()">Guardar</button>
+                            <button type="button" class="btn btn-success" onclick="crearInstitucion()">Guardar</button>
                         </div>
                     </div>
                 </form>
@@ -101,12 +101,12 @@
 <script src="js/Datatable-Instituciones.js"></script>
 <script>
       function crearInstitucion() {
-        if (!$("#formInstitucion").valid()) {
+        if (!$("#formInstituciones").valid()) {
             console.log("El formulario no es válido.");
             return; 
         }
     
-        const formData = new FormData(document.getElementById('formInstitucion'));
+        const formData = new FormData(document.getElementById('formInstituciones'));
         console.log('Datos del formulario:', ...formData.entries());
     
         $.ajax({
@@ -136,7 +136,7 @@
         console.log('Datos del formulario:', ...formData.entries());
     
         $.ajax({
-            url: 'Institucion-Controlador.php?accion=editar',
+            url: 'instituciones-controlador.php?accion=editar',
             type: 'POST',
             data: formData,
             processData: false,
