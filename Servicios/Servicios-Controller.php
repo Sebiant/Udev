@@ -268,7 +268,7 @@ try {
             $fila["cant_modulos"],
             $estado,
             //boton modificar
-            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $id_programa . '" class="btn btn-primary w-100 btn-modify">Modificar</button>',
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $id_programa . '" class="btn btn-primary w-100 editar">Modificar</button>',
             // boton dinamico
             '<button type="button" class="btn ' . $buttonClass . ' w-100 btn-toggle-state"' . $id_programa . '"data-estado"' . $estado . '">' . $buttonText . '</button>'
 
