@@ -119,12 +119,30 @@
 });
 
 $(document).on('click', '.btn-toggle-state', function(){
-  const id = $(this).data('id');
-    const estadoActual = $(this).data('estado');
-    const nuevoEstado = (estadoActual === "Activo") ? "Inactivo" : "Activo";
+  var id = $(this).data('id');
+    var estadoActual = $(this).data('estado');
+    var nuevoEstado = (estadoActual === "Activo") ? 0 : 1;
 
      // Ejemplo de cómo podrías usar estos datos
-     console.log("ID:", id, "Estado actual:", estadoActual, "Nuevo estado:", nuevoEstado);
+    // console.log("ID:", id, "Estado actual:", estadoActual, "Nuevo estado:", nuevoEstado);
+    $.ajax({
+
+      url:'Servicios-Controller.php',
+      method:'POST',
+      type:'json',
+      data:{id_programa: id, estado: nuevoEstado,
+        operacion:'cambiarEstado'
+      },
+      success:function(data){
+        alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+                dataTable.ajax.reload();
+      },
+      error:function(){
+        alert("Hubo un error al cambiar el estado.");
+      }
+
+
+    });
 
 });
 

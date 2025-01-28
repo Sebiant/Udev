@@ -20,6 +20,8 @@ function main($action, $conn)
         case 'obtener_registro':
             obtener_registro($conn);
             break;
+        case 'cambiarEstado':
+            cambiar_Estado($conn);
         default:
         obtener_registros($conn);
             break;
@@ -270,7 +272,7 @@ try {
             //boton modificar
             '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $id_programa . '" class="btn btn-primary w-100 editar">Modificar</button>',
             // boton dinamico
-            '<button type="button" class="btn ' . $buttonClass . ' w-100 btn-toggle-state"' . $id_programa . '"data-estado"' . $estado . '">' . $buttonText . '</button>'
+            '<button type="button" class="btn ' . $buttonClass . ' btn-toggle-state" data-id="' . $id_programa . '"data-estado"' . $estado . '">' . $buttonText . '</button>'
 
         ];
 
@@ -293,6 +295,29 @@ try {
     echo json_encode($salida);
 
 
+}
+
+function cambiar_estado($conn){
+    if (isset($_POST["id_programa"]) && isset($_POST["estado"])) {
+        $nuevoEstado = intval($_POST["estado"]) === 1 ? "Activo" : "Inactivo";
+
+
+    $stmt = $conn->prepare ("UPDATE programas SET estado=? WHERE id_programa=? LIMIT 1");
+    $stmt->bind_param(
+        'si',
+        $nuevoEstado,
+        $_POST["id_programa"]
+    );
+
+    if ($stmt->execute()){
+        echo "Estado cambiado exitosamente a " . ($nuevoEstado == 1 ? "Activo" : "Inactivo" . ".");
+    }else {
+        echo "Error al cambiar el estado: " . $conn->error;
+    }
+}else{
+    echo "DATOS INSUFICIENTES PARA CAMBIAR EL ESTADO";
+
+}
 }
 
 function obtener_todos_registros (){
