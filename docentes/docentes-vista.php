@@ -80,7 +80,7 @@ include_once '../componentes/header.php';
                         </div>
                         <div class="mb-3">
                             <label for="descripcion_especialidad">Descripción Especialidad:</label>
-                            <textarea name="descripcion-especialidad" id="descripcion_especialidad" maxlength="30" class="form-control"  placeholder="Descripción Especialidad"></textarea>
+                            <textarea name="descripcion_especialidad" id="descripcion_especialidad" maxlength="30" class="form-control"  placeholder="Descripción Especialidad"></textarea>
                             <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
                         </div>
                         <div class="mb-3">
@@ -159,7 +159,7 @@ include_once '../componentes/header.php';
                         </div>
                         <div class="mb-3">
                             <label for="descripcion_especialidad">Descripción Especialidad:</label>
-                            <textarea name="descripcion-especialidad" id="descripcion_especialidad_edit" maxlength="30" class="form-control"  placeholder="Descripción Especialidad"></textarea>
+                            <textarea name="descripcion_especialidad" id="descripcion_especialidad_edit" maxlength="30" class="form-control"  placeholder="Descripción Especialidad"></textarea>
                             <small id="contadorEditar" class="contador-texto">30 caracteres disponibles</small>
                         </div>
                         <div class="mb-3">
@@ -236,7 +236,7 @@ include_once '../componentes/footer.php';
         console.log('Datos del formulario:', ...formData.entries());
     
         $.ajax({
-            url: 'Docentes-Controlador.php?accion=Modiicar',
+            url: 'Docentes-Controlador.php?accion=Modificar',
             type: 'POST',
             data: formData,
             processData: false,
