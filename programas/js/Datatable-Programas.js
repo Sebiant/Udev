@@ -100,30 +100,4 @@ $(document).ready(function () {
             }            
         });
     });
-
-    $('#editForm').on('submit', function (event) {
-        event.preventDefault();
-
-        const formData = $(this).serialize(); 
-        
-        $.ajax({
-            url: 'Programas-Controlador.php?accion=editar',
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            success: function (response) {  
-                if (response.success) {
-                    $('#editModal').modal('hide');
-                    console.log('Respuesta del servidor:', response);
-                    table.ajax.reload();
-                } else {
-                    alert(response.message || 'Error al actualizar el programa.');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Error en la solicitud:', error);
-                alert('Ocurrió un error al realizar la solicitud. Intenta nuevamente.');
-            }
-        });
-    });
 });
