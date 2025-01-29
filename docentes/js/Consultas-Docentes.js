@@ -1,4 +1,10 @@
 jQuery(document).ready(function($) {
+    $.validator.addMethod("emailOnly", function(value, element) {
+        return this.optional(element) || /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+    }, "Por favor ingresa un correo válido.");
+    $.validator.addMethod("lettersOnly", function(value, element) {
+        return this.optional(element) || /^[a-zA-ZáéíóúÁÉÍÓÚÑñ\s]+$/.test(value);
+    }, "Por favor, ingrese solo letras.");
     $("#formDocente").validate({
         rules: {
             tipo_documento: {
@@ -11,17 +17,19 @@ jQuery(document).ready(function($) {
                 maxlength: 10
             },
             nombres: {
-                required: true
+                required: true,
+                lettersOnly: true
             },
             apellidos: {
-                required: true
+                required: true,
+                lettersOnly: true
             },
             especialidad: {
                 required: true
             },
             descripcion_especialidad: {
                 required: true,
-                maxlength: 20
+                maxlength: 30
             },
             telefono: {
                 required: true,
@@ -34,7 +42,7 @@ jQuery(document).ready(function($) {
             },
             email: {
                 required: true,
-                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+                emailOnly: true
             }
         },
         messages: {
@@ -58,7 +66,7 @@ jQuery(document).ready(function($) {
             },
             descripcion_especialidad: {
                 required: "Por favor ingresa la descripción de la especialidad.",
-                maxlength: "No puedes exceder los 20 caracteres."
+                maxlength: "No puedes exceder los 30 caracteres."
             },
             telefono: {
                 required: "Por favor ingresa un número de teléfono.",
@@ -70,9 +78,7 @@ jQuery(document).ready(function($) {
                 required: "Por favor ingresa tu dirección."
             },
             email: {
-                required: "Por favor ingresa un correo electrónico.",
-                email: "Por favor ingresa un correo válido.",
-                pattern: "El correo debe ser un dominio '@' - '.com'."
+                required: "Por favor ingresa un correo electrónico."
             }
         },
         submitHandler: function(form) {
@@ -83,6 +89,12 @@ jQuery(document).ready(function($) {
     });
 
     jQuery(document).ready(function($) {
+        $.validator.addMethod("emailOnly", function(value, element) {
+            return this.optional(element) || /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+        }, "Por favor ingresa un correo válido.");
+        $.validator.addMethod("lettersOnly", function(value, element) {
+            return this.optional(element) || /^[a-zA-ZáéíóúÁÉÍÓÚÑñ\s]+$/.test(value);
+        }, "Por favor, ingrese solo letras.");
         $("#editForm").validate({
             rules: {
                 tipo_documento: {
@@ -93,17 +105,19 @@ jQuery(document).ready(function($) {
                     digits: true
                 },
                 nombres: {
-                    required: true
+                    required: true,
+                    lettersOnly: true
                 },
                 apellidos: {
-                    required: true
+                    required: true,
+                    lettersOnly: true
                 },
                 especialidad: {
                     required: true
                 },
                 descripcion_especialidad: {
                     required: true,
-                    maxlength: 20
+                    maxlength: 30
                 },
                 telefono: {
                     required: true,
@@ -116,8 +130,7 @@ jQuery(document).ready(function($) {
                 },
                 email: {
                     required: true,
-                    email: true,
-                    pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com)$/
+                    emailOnly: true
                 }
             },
             messages: {
@@ -139,7 +152,7 @@ jQuery(document).ready(function($) {
                 },
                 descripcion_especialidad: {
                     required: "Por favor ingresa la descripción de la especialidad.",
-                    maxlength: "No puedes exceder los 20 caracteres."
+                    maxlength: "No puedes exceder los 30 caracteres."
                 },
                 telefono: {
                     required: "Por favor ingresa un número de teléfono.",
@@ -151,9 +164,7 @@ jQuery(document).ready(function($) {
                     required: "Por favor ingresa tu dirección."
                 },
                 email: {
-                    required: "Por favor ingresa un correo electrónico.",
-                    email: "Por favor ingresa un correo válido.",
-                    pattern: "El correo debe ser un dominio '.com'."
+                    required: "Por favor ingresa un correo electrónico."
                 }
             },
             submitHandler: function(form) {
