@@ -35,6 +35,7 @@ jQuery(document).ready(function($) {
             }
         },
         submitHandler: function(form) {
+            console.log("Formulario validado y listo para enviar.");
             form.submit();
             CrearSalon();
         }

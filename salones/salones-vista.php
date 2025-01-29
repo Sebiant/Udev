@@ -81,7 +81,7 @@
                             </select>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success" onclick="CrearSalon()">Guardar</button>
+                            <button type="button" class="btn btn-success" onclick="CrearSalon()">Guardar</button>
                         </div>
                     </div>
                 </form>
