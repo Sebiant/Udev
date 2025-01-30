@@ -2,7 +2,7 @@
 include_once '../componentes/header.php';
 include '../conexion.php';
 
-$sql = "SELECT id_programa, nombre FROM programas";
+$sql = "SELECT id_programa, nombre FROM programas WHERE estado = 1";
 $result = $conn->query($sql);
 ?>
 
@@ -107,7 +107,7 @@ $result = $conn->query($sql);
                         <select name="id_programa" class="form-control">
                             <option value="">-- Selecciona un programa --</option>
                             <?php
-                             $sql = "SELECT id_programa, nombre FROM programas";
+                             $sql = "SELECT id_programa, nombre FROM programas WHERE estado = 1";
                              $result = $conn->query($sql);
                      
                              if ($result->num_rows > 0) {
