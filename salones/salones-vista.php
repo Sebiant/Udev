@@ -1,6 +1,9 @@
 <?php
     include_once '../componentes/header.php';
     include_once '../conexion.php';
+
+    $sql = "SELECT id_institucion, nombre FROM instituciones WHERE estado= 1";
+    $result = $conn->query($sql);
 ?>
 
 <div class="container">
@@ -68,9 +71,6 @@
                             <select class="form-control" name="id_institucion">
                                 <option value="">-- Selecciona una institución --</option>
                                 <?php
-                                    // Cargar las instituciones en las opciones del select
-                                    $sql = "SELECT id_institucion, nombre FROM instituciones";
-                                    $result = $conn->query($sql);
 
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
@@ -119,7 +119,7 @@
                             <option value="">-- Selecciona una institución --</option>
                             <?php
                                 // Cargar las instituciones en las opciones del select
-                                $sql = "SELECT id_institucion, nombre FROM instituciones";
+                                $sql = "SELECT id_institucion, nombre FROM instituciones WHERE estado= 1";
                                 $result = $conn->query($sql);
 
                                 if ($result->num_rows > 0) {
