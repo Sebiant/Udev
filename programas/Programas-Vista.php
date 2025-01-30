@@ -72,7 +72,7 @@ include_once '../componentes/header.php';
                     <div class="mb-3">
                         <label for="descripcion_crear" class="form-label">Descripción:</label>
                         <textarea name="descripcion" id="descripcion_crear" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
-                        <div id="contadorCrear">30 caracteres disponibles</div>
+                        <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
                     </div>
                 </form>
             </div>
@@ -94,6 +94,7 @@ include_once '../componentes/header.php';
             <form id="editForm">
                 <div class="modal-body">
                     <input type="hidden" name="id_programa" id="id_programa_edit">
+
                     <div class="form-group">
                         <label for="tipo_edit" class="form-label">Tipo de Programa:</label>
                         <input type="text" name="tipo" id="tipo_edit" class="form-control" placeholder="Tipo de programa">
@@ -113,7 +114,7 @@ include_once '../componentes/header.php';
                     <div class="form-group">
                         <label for="descripcion_edit" class="form-label">Descripción:</label>
                         <textarea name="descripcion" id="descripcion_edit" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
-                        <div id="contadorEditar">30 caracteres disponibles</div>
+                        <small id="contadorEditar" class="contador-texto">30 caracteres disponibles</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -127,18 +128,18 @@ include_once '../componentes/header.php';
 <?php
 include_once '../componentes/footer.php';
 ?>
-
+<script src="js/Consultas-Programas.js"></script>
 <script src="js/Datatable-Programas.js"></script>
 <script>
-    function crearPrograma() {
-        if (!$("#formPrograma")[0].checkValidity()) {
+   function crearPrograma() {
+        if (!$("#formPrograma").valid()) {
             console.log("El formulario no es válido.");
             return; 
         }
-
+    
         const formData = new FormData(document.getElementById('formPrograma'));
         console.log('Datos del formulario:', ...formData.entries());
-
+    
         $.ajax({
             url: 'Programas-Controlador.php?accion=crear',
             type: 'POST',
@@ -155,34 +156,29 @@ include_once '../componentes/footer.php';
         });
     }
 
-    function editarPrograma() {
-        if (!$("#editForm")[0].checkValidity()) {
+function editarPrograma() {
+        if (!$("#editForm").valid()) {
             console.log("El formulario no es válido.");
             return; 
         }
-
+    
         const formData = new FormData(document.getElementById('editForm'));
         console.log('Datos del formulario:', ...formData.entries());
-
+    
         $.ajax({
             url: 'Programas-Controlador.php?accion=editar',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
-            success: function (response) {  
-                if (response.success) {
-                    $('#editModal').modal('hide');
-                    console.log('Respuesta del servidor:', response);
-                    $('#datos_programa').DataTable().ajax.reload();
-                } else {
-                    alert(response.message || 'Error al actualizar el programa.');
-                }
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                //location.reload();
             },
-            error: function (xhr, status, error) {
-                console.error('Error en la solicitud:', error);
-                alert('Ocurrió un error al realizar la solicitud. Intenta nuevamente.');
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
             }
         });
     }
 </script>
+

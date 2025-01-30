@@ -34,7 +34,7 @@ switch ($accion) {
             $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : null;
             $duracion_mes = isset($_POST['duracion_mes']) ? $_POST['duracion_mes'] : null;
             $cant_modulos = isset($_POST['cant_modulos']) ? $_POST['cant_modulos'] : null;
-            $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : null;
+            $descripcion = isset($_POST['descripcion']) && $_POST['descripcion'] !== '' ? $_POST['descripcion'] : null;
             $estado = isset($_POST['estado']) ? $_POST['estado'] : null;
         
             // Validar que al menos un campo adicional esté presente
@@ -74,7 +74,7 @@ switch ($accion) {
                                 WHERE id_programa = ?";
         
                 $stmt_update = $conn->prepare($sql_update);
-                $stmt_update->bind_param('ssiiisi', $tipo, $nombre, $duracion_mes, $cant_modulos, $descripcion, $estado, $id_programa);
+                $stmt_update->bind_param('ssiissi', $tipo, $nombre, $duracion_mes, $cant_modulos, $descripcion, $estado, $id_programa);
         
                 // Ejecutar la actualización
                 if ($stmt_update->execute()) {

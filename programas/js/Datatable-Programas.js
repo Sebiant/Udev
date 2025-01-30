@@ -81,8 +81,8 @@ $(document).ready(function () {
                         console.log(response.data[i]);
                     }
     
-                    var programa = response.data[0];
-
+                    var programa = response.data[0]; 
+                    $('#editForm [name="id_programa"]').val(programa.id_programa);
                     $('#editForm [name="tipo"]').val(programa.tipo);
                     $('#editForm [name="nombre"]').val(programa.nombre);
                     $('#editForm [name="duracion_mes"]').val(programa.duracion_mes);
