@@ -2,8 +2,7 @@ jQuery(document).ready(function($) {
     $("#formSalones").validate({
         rules: {
             nombre_salon: {
-                required: true,
-                pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/ // Solo letras y espacios
+                required: true
             },
             capacidad: {
                 required: true,
@@ -20,8 +19,7 @@ jQuery(document).ready(function($) {
         },
         messages: {
             nombre_salon: {
-                required: "Por favor, ingresa el nombre del salón.",
-                pattern: "El nombre solo puede contener letras y espacios."
+                required: "Por favor, ingresa el nombre del salón."
             },
             capacidad: {
                 required: "Por favor, ingresa la capacidad del salón.",
@@ -49,7 +47,6 @@ jQuery(document).ready(function($) {
         rules: {
             nombre_salon: {
                 required: true,
-                pattern: /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/ // Solo letras y espacios
             },
             capacidad: {
                 required: true,
@@ -67,7 +64,6 @@ jQuery(document).ready(function($) {
         messages: {
             nombre_salon: {
                 required: "Por favor, ingresa el nombre del salón.",
-                pattern: "El nombre solo puede contener letras y espacios."
             },
             capacidad: {
                 required: "Por favor, ingresa la capacidad del salón.",
@@ -86,6 +82,32 @@ jQuery(document).ready(function($) {
             console.log("Formulario validado y listo para enviar.");
             form.submit();
             GuardarSalon();
+        }
+    });
+
+     // Contador de caracteres en el formulario de creación
+     $('#descripcion').on('input', function () {
+        const maxLength = $(this).attr('maxlength');
+        const restantes = maxLength - $(this).val().length;
+        $('#contadorCrear').text(`${restantes} caracteres disponibles`);
+
+        if (restantes <= 20) {
+            $('#contadorCrear').addClass('alerta');
+        } else {
+            $('#contadorCrear').removeClass('alerta');
+        }
+    });
+
+    // Contador de caracteres en el formulario de edición
+    $('#descripcion_edit').on('input', function () {
+        const maxLength = $(this).attr('maxlength');
+        const restantes = maxLength - $(this).val().length;
+        $('#contadorEditar').text(`${restantes} caracteres disponibles`);
+
+        if (restantes <= 20) {
+            $('#contadorEditar').addClass('alerta');
+        } else {
+            $('#contadorEditar').removeClass('alerta');
         }
     });
 });
