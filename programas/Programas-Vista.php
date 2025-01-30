@@ -173,7 +173,7 @@ function editarPrograma() {
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                //location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
