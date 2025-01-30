@@ -71,7 +71,7 @@ include_once '../componentes/header.php';
                     </div>
                     <div class="mb-3">
                         <label for="descripcion_crear" class="form-label">Descripción:</label>
-                        <textarea name="descripcion" id="descripcion_crear" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
+                        <textarea name="descripcion" id="descripcion" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
                         <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
                     </div>
                 </form>
