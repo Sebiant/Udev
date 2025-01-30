@@ -30,7 +30,7 @@ $result = $conn->query($sql);
                     <th>Fecha Fin</th>
                     <th>Programa</th>
                     <th>Estado</th>
-                    <th>Editar</th>
+                    <th>Modificar</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
