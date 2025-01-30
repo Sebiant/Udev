@@ -55,28 +55,29 @@ include_once '../componentes/header.php';
 
                     <div class="mb-3">
                         <label for="tipo" class="form-label">Tipo de Programa:</label>
-                        <input type="text" name="tipo" id="tipo" class="form-control"  placeholder="Tipo de programa">
+                        <input type="text" name="tipo" id="tipo" class="form-control" placeholder="Tipo de programa">
                     </div>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del programa:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control"  placeholder="Nombre del programa">
+                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre del programa">
                     </div>
                     <div class="mb-3">
                         <label for="duracion_mes" class="form-label">Duración:</label>
-                        <input type="number" name="duracion_mes" id="duracion_mes" class="form-control"  placeholder="Duración  en meses">
+                        <input type="number" name="duracion_mes" id="duracion_mes" class="form-control" placeholder="Duración en meses">
                     </div>
                     <div class="mb-3">
                         <label for="cant_modulos" class="form-label">Cantidad de módulos:</label>
-                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control"  placeholder="Cantidad de módulos">
+                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control" placeholder="Cantidad de módulos">
                     </div>
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción:</label>
-                        <textarea name="descripcion" id="descripcion" maxlength="100" class="form-control"  placeholder="Descripción"></textarea>
-                        <div id="contadorCrear">100 caracteres disponibles</div>
+                        <label for="descripcion_crear" class="form-label">Descripción:</label>
+                        <textarea name="descripcion" id="descripcion_crear" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
+                        <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success" onclick="crearPrograma()">Guardar</button>
+                <button type="button" class="btn btn-success" onclick="crearPrograma()">Guardar</button>
             </div>
         </div>
     </div>
@@ -92,30 +93,32 @@ include_once '../componentes/header.php';
             </div>
             <form id="editForm">
                 <div class="modal-body">
-                    <input type="hidden" name="id_programa">
+                    <input type="hidden" name="id_programa" id="id_programa_edit">
+
                     <div class="form-group">
-                        <label for="tipo" class="form-label">Tipo de Programa:</label>
-                        <input type="text" name="tipo" id="tipo" class="form-control"  placeholder="Tipo de programa">
+                        <label for="tipo_edit" class="form-label">Tipo de Programa:</label>
+                        <input type="text" name="tipo" id="tipo_edit" class="form-control" placeholder="Tipo de programa">
                     </div>
                     <div class="form-group">
-                        <label for="nombre" class="form-label">Nombre del programa:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control"  placeholder="Nombre del programa">
+                        <label for="nombre_edit" class="form-label">Nombre del programa:</label>
+                        <input type="text" name="nombre" id="nombre_edit" class="form-control" placeholder="Nombre del programa">
                     </div>
                     <div class="form-group">
-                        <label for="duracion_mes" class="form-label">Duración:</label>
-                        <input type="number" name="duracion_mes" id="duracion_mes" class="form-control"  placeholder="Duración  en meses">
+                        <label for="duracion_mes_edit" class="form-label">Duración:</label>
+                        <input type="number" name="duracion_mes" id="duracion_mes_edit" class="form-control" placeholder="Duración en meses">
                     </div>
                     <div class="form-group">
-                        <label for="cant_modulos" class="form-label">Cantidad de módulos:</label>
-                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control"  placeholder="Cantidad de módulos">
+                        <label for="cant_modulos_edit" class="form-label">Cantidad de módulos:</label>
+                        <input type="number" name="cant_modulos" id="cant_modulos_edit" class="form-control" placeholder="Cantidad de módulos">
                     </div>
                     <div class="form-group">
-                        <label for="descripcion" class="form-label">Descripción:</label>
-                        <textarea name="descripcion" id="descripcion_edit" maxlength="100" class="form-control"  placeholder="Descripción"></textarea>
-                        <div id="contadorEditar">100 caracteres disponibles</div>
+                        <label for="descripcion_edit" class="form-label">Descripción:</label>
+                        <textarea name="descripcion" id="descripcion_edit" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
+                        <small id="contadorEditar" class="contador-texto">30 caracteres disponibles</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="GuardarPrograma()">Guardar Cambios</button>
+                <button type="button" class="btn btn-primary" onclick="editarPrograma()">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -128,7 +131,7 @@ include_once '../componentes/footer.php';
 <script src="js/Consultas-Programas.js"></script>
 <script src="js/Datatable-Programas.js"></script>
 <script>
-      function crearPrograma() {
+   function crearPrograma() {
         if (!$("#formPrograma").valid()) {
             console.log("El formulario no es válido.");
             return; 
@@ -152,9 +155,8 @@ include_once '../componentes/footer.php';
             }
         });
     }
-</script>
-<script>
-      function GuardarPrograma() {
+
+function editarPrograma() {
         if (!$("#editForm").valid()) {
             console.log("El formulario no es válido.");
             return; 
@@ -171,7 +173,7 @@ include_once '../componentes/footer.php';
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                location.reload();
+                //location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
@@ -179,3 +181,4 @@ include_once '../componentes/footer.php';
         });
     }
 </script>
+

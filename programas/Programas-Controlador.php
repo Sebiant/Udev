@@ -21,40 +21,72 @@ switch ($accion) {
         }
         break;
 
-    case 'editar':
-        $id_programa = $_POST['id_programa'];
-
-        $sql_select = "SELECT * FROM programas WHERE id_programa='$id_programa'";
-        $result = $conn->query($sql_select);
-
-        if ($result->num_rows > 0) {
-            $programa = $result->fetch_assoc();
-
-            $tipo = $_POST['tipo'] ?? $programa['tipo'];
-            $nombre = $_POST['nombre'] ?? $programa['nombre'];
-            $duracion_mes = $_POST['duracion_mes'] ?? $programa['duracion_mes'];
-            $cant_modulos = $_POST['cant_modulos'] ?? $programa['cant_modulos'];
-            $descripcion = $_POST['descripcion'] ?? $programa['descripcion'];
-            $estado = $_POST['estado'] ?? $programa['estado'];
-            
-            $sql_update = "UPDATE programas SET 
-                            tipo='$tipo', 
-                            nombre='$nombre', 
-                            duracion_mes='$duracion_mes', 
-                            cant_modulos='$cant_modulos', 
-                            descripcion='$descripcion', 
-                            estado='$estado' 
-                            WHERE id_programa='$id_programa'";
-
-            if ($conn->query($sql_update) === TRUE) {
-                echo "Registro actualizado exitosamente.";
-            } else {
-                echo "Error al actualizar el registro: " . $conn->error;
+        case 'editar':
+            // Validar que se haya enviado el ID del programa
+            if (!isset($_POST['id_programa']) || empty($_POST['id_programa'])) {
+                echo json_encode(["success" => false, "message" => "El ID del programa es obligatorio."]);
+                break;
             }
-        } else {
-            echo "No se encontró el registro.";
-        }
-        break;
+        
+            // Recibir los datos del formulario
+            $id_programa = $_POST['id_programa'];
+            $tipo = isset($_POST['tipo']) ? $_POST['tipo'] : null;
+            $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : null;
+            $duracion_mes = isset($_POST['duracion_mes']) ? $_POST['duracion_mes'] : null;
+            $cant_modulos = isset($_POST['cant_modulos']) ? $_POST['cant_modulos'] : null;
+            $descripcion = isset($_POST['descripcion']) && $_POST['descripcion'] !== '' ? $_POST['descripcion'] : null;
+            $estado = isset($_POST['estado']) ? $_POST['estado'] : null;
+        
+            // Validar que al menos un campo adicional esté presente
+            if (is_null($tipo) && is_null($nombre) && is_null($duracion_mes) && is_null($cant_modulos) && is_null($descripcion) && is_null($estado)) {
+                echo json_encode(["success" => false, "message" => "No se han enviado datos para actualizar."]);
+                break;
+            }
+        
+            // Validar que los campos duracion_mes y cant_modulos sean números válidos
+            if (!is_null($duracion_mes) && !is_numeric($duracion_mes)) {
+                echo json_encode(["success" => false, "message" => "La duración debe ser un número válido."]);
+                break;
+            }
+        
+            if (!is_null($cant_modulos) && !is_numeric($cant_modulos)) {
+                echo json_encode(["success" => false, "message" => "La cantidad de módulos debe ser un número válido."]);
+                break;
+            }
+        
+            // Preparar la consulta para seleccionar el programa
+            $sql_select = "SELECT * FROM programas WHERE id_programa = ?";
+            $stmt = $conn->prepare($sql_select);
+            $stmt->bind_param('i', $id_programa);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        
+            // Verificar si el programa existe
+            if ($result->num_rows > 0) {
+                // Preparar la consulta para actualizar los datos
+                $sql_update = "UPDATE programas SET 
+                                tipo = IFNULL(?, tipo), 
+                                nombre = IFNULL(?, nombre), 
+                                duracion_mes = IFNULL(?, duracion_mes), 
+                                cant_modulos = IFNULL(?, cant_modulos), 
+                                descripcion = IFNULL(?, descripcion), 
+                                estado = IFNULL(?, estado) 
+                                WHERE id_programa = ?";
+        
+                $stmt_update = $conn->prepare($sql_update);
+                $stmt_update->bind_param('ssiissi', $tipo, $nombre, $duracion_mes, $cant_modulos, $descripcion, $estado, $id_programa);
+        
+                // Ejecutar la actualización
+                if ($stmt_update->execute()) {
+                    echo json_encode(["success" => true, "message" => "Registro actualizado exitosamente."]);
+                } else {
+                    echo json_encode(["success" => false, "message" => "Error al actualizar el registro: " . $stmt_update->error]);
+                }
+            } else {
+                echo json_encode(["success" => false, "message" => "No se encontró el registro con el ID proporcionado."]);
+            }
+            break;
+        
 
     case 'cambiarEstado':
         $id_programa = $_POST['id_programa'];
