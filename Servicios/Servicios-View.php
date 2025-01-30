@@ -134,6 +134,7 @@ $(document).on('click', '.btn-toggle-state', function(){
         operacion:'cambiarEstado'
       },
       success:function(data){
+      
         alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 dataTable.ajax.reload();
       },

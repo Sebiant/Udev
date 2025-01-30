@@ -299,7 +299,7 @@ try {
 
 function cambiar_estado($conn){
     if (isset($_POST["id_programa"]) && isset($_POST["estado"])) {
-        $nuevoEstado = intval($_POST["estado"]) === 1 ? "Activo" : "Inactivo";
+        $nuevoEstado = intval($_POST["estado"]);
 
 
     $stmt = $conn->prepare ("UPDATE programas SET estado=? WHERE id_programa=? LIMIT 1");
