@@ -257,6 +257,11 @@ try {
 
     while($fila=$resultado->fetch_assoc()){
         $estado = $fila["estado"];
+        if($estado == 1){
+            $estado = "Activo";
+        } else{
+            $estado = "Inactivo";
+        }
         $id_programa = $fila["id_programa"];
 
         //cambia clase y texto del boton segun el estado
