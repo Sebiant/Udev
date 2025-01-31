@@ -266,8 +266,8 @@ try {
 
         //cambia clase y texto del boton segun el estado
 
-        $buttonClass = ($estado === 1) ? "btn-danger" : "btn-success";
-        $buttonText = ($estado === 1) ? "Inactivar" : "Activar";
+        $buttonClass = ($estado === "Activo") ? "btn-danger" : "btn-success";
+        $buttonText = ($estado === "Activo") ? "Inactivar" : "Activar";
 
         $sub_array = [
             $id_programa,

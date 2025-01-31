@@ -121,7 +121,7 @@
 $(document).on('click', '.btn-toggle-state', function(){
   var id = $(this).data('id');
     var estadoActual = $(this).data('estado');
-    var nuevoEstado = (estadoActual == 1) ? 0 : 1;
+    var nuevoEstado = (estadoActual == "Activo") ? 0 : 1;
   //var nuevoEstado = estadoActual;
   console.log( "el estado es ", estadoActual);
   /* if(nuevoEstado == 0){
