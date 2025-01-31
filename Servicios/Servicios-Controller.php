@@ -272,7 +272,7 @@ try {
             //boton modificar
             '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $id_programa . '" class="btn btn-primary w-100 editar">Modificar</button>',
             // boton dinamico
-            '<button type="button" class="btn ' . $buttonClass . ' btn-toggle-state" data-id="' . $id_programa . '"data-estado="' . $estado . '">' . $buttonText . '</button>'
+            '<button type="button" class="btn w-100 ' . $buttonClass . ' btn-toggle-state" data-id="' . $id_programa . '"data-estado="' . $estado . '">' . $buttonText . '</button>'
 
         ];
 

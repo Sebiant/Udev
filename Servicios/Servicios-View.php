@@ -61,12 +61,12 @@
               <label for="valor_total_servicio">Valor total</label>
               <input type="number" name="valor_total_servicio" id="valor_total_servicio" class="form-control">
               <br>
-              <label for="estado">Estado</label>
+              <!-- <label for="estado">Estado</label>
               <select name="estado" id="estado" class="form-control">
                 <option value="2">Seleccione una de las siguientes opciones...</option>
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
-              </select>
+              </select>-->
               <br>
             </div>
             <div class="modal-footer">
