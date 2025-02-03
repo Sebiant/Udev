@@ -1,7 +1,7 @@
 <?php
 include '../conexion.php';
 
-$sql = "SELECT id_docente, nombres, apellidos FROM docentes";
+$sql = "SELECT numero_documento, nombres, apellidos FROM docentes";
 $result = $conn->query($sql);
 
 include_once '../componentes/header.php';
@@ -38,11 +38,11 @@ include_once '../componentes/header.php';
                     <div>
                         <label class="form-label"><strong>Exportar todos</strong></label>
                         <div class="d-flex">
-                            <button type="button" class="btn btn-primary mx-1" id="botonPdf">
-                                <i class="bi bi-file-earmark-pdf" class="btn btn-danger mx-1"></i> PDF
+                            <button type="button" class="btn btn-primary mx-1" id="botonPdf" onclick="exportarTodo('pdf')">
+                                <i class="bi bi-file-earmark-pdf"></i> PDF
                             </button>
-                            <button type="button" class="btn btn-primary mx-1" id="botonCsv">
-                                <i class="bi bi-file-earmark-spreadsheet" class="btn btn-success mx-1"></i> CSV
+                            <button type="button" class="btn btn-primary mx-1" id="botonCsv" onclick="exportarTodo('csv')">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> CSV
                             </button>
                         </div>
                     </div>
