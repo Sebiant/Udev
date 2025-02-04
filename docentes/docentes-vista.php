@@ -110,7 +110,7 @@ include_once '../componentes/header.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success" onclick="crearDocente()">Guardar</button>
+                <button type="button" class="btn btn-success" onclick="crearDocente()">Guardar</button>
             </div>
         </div>
     </div>

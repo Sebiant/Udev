@@ -16,7 +16,6 @@ switch ($accion) {
 
         $declara_renta = isset($_POST['declara_renta']) ? 1 : 0;
         $retenedor_iva = isset($_POST['retenedor_iva']) ? 1 : 0;
-        $estado = isset($_POST['estado']) ? 1 : 0;
 
         $stmt->bind_param(
             'ssssssssssii',
@@ -31,7 +30,6 @@ switch ($accion) {
             $_POST['email'],
             $declara_renta,
             $retenedor_iva,
-            $estado
         );
 
         if (!$stmt->execute()) {
@@ -91,12 +89,11 @@ switch ($accion) {
         break;
 
     case 'buscarPorId':
-        if (empty($_POST['id_docente'])) {
+        if (empty($_POST['numero_documento'])) {
             echo json_encode(["error" => "ID de docente no proporcionado"]);
             exit;
         }
-
-        $sql = "SELECT * FROM docentes WHERE id_docente=?";
+        $sql = "SELECT * FROM docentes WHERE numero_documento=?";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
@@ -129,7 +126,7 @@ switch ($accion) {
         $totalResult = $stmt->get_result();
         $totalRecords = $totalResult->fetch_assoc()['total'];
 
-        $sql = "SELECT id_docente, tipo_documento, numero_documento, nombres, apellidos,
+        $sql = "SELECT tipo_documento, numero_documento, nombres, apellidos,
                        CONCAT(nombres, ' ', apellidos) AS nombre_completo, especialidad,
                        descripcion_especialidad, telefono, direccion, email, declara_renta, 
                        retenedor_iva, estado
