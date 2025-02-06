@@ -7,7 +7,7 @@ $result = $conn->query($sql);
 ?>
 
 <div class="container">
-    <h1 class="text-center">Módulos</h1>
+    <h1 class="text-center">Gestion Módulos</h1>
 
     <div class="row">
         <div class="col-2 offset-10">
@@ -21,21 +21,25 @@ $result = $conn->query($sql);
     </div>
     <br />
     <br />
-
-    <div class="table-responsive">
-        <table id="datos_modulo" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Fin</th>
-                    <th>Programa</th>
-                    <th>Estado</th>
-                    <th>Modificar</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+    <div class="card">
+        <div class="card-header">
+            <h5>Módulos</h5>
+        </div>
+        <div class="table-responsive card-body">
+            <table id="datos_modulo" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Programa</th>
+                        <th>Estado</th>
+                        <th>Modificar</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>    
 </div>
 
 <!-- Modal para crear un módulo -->
