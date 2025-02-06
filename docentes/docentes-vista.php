@@ -2,7 +2,7 @@
 include_once '../componentes/header.php';
 ?>
 <div class="container">
-    <h1 class="text-center">Docentes</h1>
+    <h1 class="text-center">Gestion Docentes</h1>
 
     <div class="row">
         <div class="col-2 offset-10">
@@ -16,25 +16,28 @@ include_once '../componentes/header.php';
     </div>
     <br />
     <br />
-
-    <div class="table-responsive">
-        <table id="datos_docente" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Documento</th>
-                    <th>Docente</th>
-                    <th>Especialidad</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Email</th>
-                    <th>Estado</th>
-                    <th>Modificar</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-        </table>
+    <div class="card">
+        <div class="card-header">
+            <h5>Docentes</h5>
+        </div>
+         <div class="table-responsive card-body">
+            <table id="datos_docente" class="table table-bordered table-striped">
+                 <thead>
+                    <tr>
+                        <th>Documento</th>
+                        <th>Docente</th>
+                        <th>Especialidad</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Ema0il</th>
+                        <th>Estado</th>
+                        <th>Modificar</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>        
     </div>
-</div>
 
 <!-- Modal para crear docente -->
 <div class="modal fade" id="modalDocentes" tabindex="-1" aria-labelledby="modalDocentesLabel" aria-hidden="true">
@@ -95,7 +98,6 @@ include_once '../componentes/header.php';
                             <input type="checkbox" class="form-check-input" name="retenedor_iva" id="retenedor_iva">
                             <label class="form-check-label" for="retenedor_iva">Retenedor IVA</label>
                         </div>
-                
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" onclick="crearDocente()">Guardar</button>
                         </div>
@@ -155,20 +157,15 @@ include_once '../componentes/header.php';
                     <div class="mb-3">
                         <label for="email" class="form-label">Email:</label>
                         <input type="email" name="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" placeholder="Email">
+                    </div>                    
+                        <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="declara_renta_editar" name="declara_renta">
+                        <label class="form-check-label" for="declara_renta_editar">Declara Renta</label>
                     </div>
                     <div class="form-check mb-3">
-    <input type="hidden" name="declara_renta" value="0">
-    <input type="checkbox" class="form-check-input" name="declara_renta" id="declara_renta_editar" value="1">
-    <label class="form-check-label" for="declara_renta_editar">Declara Renta</label>
-</div>
-
-<div class="form-check mb-3">
-    <input type="hidden" name="retenedor_iva" value="0">
-    <input type="checkbox" class="form-check-input" name="retenedor_iva" id="retenedor_iva_editar" value="1">
-    <label class="form-check-label" for="retenedor_iva_editar">Retenedor IVA</label>
-</div>
-
-
+                        <input type="checkbox" class="form-check-input" id="retenedor_iva_editar" name="retenedor_iva">
+                        <label class="form-check-label" for="retenedor_iva_editar">Retenedor IVA</label>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-success" onclick="guardarCambiosDocente()">Guardar Cambios</button>
                     </div>
@@ -227,7 +224,7 @@ include_once '../componentes/footer.php';
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                //location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);

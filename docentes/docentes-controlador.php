@@ -20,7 +20,7 @@ switch ($accion) {
         $estado = 1;
     
         $stmt->bind_param(
-            'ssssssssssi',
+            'ssssssssiii',
             $_POST['tipo_documento'],
             $_POST['numero_documento'],
             $_POST['nombres'],
@@ -42,7 +42,6 @@ switch ($accion) {
         break;
     
     case 'Modificar':
-        // Recuperar los datos del formulario
         $numero_documento = $_POST['numero_documento'];
         $tipo_documento = $_POST['tipo_documento'];
         $nombres = $_POST['nombres'];
@@ -51,18 +50,17 @@ switch ($accion) {
         $telefono = $_POST['telefono'];
         $direccion = $_POST['direccion'];
         $email = $_POST['email'];
-        $declara_renta = isset($_POST['declara_renta']) ? 1 : 0;
-        $retenedor_iva = isset($_POST['retenedor_iva']) ? 1 : 0;
 
-        // Preparar la consulta SQL para actualizar los datos
+        $retenedor_iva = isset($_POST['retenedor_iva']) && $_POST['retenedor_iva'] === 'on' ? 1 : 0;
+        $declara_renta = isset($_POST['declara_renta']) && $_POST['declara_renta'] === 'on' ? 1 : 0;
+    
         $sql = "UPDATE docentes 
                 SET tipo_documento = ?, nombres = ?, apellidos = ?, perfil_profesional = ?, telefono = ?, direccion = ?, email = ?, declara_renta = ?, retenedor_iva = ? 
                 WHERE numero_documento = ?";
-    
-        // Preparar la sentencia
+
         if ($stmt = $conn->prepare($sql)) {
-            // Enlazar los parámetros
-            $stmt->bind_param("ssssssssii", 
+            $stmt->bind_param(
+                "sssssssiis", 
                 $tipo_documento, 
                 $nombres, 
                 $apellidos, 
@@ -70,19 +68,17 @@ switch ($accion) {
                 $telefono, 
                 $direccion, 
                 $email, 
-                $declara_renta, 
-                $retenedor_iva, 
+                $declara_renta,
+                $retenedor_iva,
                 $numero_documento
             );
-    
-            // Ejecutar la consulta
+
             if ($stmt->execute()) {
                 echo "Registro actualizado correctamente.";
             } else {
                 echo "Error al actualizar el registro: " . $stmt->error;
             }
-    
-            // Cerrar la sentencia
+
             $stmt->close();
         } else {
             echo "Error al preparar la consulta: " . $conn->error;
@@ -102,31 +98,7 @@ switch ($accion) {
         }
         $stmt->close();
         break;
-
-    case 'buscarPorId':
-        if (empty($_POST['numero_documento'])) {
-            echo json_encode(["error" => "Número de documento no proporcionado"]);
-            exit;
-        }
-        $sql = "SELECT * FROM docentes WHERE numero_documento=?";
-        $stmt = $conn->prepare($sql);
-
-        if (!$stmt) {
-            die("Error en la preparación de la consulta: " . $conn->error);
-        }
-
-        $stmt->bind_param('s', $_POST['numero_documento']);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            echo json_encode(['data' => $result->fetch_all(MYSQLI_ASSOC)]);
-        } else {
-            echo json_encode(['error' => 'Registro no encontrado']);
-        }
-        $stmt->close();
-        break;
-
+    
     default:
         $search = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
         $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
