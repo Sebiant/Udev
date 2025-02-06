@@ -3,7 +3,7 @@ include_once '../componentes/header.php';
 ?>
 
 <div class="container">
-    <h1 class="text-center">Materias</h1>
+    <h1 class="text-center">Gestion Materias</h1>
 
     <div class="row">
         <div class="col-2 offset-10">
@@ -17,20 +17,24 @@ include_once '../componentes/header.php';
     </div>
     <br />
     <br />
-
-    <div class="table-responsive">
-        <table id="datos_materia" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Nombre</th>
-                    <th>Descripcion</th>
-                    <th>Estado</th>
-                    <th>Modificar</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-        </table>
+    <div class="card">
+        <div class="card-header">
+            <h5>Materias</h5>
+        </div>
+        <div class="table-responsive card-body">
+            <table id="datos_materia" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Descripcion</th>
+                        <th>Estado</th>
+                        <th>Modificar</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 
