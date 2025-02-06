@@ -12,7 +12,7 @@ switch ($accion) {
                     d.nombres, 
                     d.apellidos 
                 FROM asistencias a 
-                JOIN docentes d ON a.id_docente = d.id_docente";
+                JOIN docentes d ON a.numero_documento = d.numero_documento";
         
         $result = $conn->query($sql);
         $data = [];
