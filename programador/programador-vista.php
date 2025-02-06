@@ -11,7 +11,7 @@
 ?>
 <div class="container mt-4">
     <div class="card">
-        <div class="card-header">
+        <div class="card-header text-center">
             <h5>Programador</h5>
         </div>
         <div class="card-body">
@@ -136,7 +136,7 @@
 <?php
     include_once '../componentes/footer.php';
 ?>
-<script src="js/datatable_programador.js"></script>
+<script src="js/Datatable-Programador.js"></script>
 
 <script src="js/datatable_materias.js"></script>
 

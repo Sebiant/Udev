@@ -10,7 +10,7 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         "ajax": {
-            "url": "programador-controlador.php",
+            "url": "Programador-Controlador.php",
             type: "POST",
             "dataSrc": "data"
         },
