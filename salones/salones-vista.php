@@ -7,7 +7,7 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center">Salones</h1>
+    <h1 class="text-center">Gestion Salones</h1>
 
     <div class="row">
         <div class="col-2 offset-10">
@@ -22,7 +22,11 @@
     <br />
     <br />
 
-    <div class="table-responsive">
+    <div class="card">
+        <div class="card-header">
+            <h5>Salones</h5>
+        </div>
+        <div class="table-responsive card-body">
         <table id="datos_salones" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -36,6 +40,7 @@
                 </tr>
             </thead>
         </table>
+    </div>
     </div>
 </div>
 
