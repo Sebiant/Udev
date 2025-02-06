@@ -40,7 +40,7 @@
           <a class="nav-link" href="../Salones/Salones-Vista.php">Salones</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Modulos/Modulos-Vista.php">Módulos</a>
+          <a class="nav-link" href="../Modulos/Modulo-Vista.php">Módulos</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../Materias/Materias-Vista.php">Materias</a>
