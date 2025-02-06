@@ -22,8 +22,7 @@ $(document).ready(function() {
         columns: [
             { "data": "numero_documento" },
             { "data": "nombre_completo" },
-            { "data": "especialidad" },
-            { "data": "descripcion_especialidad" },
+            { "data": "perfil_profesional" },
             { "data": "telefono" },
             { "data": "direccion" },
             { "data": "email" },
@@ -47,13 +46,13 @@ $(document).ready(function() {
 
     $('#datos_docente').on('click', '.btn-toggle-state', function () {
         var data = table.row($(this).parents('tr')).data();
-        var idDocente = data.id_docente;
+        var numeroDocumento = data.numero_documento;
         var nuevoEstado = data.estado === "Activo" ? 0 : 1;
 
         $.ajax({
             url: 'Docentes-Controlador.php?accion=cambiarEstado',
             type: 'POST',
-            data: { id_docente: idDocente, estado: nuevoEstado },
+            data: { numero_documento: numeroDocumento, estado: nuevoEstado },
             success: function () {
                 alert(`El estado del docente se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 table.ajax.reload();
@@ -66,12 +65,12 @@ $(document).ready(function() {
 
     $('#datos_docente').on('click', '.btn-modify', function() {
         var data = table.row($(this).parents('tr')).data();
-        var idDocente = data.numero_documento;
+        var numeroDocumento = data.numero_documento; // Cambio aquí
     
         $.ajax({
             url: 'Docentes-Controlador.php?accion=buscarPorId',
             type: 'POST',
-            data: { numero_documento: idDocente },
+            data: { numero_documento: numeroDocumento }, // Cambio aquí
             dataType: 'json',
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
@@ -81,8 +80,7 @@ $(document).ready(function() {
                     $('#editForm [name="numero_documento"]').val(docente.numero_documento);
                     $('#editForm [name="nombres"]').val(docente.nombres);
                     $('#editForm [name="apellidos"]').val(docente.apellidos);
-                    $('#editForm [name="especialidad"]').val(docente.especialidad);
-                    $('#editForm [name="descripcion_especialidad"]').val(docente.descripcion_especialidad);
+                    $('#editForm [name="perfil_profesional"]').val(docente.perfil_profesional);
                     $('#editForm [name="telefono"]').val(docente.telefono);
                     $('#editForm [name="direccion"]').val(docente.direccion);
                     $('#editForm [name="email"]').val(docente.email);

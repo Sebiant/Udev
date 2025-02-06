@@ -24,7 +24,6 @@ include_once '../componentes/header.php';
                     <th>Documento</th>
                     <th>Docente</th>
                     <th>Especialidad</th>
-                    <th>Descripción</th>
                     <th>Teléfono</th>
                     <th>Dirección</th>
                     <th>Email</th>
@@ -47,9 +46,8 @@ include_once '../componentes/header.php';
             </div>
             <div class="modal-body">
                 <form id="formDocente">
-                    <div class="mb-3">
                         <input type="hidden" name="accion" value="crear" id="accion">
-                        <input type="hidden" name="id_docente" id="id_docente">
+                        <input type="hidden" name="numero_documento" id="numero_documento">
 
                         <div class="mb-3">
                             <label for="tipo_documento" class="form-label">Tipo de Documento:</label>
@@ -65,7 +63,6 @@ include_once '../componentes/header.php';
                             <input type="text" name="numero_documento" id="numero_documento" class="form-control" placeholder="Número de documento">
                         </div>
 
-                        
                         <div class="mb-3">
                             <label for="nombres">Nombres:</label>
                             <input type="text" name="nombres" id="nombres" class="form-control" placeholder="Nombres">
@@ -75,24 +72,16 @@ include_once '../componentes/header.php';
                             <input type="text" name="apellidos" id="apellidos" class="form-control" placeholder="Apellidos">
                         </div>
                         <div class="mb-3">
-                            <label for="especialidad">Especialidad:</label>
-                            <input type="text" name="especialidad" id="especialidad" class="form-control" placeholder="Especialidad">
-                        </div>
-                        <div class="mb-3">
-                            <label for="descripcion_especialidad">Descripción Especialidad:</label>
-                            <textarea name="descripcion_especialidad" id="descripcion_especialidad" maxlength="30" class="form-control"  placeholder="Descripción Especialidad"></textarea>
-                            <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
+                            <label for="perfil">Especialidad:</label>
+                            <input type="text" name="perfil_profesional" id="perfil_profesional" class="form-control" placeholder="Especialidad">
                         </div>
                         <div class="mb-3">
                             <label for="telefono">Teléfono:</label>
                             <input type="text" name="telefono" id="telefono" class="form-control" maxlength="10" pattern="\d{10}" placeholder="Teléfono">
-                         
-                            
                         </div>
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Dirección:</label>
                             <input type="text" name="direccion" id="direccion" class="form-control" placeholder="Direccion">
-                           
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email:</label>
@@ -106,11 +95,11 @@ include_once '../componentes/header.php';
                             <input type="checkbox" class="form-check-input" name="retenedor_iva" id="retenedor_iva">
                             <label class="form-check-label" for="retenedor_iva">Retenedor IVA</label>
                         </div>
-                    </div>
+                
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" onclick="crearDocente()">Guardar</button>
+                        </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="crearDocente()">Guardar</button>
             </div>
         </div>
     </div>
@@ -127,11 +116,8 @@ include_once '../componentes/header.php';
             <div class="modal-body">
                 <form id="editForm">
                     <input type="hidden" name="accion" value="editar" id="accion_editar">
-                    <input type="hidden" name="id_docente" id="id_docente_editar">
-                    <div class="mb-3">
-                        <label for="id_docenten" class="form-label">id :</label>
-                        <input type="text" name="id_docente" class="form-control">
-                    </div>
+                    <input type="hidden" name="numero_documento" id="numero_documento_editar">
+
                     <div class="mb-3">
                         <label for="tipo_documento_editar" class="form-label">Tipo de Documento:</label>
                         <select name="tipo_documento" id="tipo_documento_editar" class="form-control" required>
@@ -139,56 +125,54 @@ include_once '../componentes/header.php';
                             <option value="cedula_ciudadania">Cédula de ciudadanía</option>
                             <option value="cedula_extranjeria">Cédula de Extranjería</option>
                         </select>
-                        <div class="mb-3">
-                            <label for="numero_documento">Número de Documento:</label>
-                            <input type="text" name="numero_documento" class="form-control" placeholder="Número de documento">
-                        </div>
+                    </div>
 
-                        
-                        <div class="mb-3">
-                            <label for="nombres">Nombres:</label>
-                            <input type="text" name="nombres" class="form-control" placeholder="Nombres">
-                        </div>
-                        <div class="mb-3">
-                            <label for="apellidos">Apellidos:</label>
-                            <input type="text" name="apellidos" class="form-control" placeholder="Apellidos">
-                        </div>
-                        <div class="mb-3">
-                            <label for="especialidad">Especialidad:</label>
-                            <input type="text" name="especialidad" class="form-control" placeholder="Especialidad">
-                        </div>
-                        <div class="mb-3">
-                            <label for="descripcion_especialidad">Descripción Especialidad:</label>
-                            <textarea name="descripcion_especialidad" id="descripcion_especialidad_edit" maxlength="30" class="form-control"  placeholder="Descripción Especialidad"></textarea>
-                            <small id="contadorEditar" class="contador-texto">30 caracteres disponibles</small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="telefono">Teléfono:</label>
-                            <input type="text" name="telefono" class="form-control" maxlength="10" pattern="\d{10}" placeholder="Teléfono">
-                         
-                            
-                        </div>
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección:</label>
-                            <input type="text" name="direccion" class="form-control" placeholder="Direccion">
-                           
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email:</label>
-                            <input type="email" name="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" placeholder="Email">
-                        </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" name="declara_renta" id="declara_renta_editar">
-                        <label class="form-check-label" for="declara_renta_editar">Declara Renta</label>
+                    <div class="mb-3">
+                        <label for="numero_documento">Número de Documento:</label>
+                        <input type="text" name="numero_documento" class="form-control" placeholder="Número de documento">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nombres">Nombres:</label>
+                        <input type="text" name="nombres" class="form-control" placeholder="Nombres">
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellidos">Apellidos:</label>
+                        <input type="text" name="apellidos" class="form-control" placeholder="Apellidos">
+                    </div>
+                    <div class="mb-3">
+                        <label for="perfil">Especialidad:</label>
+                        <input type="text" name="perfil_profesional" id="perfil_profesional" class="form-control" placeholder="Especialidad">
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="text" name="telefono" class="form-control" maxlength="10" pattern="\d{10}" placeholder="Teléfono">
+                    </div>
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección:</label>
+                        <input type="text" name="direccion" class="form-control" placeholder="Direccion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" name="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" placeholder="Email">
                     </div>
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" name="retenedor_iva" id="retenedor_iva_editar">
-                        <label class="form-check-label" for="retenedor_iva_editar">Retenedor IVA</label>
+    <input type="hidden" name="declara_renta" value="0">
+    <input type="checkbox" class="form-check-input" name="declara_renta" id="declara_renta_editar" value="1">
+    <label class="form-check-label" for="declara_renta_editar">Declara Renta</label>
+</div>
+
+<div class="form-check mb-3">
+    <input type="hidden" name="retenedor_iva" value="0">
+    <input type="checkbox" class="form-check-input" name="retenedor_iva" id="retenedor_iva_editar" value="1">
+    <label class="form-check-label" for="retenedor_iva_editar">Retenedor IVA</label>
+</div>
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" onclick="guardarCambiosDocente()">Guardar Cambios</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="guardarCambiosDocente()">Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -200,15 +184,15 @@ include_once '../componentes/footer.php';
 <script src="js/Consultas-Docentes.js"></script>
 <script src="js/Datatable-Docentes.js"></script>
 <script>
-      function crearDocente() {
+    function crearDocente() {
         if (!$("#formDocente").valid()) {
             console.log("El formulario no es válido.");
-            return; 
+            return;
         }
-    
+
         const formData = new FormData(document.getElementById('formDocente'));
         console.log('Datos del formulario:', ...formData.entries());
-    
+
         $.ajax({
             url: 'Docentes-Controlador.php?accion=crear',
             type: 'POST',
@@ -226,15 +210,15 @@ include_once '../componentes/footer.php';
     }
 </script>
 <script>
-      function guardarCambiosDocente() {
+    function guardarCambiosDocente() {
         if (!$("#editForm").valid()) {
             console.log("El formulario no es válido.");
-            return; 
+            return;
         }
-    
+
         const formData = new FormData(document.getElementById('editForm'));
         console.log('Datos del formulario:', ...formData.entries());
-    
+
         $.ajax({
             url: 'Docentes-Controlador.php?accion=Modificar',
             type: 'POST',
@@ -243,7 +227,7 @@ include_once '../componentes/footer.php';
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                location.reload();
+                //location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
