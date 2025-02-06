@@ -3,7 +3,7 @@ include_once '../componentes/header.php';
 ?>
 
 <div class="container">
-    <h1 class="text-center">Programas</h1>
+    <h1 class="text-center">Gestion Programas</h1>
 
     <div class="row">
         <div class="col-2 offset-10">
@@ -20,23 +20,28 @@ include_once '../componentes/header.php';
             </div>
         </div>
     </div>
-    <br><br>
-
-    <div class="table-responsive">
-        <table id="datos_programa" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Nombre</th>
-                    <th>Duración</th>
-                    <th>Cantidad de módulos</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Modificar</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-        </table>
+    <br>
+    <br>
+    <div class="card">
+        <div class="card-header">
+            <h5>Programas</h5>
+        </div>
+        <div class="table-responsive">
+            <table id="datos_programa" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Nombre</th>
+                        <th>Duración</th>
+                        <th>Cantidad de módulos</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Modificar</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 
