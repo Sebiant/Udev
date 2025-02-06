@@ -15,7 +15,7 @@ $(document).ready(function() {
             data: function(d) {
                 d.page = d.start / d.length + 1;
                 d.pageSize = d.length;
-                d.searchTerm = d.search.value;  // Enviamos el término de búsqueda
+                d.searchTerm = d.search.value;
             },
             dataSrc: 'data'
         },
@@ -54,7 +54,6 @@ $(document).ready(function() {
             type: 'POST',
             data: { numero_documento: numeroDocumento, estado: nuevoEstado },
             success: function () {
-                alert(`El estado del docente se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 table.ajax.reload();
             },
             error: function () {
