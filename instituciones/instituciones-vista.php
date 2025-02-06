@@ -3,7 +3,7 @@
 ?>
 
 <div class="container">
-    <h1 class="text-center">Instituciones</h1>
+    <h1 class="text-center">Gestion Instituciones</h1>
 
     <div class="row">
         <div class="col-2 offset-10">
@@ -18,18 +18,23 @@
     <br />
     <br />
 
-    <div class="table-responsive">
-        <table id="datos_instituciones" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Nombres</th>
-                    <th>Dirección</th>
-                    <th>Estado</th>
-                    <th>Modificar</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-        </table>
+    <div class="card">
+        <div class="card-header">
+            <h5>Instituciones</h5>
+        </div>
+        <div class="table-responsive card-body">
+            <table id="datos_instituciones" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombres</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                        <th>Modificar</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 
