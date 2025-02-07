@@ -11,9 +11,11 @@ switch ($accion) {
         $salon = $_POST['id_salon'];
         $docente = $_POST['numero_documento'];
         $materia = $_POST['id_materia'];
+        $estado = $_POST['estado'];
+        $modalidad = $_POST['modalidad'];
 
-        $sql = "INSERT INTO programador (fecha, hora_inicio, hora_salida, id_salon, numero_documento, id_materia, estado) 
-                VALUES ('$fecha', '$hora_inicio', '$hora_salida', '$salon', '$docente', '$materia', 1)";
+        $sql = "INSERT INTO programador (fecha, hora_inicio, hora_salida, id_salon, numero_documento, id_materia, estado, modalidad) 
+                VALUES ('$fecha', '$hora_inicio', '$hora_salida', '$salon', '$docente', '$materia', $estado, $modalidad)";
 
         if ($conn->query($sql) === TRUE) {
             echo json_encode(['status' => 'success', 'message' => 'Programador creado con éxito.']);
@@ -27,12 +29,14 @@ switch ($accion) {
         $fecha = $_POST['fecha'];
         $hora_inicio = $_POST['hora_inicio'];
         $hora_salida = $_POST['hora_salida'];
-        $salon = $_POST['salon'];
-        $docente = $_POST['docente'];
+        $salon = $_POST['id_salon'];
+        $docente = $_POST['numero_documento'];
         $materia = $_POST['materia'];
+        $estado = $_POST['estado'];
+        $modalidad = $_POST['modalidad'];
 
-        $sql = "UPDATE programadores 
-                SET fecha='$fecha', hora_inicio='$hora_inicio', hora_salida='$hora_salida', salon='$salon', docente='$docente', materia='$materia' 
+        $sql = "UPDATE programador 
+                SET fecha='$fecha', hora_inicio='$hora_inicio', hora_salida='$hora_salida', salon='$salon', docente='$docente', materia='$materia', estado='$estado', modalidad='$modalidad' 
                 WHERE id_programador='$id_programador'";
 
         if ($conn->query($sql) === TRUE) {
@@ -41,18 +45,26 @@ switch ($accion) {
             echo json_encode(['status' => 'error', 'message' => 'Error al actualizar el programador: ' . $conn->error]);
         }
         break;
-
-    case 'eliminar':
+    
+    case 'BusquedaPorId':
         $id_programador = $_POST['id_programador'];
 
-        $sql = "DELETE FROM programadores WHERE id_programador='$id_programador'";
-
-        if ($conn->query($sql) === TRUE) {
-            echo json_encode(['status' => 'success', 'message' => 'Programador eliminado con éxito.']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error al eliminar el programador: ' . $conn->error]);
+        $sql = "SELECT * FROM programador WHERE id_programador = '$id_programador'";
+        $result = $conn->query($sql);
+        if ($result === false) {
+            echo json_encode(["error" => "Error en la consulta SQL: " . $conn->error]);
+            exit;
         }
+        $data = [];
+        if ($result->num_rows > 0) {
+            $programador = $result->fetch_assoc();
+            $salon['estado'] = $programador['estado'] == 1 ? "Vista" : "Perdida";
+            $data[] = $programador;
+        }
+        header('Content-Type: application/json');
+        echo json_encode(["data" => $data]);
         break;
+
 
     default:
         // Configurar idioma para fechas en español
@@ -121,7 +133,9 @@ switch ($accion) {
                     d.nombres,
                     d.apellidos,
                     s.nombre_salon, 
-                    m.nombre 
+                    m.nombre,
+                    p.estado,
+                    p.modalidad
                 FROM programador p
                 JOIN docentes d ON p.numero_documento = d.numero_documento
                 JOIN salones s ON p.id_salon = s.id_salon

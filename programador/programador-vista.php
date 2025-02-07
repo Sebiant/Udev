@@ -19,8 +19,10 @@
                 <div class="row">
                     <div class="col-md-8 d-flex flex-column">
                         <div class="card flex-fill">
-                            <div class="card-body">
+                        <div class="card-header">
                                 <h5>Materias</h5>
+                            </div>
+                            <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="datos_materia" class="table table-bordered table-striped">
                                         <thead>
@@ -39,8 +41,10 @@
 
                     <div class="col-md-4 d-flex flex-column">
                         <div class="card flex-fill">
+                        <div class="card-header">
+                                <h5>Docentes</h5>
+                            </div>
                             <div class="card-body">
-                                <h5>Docentes Disponibles</h5>
                                 <br>
                                 <div class="form-group">
                                     <label for="docente">Selecciona un docente</label>
@@ -95,7 +99,7 @@
         </div>
         <div class="col-2 offset-10">
             <div class="text-center">
-                <button type="button" class="btn btn-success" onclick="funcion()">Programar Clase</button>
+                <button type="button" class="btn btn-success" onclick="CrearClase()">Programar Clase</button>
             </div>
         </div>
         <br>
@@ -113,21 +117,109 @@
                 <table id="datos_docente" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>ID Programador</th>
                             <th>Fecha</th>
                             <th>Hora de Inicio</th>
                             <th>Hora de Salida</th>
                             <th>Salón</th>
                             <th>Docente</th>
                             <th>Materia</th>
+                            <th>Estado</th>
+                            <th>Modalidad</th>
                             <th>Modificar</th>
-                            <th>Acciones</th>
                         </tr>
                     </thead>
                 </table>
             </div>
         </div>
     </div>
+
+<!-- Modal de edición -->
+    <div class="modal fade" id="modalEditarClase" tabindex="-1" aria-labelledby="modalEditarClaseLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Clase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarClaseForm">
+                    <input type="hidden" id="id_programador" name="id_programador">
+
+                    <div class="mb-3">
+                        <label for="numero_documento">Docente</label>
+                        <select id="numero_documento" name="numero_documento" class="form-control">
+                            <option value="">-- Selecciona un docente --</option>
+                            <?php
+                            $sql_docentes = "SELECT numero_documento, nombres, apellidos FROM docentes";
+                            $result_docentes = $conn->query($sql_docentes);
+                        
+                            if ($result_docentes->num_rows > 0) {
+                                while ($row_docente = $result_docentes->fetch_assoc()) {
+                                    echo '<option value="' . $row_docente['numero_documento'] . '">' . $row_docente['nombres'] . " " . $row_docente['apellidos'] . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay docentes disponibles</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_salon">Salón</label>
+                        <select id="id_salon" name="id_salon" class="form-control">
+                            <option value="">-- Selecciona un salón --</option>
+                            <?php
+                            $sql_salones = "SELECT id_salon, nombre_salon FROM salones";
+                            $result_salones = $conn->query($sql_salones);
+
+                            if ($result_salones->num_rows > 0) {
+                                while ($row_salon = $result_salones->fetch_assoc()) {
+                                    echo '<option value="' . $row_salon['id_salon'] . '">' . $row_salon['nombre_salon'] . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay salones disponibles</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" name="fecha" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hora_inicio">Hora de Inicio</label>
+                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hora_salida">Hora de Salida</label>
+                        <input type="time" id="hora_salida" name="hora_salida" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalidad">Modalidad</label>
+                        <select name="modalidad" id="modalidad" class="form-control">
+                                <option value="">-- Selecciona la Modalidad --</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="Virtual">Virtual</option>
+                            </select>
+                    </div>
+                    <div class="card p-3 shadow-sm border border-danger-subtle" style="max-width: 300px;">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="estado" id="estado">
+                            <label class="form-check-label fw-bold text-danger" for="estado">Clase Perdida</label>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="GuardarClase()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 
@@ -149,7 +241,7 @@
         },
         searching: true,
         paging: true,
-        lengthChange: true,
+        lengthChange: false,
         pageLength: 5,
         processing: true,
         serverSide: true,
@@ -162,33 +254,69 @@
             { "data": "id_materia" },
             { "data": "nombre" },
             { "data": "descripcion" },
-            { "data": "radio_button", "orderable": false }
+            {
+    "data": "id_materia",
+    "render": function(data, type, row) {
+        return `<input type="radio" name="materiaSeleccionada" value="${data}">`;
+    },
+    "orderable": false
+}
+
         ]
     });
 });
 
 
-      function funcion() {
+function CrearClase() {
+    var idMateria = $("input[name='materiaSeleccionada']:checked").val(); // Obtiene el ID de la materia seleccionada
 
-        var Data = table.row($(this).parents('tr')).data();
-        var idMateria = data.id_materia;
-    
-        const formData = new FormData(document.getElementById('programadorForm'));
+    if (!idMateria) {
+        alert("Por favor, selecciona una materia.");
+        return;
+    }
+
+    const formData = new FormData(document.getElementById('programadorForm'));
+    formData.append("id_materia", idMateria);
+
+    console.log('Datos del formulario:', ...formData.entries());
+
+    $.ajax({
+        url: 'Programador-Controlador.php?accion=crear',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('Respuesta del servidor:', response);
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+</script>
+<script>
+    function GuardarClase() {
+
+        const formData = new FormData(document.getElementById('editarClaseForm'));
+
         console.log('Datos del formulario:', ...formData.entries());
-    
+
         $.ajax({
-            url: 'Programador-Controlador.php?accion=crear',
+            url: 'Programador-Controlador.php?accion=editar',
             type: 'POST',
-            data: {formData, id_materia:idMateria},
+            data: formData,
             processData: false,
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                //location.reload();
+                
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
-            }
+        }
         });
     }
 </script>
