@@ -99,7 +99,7 @@
         </div>
         <div class="col-2 offset-10">
             <div class="text-center">
-                <button type="button" class="btn btn-success" onclick="Crearfuncion()">Programar Clase</button>
+                <button type="button" class="btn btn-success" onclick="CrearClase()">Programar Clase</button>
             </div>
         </div>
         <br>
@@ -143,7 +143,7 @@
             </div>
             <div class="modal-body">
                 <form id="editarClaseForm">
-                    <input type="hidden" id="id_clase" name="id_clase">
+                    <input type="hidden" id="id_programador" name="id_programador">
 
                     <div class="mb-3">
                         <label for="numero_documento">Docente</label>
@@ -199,20 +199,23 @@
                     </div>
                     <div class="mb-3">
                         <label for="modalidad">Modalidad</label>
-                        <select name="tipo_documento" id="tipo_documento" class="form-control">
+                        <select name="modalidad" id="modalidad" class="form-control">
                                 <option value="">-- Selecciona la Modalidad --</option>
-                                <option value="">Presencial</option>
-                                <option value="">Virtual</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="Virtual">Virtual</option>
                             </select>
                     </div>
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" name="estado" id="estado">
-                        <label class="form-check-label" for="estado">Clase Perdida</label>
+                    <div class="card p-3 shadow-sm border border-danger-subtle" style="max-width: 300px;">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="estado" id="estado">
+                            <label class="form-check-label fw-bold text-danger" for="estado">Clase Perdida</label>
+                        </div>
                     </div>
+
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <button type="button" class="btn btn-primary" onclick="GuardarClase()">Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -264,7 +267,7 @@
 });
 
 
-function Crearfuncion() {
+function CrearClase() {
     var idMateria = $("input[name='materiaSeleccionada']:checked").val(); // Obtiene el ID de la materia seleccionada
 
     if (!idMateria) {
@@ -293,4 +296,27 @@ function Crearfuncion() {
     });
 }
 
+</script>
+<script>
+    function GuardarClase() {
+
+        const formData = new FormData(document.getElementById('editarClaseForm'));
+
+        console.log('Datos del formulario:', ...formData.entries());
+
+        $.ajax({
+            url: 'Programador-Controlador.php?accion=editar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+        }
+        });
+    }
 </script>

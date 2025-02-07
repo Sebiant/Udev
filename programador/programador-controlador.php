@@ -29,13 +29,13 @@ switch ($accion) {
         $fecha = $_POST['fecha'];
         $hora_inicio = $_POST['hora_inicio'];
         $hora_salida = $_POST['hora_salida'];
-        $salon = $_POST['salon'];
-        $docente = $_POST['docente'];
+        $salon = $_POST['id_salon'];
+        $docente = $_POST['numero_documento'];
         $materia = $_POST['materia'];
         $estado = $_POST['estado'];
         $modalidad = $_POST['modalidad'];
 
-        $sql = "UPDATE programadores 
+        $sql = "UPDATE programador 
                 SET fecha='$fecha', hora_inicio='$hora_inicio', hora_salida='$hora_salida', salon='$salon', docente='$docente', materia='$materia', estado='$estado', modalidad='$modalidad' 
                 WHERE id_programador='$id_programador'";
 
