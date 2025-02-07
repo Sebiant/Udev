@@ -10,7 +10,7 @@
             <div class="card">
 
                 <div class="card-header">
-                    <h5>Clases Programadas</h5>
+                    <h5>Clases Programadas de la semana</h5>
                 </div>
 
                 <div class="table-responsive mb-4" style="max-height: 400px; overflow-y: auto; overflow-x: hidden;">
@@ -23,7 +23,6 @@
                                 <th>Salón</th>
                                 <th>Docente</th>
                                 <th>Materia</th>
-                                <th>Verificación</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,7 +33,7 @@
             <br>
             <div class="card">
                 <div class="card-header">
-                    <h5>Asistencias</h5>
+                    <h5>Asistencias de la semana</h5>
                 </div>
                 <div class="table-responsive" style="max-height: 400px; overflow-y: auto; overflow-x: hidden;">
                     <table id="datos_asistencia" class="table table-bordered table-striped">
