@@ -11,15 +11,16 @@ include_once '../componentes/header.php';
     <h1 class="text-center">Cuentas de cobro</h1>
 
     <div class="card">
-        <div class="card-header">
-            <h5>Seleccione los campos necesarios</h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <!-- Columna izquierda: Filtro por docente -->
-                <div class="col-md-6">
-                    <label for="docente" class="form-label"><strong>Filtrar por docente</strong></label>
-                    <select id="docente" name="id_docente" required class="form-control mt-2">
+    <div class="card-header">
+        <h5>Seleccione los campos necesarios</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- Columna izquierda: Filtro por docente -->
+            <div class="col-md-6">
+                <label for="docente" class="form-label"><strong>Filtrar por docente</strong></label>
+                <div class="d-flex">
+                    <select id="docente" name="id_docente" required class="form-control mt-2 me-2">
                         <option value="">Seleccione un docente</option>
                         <?php
                         if ($result->num_rows > 0) {
@@ -31,25 +32,30 @@ include_once '../componentes/header.php';
                         }
                         ?>
                     </select>
+                    <button type="button" class="btn btn-primary mt-2">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
                 </div>
+            </div>
 
-                <!-- Columna derecha: Exportar todos -->
-                <div class="col-md-6 d-flex align-items-center justify-content-end">
-                    <div>
-                        <label class="form-label"><strong>Exportar todos</strong></label>
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-primary mx-1" id="botonPdf" onclick="exportarTodo('pdf')">
-                                <i class="bi bi-file-earmark-pdf"></i> PDF
-                            </button>
-                            <button type="button" class="btn btn-primary mx-1" id="botonCsv" onclick="exportarTodo('csv')">
-                                <i class="bi bi-file-earmark-spreadsheet"></i> CSV
-                            </button>
-                        </div>
+            <!-- Columna derecha: Exportar todos -->
+            <div class="col-md-6 d-flex align-items-center justify-content-end">
+                <div>
+                    <label class="form-label"><strong>Exportar todos</strong></label>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary mx-1" id="botonPdf" onclick="exportarTodo('pdf')">
+                            <i class="bi bi-file-earmark-pdf"></i> PDF
+                        </button>
+                        <button type="button" class="btn btn-primary mx-1" id="botonCsv" onclick="exportarTodo('csv')">
+                            <i class="bi bi-file-earmark-spreadsheet"></i> CSV
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 
     <br />
 
