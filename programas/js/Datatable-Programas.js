@@ -53,7 +53,6 @@ $(document).ready(function () {
             type: 'POST',
             data: { id_programa: idPrograma, estado: nuevoEstado },
             success: function (response) {
-                alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 table.ajax.reload();
             },
             error: function () {

@@ -109,7 +109,8 @@ switch ($accion) {
         $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
         $searchValue = $_POST['search']['value'] ?? '';
     
-        $sql = "SELECT * FROM programas";
+        $sql = "SELECT * FROM programas
+        ORDER BY estado DESC";
     
         if (!empty($searchValue)) {
             $sql .= " WHERE tipo LIKE '%$searchValue%' 
@@ -131,7 +132,7 @@ switch ($accion) {
         }
         $filteredResult = $conn->query($filteredQuery);
         $totalFiltered = $filteredResult->fetch_assoc()['total'];
-    
+        
         $sql .= " LIMIT $start, $length";
         $result = $conn->query($sql);
     
