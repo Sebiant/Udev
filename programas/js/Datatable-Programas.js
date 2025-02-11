@@ -11,7 +11,7 @@ $(document).ready(function () {
             { "data": "tipo" },
             { "data": "nombre" },
             {
-                "data": "duracion_mes",
+                "data": "duracion_meses",
                 "render": function(data) {
                     return data + " Meses";
                 }
@@ -83,8 +83,7 @@ $(document).ready(function () {
                     $('#editForm [name="id_programa"]').val(programa.id_programa);
                     $('#editForm [name="tipo"]').val(programa.tipo);
                     $('#editForm [name="nombre"]').val(programa.nombre);
-                    $('#editForm [name="duracion_mes"]').val(programa.duracion_mes);
-                    $('#editForm [name="cant_modulos"]').val(programa.cant_modulos);
+                    $('#editForm [name="duracion_mes"]').val(programa.duracion_meses);
                     $('#editForm [name="descripcion"]').val(programa.descripcion);
                     $('#editModal').modal('show');
 

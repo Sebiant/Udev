@@ -7,7 +7,7 @@ switch ($accion) {
     case 'crear':
         $tipo = $_POST['tipo'] ?? '';
         $nombre = $_POST['nombre'] ?? '';
-        $duracion_mes = $_POST['duracion_meses'] ?? '';
+        $duracion_meses = $_POST['duracion_mes'] ?? '';
         $descripcion = $_POST['descripcion'] ?? '';
 
         $sql = "INSERT INTO programas (tipo, nombre, duracion_meses, descripcion) 
@@ -41,11 +41,6 @@ switch ($accion) {
             break;
         }
 
-        if (!is_null($cant_modulos) && !is_numeric($cant_modulos)) {
-            echo json_encode(["success" => false, "message" => "La cantidad de módulos debe ser un número válido."]);
-            break;
-        }
-
         $sql_select = "SELECT * FROM programas WHERE id_programa = ?";
         $stmt = $conn->prepare($sql_select);
         $stmt->bind_param('i', $id_programa);
@@ -56,13 +51,13 @@ switch ($accion) {
             $sql_update = "UPDATE programas SET 
                             tipo = IFNULL(?, tipo), 
                             nombre = IFNULL(?, nombre), 
-                            duracion_mes = IFNULL(?, duracion_mes), 
+                            duracion_meses = IFNULL(?, duracion_meses), 
                             descripcion = IFNULL(?, descripcion), 
                             estado = IFNULL(?, estado) 
                             WHERE id_programa = ?";
 
             $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param('ssiissi', $tipo, $nombre, $duracion_mes, $descripcion, $estado, $id_programa);
+            $stmt_update->bind_param('ssisii', $tipo, $nombre, $duracion_mes, $descripcion, $estado, $id_programa);
             
             echo ($stmt_update->execute())
                 ? json_encode(["success" => true, "message" => "Registro actualizado exitosamente."])
