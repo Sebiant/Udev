@@ -31,12 +31,13 @@ switch ($accion) {
         $hora_salida = $_POST['hora_salida'];
         $salon = $_POST['id_salon'];
         $docente = $_POST['numero_documento'];
-        $materia = $_POST['materia'];
-        $estado = $_POST['estado'];
+        $materia = $_POST['id_materia'];
         $modalidad = $_POST['modalidad'];
+        $estado = $_POST['estado']?? null;
+        
 
         $sql = "UPDATE programador 
-                SET fecha='$fecha', hora_inicio='$hora_inicio', hora_salida='$hora_salida', salon='$salon', docente='$docente', materia='$materia', estado='$estado', modalidad='$modalidad' 
+                SET fecha='$fecha', hora_inicio='$hora_inicio', hora_salida='$hora_salida', id_salon='$salon', numero_documento='$docente', id_materia='$materia', modalidad='$modalidad',estado='$estado'  
                 WHERE id_programador='$id_programador'";
 
         if ($conn->query($sql) === TRUE) {
@@ -46,24 +47,33 @@ switch ($accion) {
         }
         break;
     
-    case 'BusquedaPorId':
-        $id_programador = $_POST['id_programador'];
+        case 'BusquedaPorId':
+            $id_programador = $_POST['id_programador'] ?? null;
 
-        $sql = "SELECT * FROM programador WHERE id_programador = '$id_programador'";
-        $result = $conn->query($sql);
-        if ($result === false) {
-            echo json_encode(["error" => "Error en la consulta SQL: " . $conn->error]);
-            exit;
-        }
-        $data = [];
-        if ($result->num_rows > 0) {
-            $programador = $result->fetch_assoc();
-            $salon['estado'] = $programador['estado'] == 1 ? "Vista" : "Perdida";
-            $data[] = $programador;
-        }
-        header('Content-Type: application/json');
-        echo json_encode(["data" => $data]);
-        break;
+        
+            // Consulta corregida con un placeholder seguro
+            $sql = "SELECT * FROM programador WHERE id_programador = ?";
+            $stmt = $conn->prepare($sql);
+        
+            if (!$stmt) {
+                die(json_encode(['error' => 'Error en la preparación de la consulta: ' . $conn->error]));
+            }
+        
+            // Asignar el parámetro correctamente
+            $stmt->bind_param('i', $id_programador);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        
+            if ($result->num_rows > 0) {
+                $data = $result->fetch_all(MYSQLI_ASSOC);
+                echo json_encode(['data' => $data]);
+            } else {
+                echo json_encode(['error' => 'Registro no encontrado']);
+            }
+        
+            $stmt->close();
+            break;
+        
 
 
     default:

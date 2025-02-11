@@ -41,7 +41,7 @@ $(document).ready(function () {
             {
                 data: "id_programador",
                 render: function (data) {
-                    return `<button class="btn btn-primary w-100 btn-modify" onclick="editarClase(${data})">Editar</button>`;
+                    return `<button class="btn btn-primary w-100 btn-modify"(${data})">Editar</button>`;
                 }
             },
         ],
@@ -52,23 +52,24 @@ $(document).ready(function () {
         var idProgramador = data.id_programador;
 
         $.ajax({
-            url: 'Programador-Controlador.php?accion=busquedaPorId',
+            url: 'Programador-Controlador.php?accion=BusquedaPorId',
             type: 'POST',
             data: { id_programador: idProgramador },
             dataType: 'json',
             success: function (response) {
+                console.log(response);
                 if (response.data && response.data.length > 0) {
                     var programador = response.data[0];
 
                     $('#editarClaseForm [name="fecha"]').val(programador.fecha);
                     $('#editarClaseForm [name="hora_inicio"]').val(programador.hora_inicio);
-                    $('#editarClaseForm [name="hora_fin"]').val(programador.hora_fin);
+                    $('#editarClaseForm [name="hora_salida"]').val(programador.hora_salida);
                     $('#editarClaseForm [name="id_salon"]').val(programador.id_salon);
                     $('#editarClaseForm [name="numero_documento"]').val(programador.numero_documento);
                     $('#editarClaseForm [name="id_materia"]').val(programador.id_materia);
-
-                    $('#editarClaseForm [name="estado"]').prop('checked', String(programador.estado) === "1");
                     $('#editarClaseForm [name="modalidad"]').val(programador.modalidad);
+                    $('#editarClaseForm [name="estado"]').prop('checked', String(programador.estado) === "1");
+                    
 
                     $('#modalEditarClase').modal('show');
                 } else {
@@ -78,16 +79,17 @@ $(document).ready(function () {
         });
     });
 
-    $('#editarClaseForm').on('submit', function (e) {
+    $('#editarClaseForm').on('button', function (e) {
         e.preventDefault();
 
         $.ajax({
             url: 'Programador-Controlador.php?accion=editar',
             type: 'POST',
             data: $(this).serialize(),
-            success: function () {
-                $('#modalEditarClase').modal('hide');
+            success: function (response) {
+                console.log(response);
                 table.ajax.reload();
+                $('#modalEditarClase').modal('hide');
             },
             error: function () {
                 alert('Error al actualizar la clase.');

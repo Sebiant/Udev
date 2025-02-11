@@ -146,24 +146,18 @@
                     <input type="hidden" id="id_programador" name="id_programador">
 
                     <div class="mb-3">
-                        <label for="numero_documento">Docente</label>
-                        <select id="numero_documento" name="numero_documento" class="form-control">
-                            <option value="">-- Selecciona un docente --</option>
-                            <?php
-                            $sql_docentes = "SELECT numero_documento, nombres, apellidos FROM docentes";
-                            $result_docentes = $conn->query($sql_docentes);
-                        
-                            if ($result_docentes->num_rows > 0) {
-                                while ($row_docente = $result_docentes->fetch_assoc()) {
-                                    echo '<option value="' . $row_docente['numero_documento'] . '">' . $row_docente['nombres'] . " " . $row_docente['apellidos'] . '</option>';
-                                }
-                            } else {
-                                echo '<option value="">No hay docentes disponibles</option>';
-                            }
-                            ?>
-                        </select>
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" name="fecha" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="hora_inicio">Hora de Inicio</label>
+                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control">
                     </div>
 
+                    <div class="mb-3">
+                        <label for="hora_salida">Hora de Salida</label>
+                        <input type="time" id="hora_salida" name="hora_salida" class="form-control">
+                    </div>
                     <div class="mb-3">
                         <label for="id_salon">Salón</label>
                         <select id="id_salon" name="id_salon" class="form-control">
@@ -182,20 +176,41 @@
                             ?>
                         </select>
                     </div>
-
                     <div class="mb-3">
-                        <label for="fecha">Fecha</label>
-                        <input type="date" id="fecha" name="fecha" class="form-control">
+                        <label for="numero_documento">Docente</label>
+                        <select id="numero_documento" name="numero_documento" class="form-control">
+                            <option value="">-- Selecciona un docente --</option>
+                            <?php
+                            $sql_docentes = "SELECT numero_documento, nombres, apellidos FROM docentes";
+                            $result_docentes = $conn->query($sql_docentes);
+                        
+                            if ($result_docentes->num_rows > 0) {
+                                while ($row_docente = $result_docentes->fetch_assoc()) {
+                                    echo '<option value="' . $row_docente['numero_documento'] . '">' . $row_docente['nombres'] . " " . $row_docente['apellidos'] . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay docentes disponibles</option>';
+                            }
+                            ?>
+                        </select>
                     </div>
-
                     <div class="mb-3">
-                        <label for="hora_inicio">Hora de Inicio</label>
-                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="hora_salida">Hora de Salida</label>
-                        <input type="time" id="hora_salida" name="hora_salida" class="form-control">
+                    <label for="id_materia">Materia</label>
+                        <select id="id_materia" name="id_materia" class="form-control">
+                            <option value="">-- Selecciona una materia --</option>
+                            <?php
+                            $sql_materias = "SELECT id_materia, nombre FROM materias";
+                            $result_materias = $conn->query($sql_materias);
+                        
+                            if ($result_materias->num_rows > 0) {
+                                while ($row_materias = $result_materias->fetch_assoc()) {
+                                    echo '<option value="' . $row_materias['id_materia'] . '">' . $row_materias['nombre'] . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay materias disponibles</option>';
+                            }
+                            ?>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="modalidad">Modalidad</label>
@@ -205,11 +220,10 @@
                                 <option value="Virtual">Virtual</option>
                             </select>
                     </div>
-                    <div class="card p-3 shadow-sm border border-danger-subtle" style="max-width: 300px;">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="estado" id="estado">
-                            <label class="form-check-label fw-bold text-danger" for="estado">Clase Perdida</label>
-                        </div>
+                    <div class="d-flex justify-content-center">
+                        <button id="estado" class="btn btn-danger fw-bold">
+                            Marcar Clase como Perdida
+                        </button>
                     </div>
 
                 </form>
@@ -312,11 +326,18 @@ function CrearClase() {
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                
+               // location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
         }
         });
     }
+    document.getElementById("estado").addEventListener("click", function() {
+// Confirmación antes de recargar la página
+let confirmar = confirm("¿Estás seguro de marcar esta clase como perdida?");
+if (confirmar) {
+    location.reload(); // Recargar la página
+}
+});
 </script>
