@@ -113,13 +113,16 @@ switch ($accion) {
         $totalResult = $stmt->get_result();
         $totalRecords = $totalResult->fetch_assoc()['total'];
 
-        $sql = "SELECT tipo_documento, numero_documento, nombres, apellidos,
-                       CONCAT(nombres, ' ', apellidos) AS nombre_completo, perfil_profesional,
-                       telefono, direccion, email, declara_renta, 
-                       retenedor_iva, estado
-                FROM docentes
-                WHERE nombres LIKE ? OR apellidos LIKE ? OR tipo_documento LIKE ? OR numero_documento LIKE ?
-                LIMIT ?, ?";
+        $sql ="SELECT tipo_documento, numero_documento, nombres, apellidos,
+            CONCAT(nombres, ' ', apellidos) AS nombre_completo, perfil_profesional,
+            telefono, direccion, email, declara_renta, 
+            retenedor_iva, estado
+            FROM docentes
+            WHERE nombres LIKE ? OR apellidos LIKE ? OR tipo_documento LIKE ? OR numero_documento LIKE ?
+            ORDER BY estado DESC
+            LIMIT ?, ?
+            ";
+ 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('ssssii', $searchTerm, $searchTerm, $searchTerm, $searchTerm, $offset, $pageSize);
         $stmt->execute();
