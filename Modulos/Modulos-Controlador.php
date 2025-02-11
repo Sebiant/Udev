@@ -81,7 +81,10 @@ switch ($accion) {
         $sql_count = "SELECT COUNT(*) AS total FROM modulos JOIN programas ON modulos.id_programa = programas.id_programa";
         $totalRecords = $conn->query($sql_count)->fetch_assoc()['total'];
 
-        $sql = "SELECT modulos.*, programas.nombre AS nombre_programa FROM modulos JOIN programas ON modulos.id_programa = programas.id_programa $where LIMIT $start, $length";
+        $sql = "SELECT modulos.*, programas.nombre AS nombre_programa FROM modulos 
+        JOIN programas ON modulos.id_programa = programas.id_programa 
+        ORDER BY estado DESC
+        $where LIMIT $start, $length";
         $result = $conn->query($sql);
 
         $data = [];
