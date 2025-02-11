@@ -90,7 +90,10 @@ switch ($accion) {
         $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
         $search = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
         
-        $sql = "SELECT * FROM materias WHERE nombre LIKE '%$search%' OR descripcion LIKE '%$search%' LIMIT $start, $length";
+        $sql = "SELECT * FROM materias 
+        WHERE nombre LIKE '%$search%' OR descripcion LIKE '%$search%' 
+        ORDER BY estado DESC
+        LIMIT $start, $length";
         $result = $conn->query($sql);
     
         $data = [];

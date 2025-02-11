@@ -25,7 +25,6 @@ include_once '../componentes/header.php';
             <table id="datos_materia" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Nombre</th>
                         <th>Descripcion</th>
                         <th>Estado</th>

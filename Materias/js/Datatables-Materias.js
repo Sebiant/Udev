@@ -15,7 +15,6 @@ $(document).ready(function () {
             dataSrc: 'data'
         },
         columns: [
-            { "data": "id_materia" },
             { "data": "nombre" },
             { "data": "descripcion" },
             { "data": "estado" },
