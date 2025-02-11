@@ -16,7 +16,6 @@ $(document).ready(function () {
                     return data + " Meses";
                 }
             },
-            { "data": "cant_modulos" },
             { "data": "descripcion" },
             { "data": "estado" },
             {

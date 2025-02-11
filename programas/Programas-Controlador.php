@@ -7,12 +7,11 @@ switch ($accion) {
     case 'crear':
         $tipo = $_POST['tipo'] ?? '';
         $nombre = $_POST['nombre'] ?? '';
-        $duracion_mes = $_POST['duracion_mes'] ?? '';
-        $cant_modulos = $_POST['cant_modulos'] ?? '';
+        $duracion_mes = $_POST['duracion_meses'] ?? '';
         $descripcion = $_POST['descripcion'] ?? '';
 
-        $sql = "INSERT INTO programas (tipo, nombre, duracion_mes, cant_modulos, descripcion) 
-                VALUES ('$tipo', '$nombre', '$duracion_mes', '$cant_modulos', '$descripcion')";
+        $sql = "INSERT INTO programas (tipo, nombre, duracion_meses, descripcion) 
+                VALUES ('$tipo', '$nombre', '$duracion_meses', '$descripcion')";
         
         echo ($conn->query($sql) === TRUE) 
             ? "Nuevo registro creado exitosamente."
@@ -29,11 +28,10 @@ switch ($accion) {
         $tipo = $_POST['tipo'] ?? null;
         $nombre = $_POST['nombre'] ?? null;
         $duracion_mes = $_POST['duracion_mes'] ?? null;
-        $cant_modulos = $_POST['cant_modulos'] ?? null;
         $descripcion = isset($_POST['descripcion']) && $_POST['descripcion'] !== '' ? $_POST['descripcion'] : null;
         $estado = $_POST['estado'] ?? null;
 
-        if (is_null($tipo) && is_null($nombre) && is_null($duracion_mes) && is_null($cant_modulos) && is_null($descripcion) && is_null($estado)) {
+        if (is_null($tipo) && is_null($nombre) && is_null($duracion_mes)&& is_null($descripcion) && is_null($estado)) {
             echo json_encode(["success" => false, "message" => "No se han enviado datos para actualizar."]);
             break;
         }
@@ -59,13 +57,12 @@ switch ($accion) {
                             tipo = IFNULL(?, tipo), 
                             nombre = IFNULL(?, nombre), 
                             duracion_mes = IFNULL(?, duracion_mes), 
-                            cant_modulos = IFNULL(?, cant_modulos), 
                             descripcion = IFNULL(?, descripcion), 
                             estado = IFNULL(?, estado) 
                             WHERE id_programa = ?";
 
             $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param('ssiissi', $tipo, $nombre, $duracion_mes, $cant_modulos, $descripcion, $estado, $id_programa);
+            $stmt_update->bind_param('ssiissi', $tipo, $nombre, $duracion_mes, $descripcion, $estado, $id_programa);
             
             echo ($stmt_update->execute())
                 ? json_encode(["success" => true, "message" => "Registro actualizado exitosamente."])
