@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    $("#formModulo").validate({
+    $("#formPeriodo").validate({
         rules: {
             fecha_inicio: {
                 required: true,
@@ -13,9 +13,6 @@ jQuery(document).ready(function($) {
                 min: "2025-01-01",
                 max: "2026-12-31"  // Fecha máxima permitida
             },
-            id_programa: {
-                required: true
-            }
         },
         messages: {
             fecha_inicio: {
@@ -30,14 +27,11 @@ jQuery(document).ready(function($) {
                 min: "La fecha de fin no puede ser anterior al 01 de enero de 2025.",
                 max: "La fecha de fin no puede ser posterior al 31 de diciembre de 2026."
             },
-            id_programa: {
-                required: "Por favor, selecciona un programa."
-            }
         },
         submitHandler: function(form) {
             console.log("Formulario validado y listo para enviar.");
             form.submit();
-            crearModulo();
+            crearPeriodo();
         }
     });
 });
@@ -57,9 +51,6 @@ jQuery(document).ready(function($) {
                 min: "2025-01-01",
                 max: "2026-12-31"  // Fecha máxima permitida
             },
-            id_programa: {
-                required: true
-            }
         },
         messages: {
             fecha_inicio: {
@@ -74,14 +65,11 @@ jQuery(document).ready(function($) {
                 min: "La fecha de fin no puede ser anterior al 01 de enero de 2025.",
                 max: "La fecha de fin no puede ser posterior al 31 de diciembre de 2026."
             },
-            id_programa: {
-                required: "Por favor, selecciona un programa."
-            }
         },
         submitHandler: function(form) {
             console.log("Formulario validado y listo para enviar.");
             form.submit();
-            GuardarModulo();
+            GuardarPeriodo();
         }
     });
 });

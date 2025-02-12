@@ -2,18 +2,16 @@
 include_once '../componentes/header.php';
 include '../conexion.php';
 
-$sql = "SELECT id_programa, nombre FROM programas WHERE estado = 1";
-$result = $conn->query($sql);
 ?>
 
 <div class="container">
-    <h1 class="text-center">Gestion Módulos</h1>
+    <h1 class="text-center">Gestion Periódos</h1>
 
     <div class="row">
         <div class="col-2 offset-10">
             <div class="text-center">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalModulos" id="botonCrear">
+                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalPeriodos" id="botonCrear">
                     <i class="bi bi-plus-circle"></i> Crear
                 </button>
             </div>
@@ -23,15 +21,14 @@ $result = $conn->query($sql);
     <br />
     <div class="card">
         <div class="card-header">
-            <h5>Módulos</h5>
+            <h5>Periódos</h5>
         </div>
         <div class="table-responsive card-body">
-            <table id="datos_modulo" class="table table-bordered table-striped">
+            <table id="datos_periodo" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Fecha Inicio</th>
                         <th>Fecha Fin</th>
-                        <th>Programa</th>
                         <th>Estado</th>
                         <th>Modificar</th>
                         <th>Acciones</th>
@@ -42,18 +39,18 @@ $result = $conn->query($sql);
     </div>    
 </div>
 
-<!-- Modal para crear un módulo -->
-<div class="modal fade" id="modalModulos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal de creación -->
+<div class="modal fade" id="modalPeriodos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar Módulo</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Agregar Periódo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formModulo">
+                <form id="formPeriodo">
                     <input type="hidden" name="accion" value="crear" id="accion">
-                    <input type="hidden" name="id_modulo" id="id_modulo">
+                    <input type="hidden" name="id_periodo" id="id_periodo">
 
                     <div class="mb-3">
                         <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
@@ -63,41 +60,26 @@ $result = $conn->query($sql);
                         <label for="fecha_fin" class="form-label">Fecha Fin:</label>
                         <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" min="2024-11-29" max="2026-12-31" placeholder="Fecha Fin">
                     </div>
-                    <div>
-                        <label for="id_programa">Programa:</label>
-                        <select id="id_programa" name="id_programa" class="form-control">
-                            <option value="">-- Selecciona un programa --</option>
-                            <?php
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
-                                }
-                            } else {
-                                echo '<option value="">No hay programas disponibles</option>';
-                            }
-                            ?>
-                        </select>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success" onclick="crearModulo()">Guardar</button>
+                <button type="submit" class="btn btn-success" onclick="crearPeriodo()">Guardar</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal de edición -->
-<div id="editModuloModal" class="modal fade" tabindex="-1" role="dialog">
+<div id="editPeriodoModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Editar Módulo</h5>
+                <h5 class="modal-title">Editar Periódo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="editForm">
                 <div class="modal-body">
-                    <input type="hidden" name="id_modulo">
+                    <input type="hidden" name="id_periodo">
                     <div class="form-group">
                         <label for="fecha_inicio">Fecha Inicio</label>
                         <input type="date" class="form-control" name="fecha_inicio" placeholder="Fecha Inicio">
@@ -106,27 +88,9 @@ $result = $conn->query($sql);
                         <label for="fecha_fin">Fecha Fin</label> 
                         <input type="date" class="form-control" name="fecha_fin" placeholder="Fecha Fin">
                     </div>
-                    <div>
-                        <label for="id_programa">Programa:</label>
-                        <select name="id_programa" class="form-control">
-                            <option value="">-- Selecciona un programa --</option>
-                            <?php
-                             $sql = "SELECT id_programa, nombre FROM programas WHERE estado = 1";
-                             $result = $conn->query($sql);
-                     
-                             if ($result->num_rows > 0) {
-                                 while ($row = $result->fetch_assoc()) {
-                                     echo '<option value="' . $row['id_programa'] . '">' . $row['nombre'] . '</option>';
-                                 }
-                             } else {
-                                 echo '<option value="">No hay programas disponibles</option>';
-                             }
-                            ?>
-                        </select>
-                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="GuardarModulo()">Guardar Cambios</button>
+                    <button type="button" class="btn btn-primary" onclick="GuardarPeriodo()">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -137,20 +101,20 @@ $result = $conn->query($sql);
 include_once '../componentes/footer.php';
 ?>
 
-<script src="js/Datatables-Modulos.js"></script>
-<script src="js/Consultas-Modulos.js"></script>
+<script src="js/Datatables-Periodos.js"></script>
+<script src="js/Consultas-Periodos.js"></script>
 <script>
-    function crearModulo() {
-        if (!$("#formModulo").valid()) {
+    function crearPeriodo() {
+        if (!$("#formPeriodo").valid()) {
             console.log("El formulario no es válido.");
             return; 
         }
     
-        const formData = new FormData(document.getElementById('formModulo'));
+        const formData = new FormData(document.getElementById('formPeriodo'));
         console.log('Datos del formulario:', ...formData.entries());
     
         $.ajax({
-            url: 'Modulos-Controlador.php?accion=crear',
+            url: 'Periodos-Controlador.php?accion=crear',
             type: 'POST',
             data: formData,
             processData: false,
@@ -167,7 +131,7 @@ include_once '../componentes/footer.php';
 </script>
 
 <script>
-    function GuardarModulo() {
+    function GuardarPeriodo() {
         if (!$("#editForm").valid()) {
             console.log("El formulario no es válido.");
             return; 
@@ -177,7 +141,7 @@ include_once '../componentes/footer.php';
         console.log('Datos del formulario:', ...formData.entries());
     
         $.ajax({
-            url: 'Modulos-Controlador.php?accion=editar',
+            url: 'Periodos-Controlador.php?accion=editar',
             type: 'POST',
             data: formData,
             processData: false,

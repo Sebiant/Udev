@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    var table = $('#datos_modulo').DataTable({
+    var table = $('#datos_periodo').DataTable({
         "ajax": {
-            "url": "Modulos-Controlador.php",
+            "url": "Periodos-Controlador.php",
             "type": "GET",
             "data": { "accion": "default" },
             "dataSrc": "data"
@@ -9,12 +9,11 @@ $(document).ready(function() {
         "columns": [
             { "data": "fecha_inicio" },
             { "data": "fecha_fin" },
-            { "data": "nombre_programa" },
             { "data": "estado" },
             {
-                "data": "id_modulo",
+                "data": "id_periodo",
                 "render": function(data) {
-                    return `<button class="btn btn-primary w-100 btn-modify" onclick="editarModulo(${data})">Modificar</button>`;
+                    return `<button class="btn btn-primary w-100 btn-modify" onclick="editarPeriodo(${data})">Modificar</button>`;
                 }
             },
             {
@@ -39,17 +38,17 @@ $(document).ready(function() {
     });
 });
 
-$('#datos_modulo').on('click', '.btn-toggle-state', function () {
-    var data = $('#datos_modulo').DataTable().row($(this).parents('tr')).data();
-    var idModulo = data.id_modulo;
+$('#datos_periodo').on('click', '.btn-toggle-state', function () {
+    var data = $('#datos_periodo').DataTable().row($(this).parents('tr')).data();
+    var idPeriodos = data.id_periodo;
     var nuevoEstado = data.estado === "Activo" ? 0 : 1;
 
     $.ajax({
-        url: 'Modulos-Controlador.php?accion=cambiarEstado',
+        url: 'Periodos-Controlador.php?accion=cambiarEstado',
         type: 'POST',
-        data: { id_modulo: idModulo, estado: nuevoEstado },
+        data: { id_periodo: idPeriodos, estado: nuevoEstado },
         success: function (response) {
-            $('#datos_modulo').DataTable().ajax.reload();
+            $('#datos_periodo').DataTable().ajax.reload();
         },
         error: function () {
             alert("Hubo un error al cambiar el estado.");
@@ -57,26 +56,25 @@ $('#datos_modulo').on('click', '.btn-toggle-state', function () {
     });
 });
 
-function editarModulo(id) {
+function editarPeriodo(id) {
     if (!id) {
         alert("ID no válido");
         return;
     }
     $.ajax({
-        url: 'Modulos-Controlador.php?accion=BusquedaPorId',
+        url: 'Periodos-Controlador.php?accion=BusquedaPorId',
         type: 'POST',
-        data: {id_modulo: id },
+        data: {id_periodo: id },
         dataType: 'json',
         success: function(response) {
             if (response.data && response.data.length > 0) {
                 var modulo = response.data[0];
-                $('#editForm input[name="id_modulo"]').val(modulo.id_modulo);
+                $('#editForm input[name="id_periodo"]').val(modulo.id_periodo);
                 $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
                 $('#editForm input[name="fecha_fin"]').val(modulo.fecha_fin);
-                $('#editForm select[name="id_programa"]').val(modulo.id_programa);
-                $('#editModuloModal').modal('show');
+                $('#editPeriodoModal').modal('show');
             } else {
-                alert("No se encontraron datos para este módulo.");
+                alert("No se encontraron datos para este periódo.");
             }
         },
     });
@@ -85,45 +83,19 @@ function editarModulo(id) {
 $('#editForm').on('submit', function(event) {
     event.preventDefault();
     $.ajax({
-        url: 'Modulos-Controlador.php?accion=editar',
+        url: 'Periodos-Controlador.php?accion=editar',
         type: 'POST',
         data: $(this).serialize(),
         success: function(response) {
-            $('#editModuloModal').modal('hide');
-            $('#datos_modulo').DataTable().ajax.reload();
+            $('#editPeriodoModal').modal('hide');
+            $('#datos_periodo').DataTable().ajax.reload();
         },
         error: function() {
-            alert('Error al actualizar el módulo.');
+            alert('Error al actualizar el periódo.');
         }
     });
 });
 
-function borrarModulo(id) {
-    $.ajax({
-        url: 'Modulos-Controlador.php?accion=eliminar',
-        type: 'POST',
-        data: { id_modulo: id },
-        success: function(response) {
-            $('#datos_modulo').DataTable().ajax.reload();
-        },
-        error: function() {
-            alert('Error al eliminar el módulo.');
-        }
-    });
-}
 
-function crearModulo() {
-    const datosFormulario = $('#formModulo').serialize();
-    $.ajax({
-        url: 'Modulos-Controlador.php?accion=crear', 
-        type: 'POST',
-        data: datosFormulario,
-        success: function(response) {
-            $('#modalModulos').modal('hide');
-            $('#datos_modulo').DataTable().ajax.reload();
-        },
-        error: function() {
-            alert('Error al crear el módulo.');
-        }
-    });
-}
+
+
