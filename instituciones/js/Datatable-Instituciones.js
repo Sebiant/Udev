@@ -46,7 +46,6 @@ $(document).ready(function() {
             type: 'POST',
             data: { id_institucion: idInstitucion, estado: nuevoEstado },
             success: function(response) {
-                alert(`El estado de la institución se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 table.ajax.reload();
             },
             error: function() {
@@ -95,20 +94,4 @@ $(document).ready(function() {
         });
     });
 
-    $('#datos_instituciones').on('click', '.btn-delete', function() {
-        var data = table.row($(this).parents('tr')).data();
-        var idInstitucion = data.id_institucion;
-
-        $.ajax({
-            url: 'instituciones-controlador.php?accion=eliminar',
-            type: 'POST',
-            data: { id_institucion: idInstitucion },
-            success: function(response) {
-                table.ajax.reload();
-            },
-            error: function() {
-                alert('Error al desactivar la institución.');
-            }
-        });
-    });
 });
