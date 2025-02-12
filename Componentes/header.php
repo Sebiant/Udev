@@ -34,19 +34,19 @@
           <a class="nav-link" href="../Docentes/Docentes-Vista.php">Docentes</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Instituciones/Instituciones-Vista.php">Instituciones</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="../Salones/Salones-Vista.php">Salones</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Periodos/Periodos-Vista.php">Módulos</a>
+          <a class="nav-link" href="../Instituciones/Instituciones-Vista.php">Instituciones</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Modulos/Modulos-Vista.php">Materias</a>
+          <a class="nav-link" href="../Periodos/Periodos-Vista.php">Periodos</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../Programas/Programas-Vista.php">Programas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../Modulos/Modulos-Vista.php">Modulos</a>
         </li>
       </ul>
     </div>
