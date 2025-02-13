@@ -24,10 +24,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="datos_materia" class="table table-bordered table-striped">
+                                    <table id="datos_modulo" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>ID materia</th>
+                                                <th>Tipo</th>
                                                 <th>Nombre</th>
                                                 <th>Descripción</th>
                                                 <th>Seleccionar</th>
@@ -195,19 +195,19 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                    <label for="id_materia">Materia</label>
-                        <select id="id_materia" name="id_materia" class="form-control">
-                            <option value="">-- Selecciona una materia --</option>
+                    <label for="id_modulo">Modulos</label>
+                        <select id="id_asignacion_periodo" name="id_modulo" class="form-control">
+                            <option value="">-- Selecciona una modulos --</option>
                             <?php
-                            $sql_materias = "SELECT id_materia, nombre FROM materias";
+                            $sql_materias = "SELECT id_modulo, nombre FROM modulos";
                             $result_materias = $conn->query($sql_materias);
                         
                             if ($result_materias->num_rows > 0) {
                                 while ($row_materias = $result_materias->fetch_assoc()) {
-                                    echo '<option value="' . $row_materias['id_materia'] . '">' . $row_materias['nombre'] . '</option>';
+                                    echo '<option value="' . $row_materias['id_modulo'] . '">' . $row_materias['nombre'] . '</option>';
                                 }
                             } else {
-                                echo '<option value="">No hay materias disponibles</option>';
+                                echo '<option value="">No hay módulos disponibles</option>';
                             }
                             ?>
                         </select>
@@ -249,7 +249,7 @@
 
 <script>
     $(document).ready(function() {
-    var table = $('#datos_materia').DataTable({
+    var table = $('#datos_modulo').DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
         },
@@ -260,22 +260,21 @@
         processing: true,
         serverSide: true,
         ajax: {
-            url: "materias-controlador.php",
+            url: "Modulos-Controlador.php",
             type: "POST",
             dataSrc: 'data'  
         },
         columns: [
-            { "data": "id_materia" },
+            { "data": "tipo" },
             { "data": "nombre" },
             { "data": "descripcion" },
             {
-    "data": "id_materia",
-    "render": function(data, type, row) {
-        return `<input type="radio" name="materiaSeleccionada" value="${data}">`;
-    },
-    "orderable": false
-}
-
+                "data": "id_modulo",
+                "render": function(data, type, row) {
+                    return `<input type="radio" name="moduloSeleccionado" value="${data}">`;
+                },
+                "orderable": false
+            }
         ]
     });
 });

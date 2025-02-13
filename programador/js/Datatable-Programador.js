@@ -33,7 +33,7 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    return row.nombre;
+                    return row.nombre_modulo;
                 }
             },
             { data: "estado" },
