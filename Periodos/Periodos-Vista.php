@@ -27,6 +27,7 @@ include '../conexion.php';
             <table id="datos_periodo" class="table table-bordered table-striped">
                 <thead>
                     <tr>
+                        <th>Nombre</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Fin</th>
                         <th>Estado</th>
@@ -52,6 +53,10 @@ include '../conexion.php';
                     <input type="hidden" name="accion" value="crear" id="accion">
                     <input type="hidden" name="id_periodo" id="id_periodo">
 
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre">
+                    </div>
                     <div class="mb-3">
                         <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
                         <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" min="2024-11-29" max="2026-12-31" placeholder="Fecha Incio">
@@ -80,6 +85,10 @@ include '../conexion.php';
             <form id="editForm">
                 <div class="modal-body">
                     <input type="hidden" name="id_periodo">
+                    <div class="form-group">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" name="nombre" class="form-control" placeholder="Nombre">
+                    </div>
                     <div class="form-group">
                         <label for="fecha_inicio">Fecha Inicio</label>
                         <input type="date" class="form-control" name="fecha_inicio" placeholder="Fecha Inicio">

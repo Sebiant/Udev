@@ -1,6 +1,9 @@
 jQuery(document).ready(function($) {
     $("#formPeriodo").validate({
         rules: {
+            nombre: {
+                required: true
+            },
             fecha_inicio: {
                 required: true,
                 date: true,
@@ -15,6 +18,9 @@ jQuery(document).ready(function($) {
             },
         },
         messages: {
+            nombre: {
+                required: "Por favor, ingresa el nombre del periodo."
+            },
             fecha_inicio: {
                 required: "Por favor, selecciona una fecha de inicio.",
                 date: "Ingresa una fecha válida.",
@@ -39,6 +45,9 @@ jQuery(document).ready(function($) {
 jQuery(document).ready(function($) {
     $("#editForm").validate({
         rules: {
+            nombre: {
+                required: true
+            },
             fecha_inicio: {
                 required: true,
                 date: true,
@@ -53,6 +62,9 @@ jQuery(document).ready(function($) {
             },
         },
         messages: {
+            nombre: {
+                required: "Por favor, ingresa el nombre del periodo."
+            },
             fecha_inicio: {
                 required: "Por favor, selecciona una fecha de inicio.",
                 date: "Ingresa una fecha válida.",

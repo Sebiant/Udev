@@ -6,6 +6,7 @@ $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
     case 'crear':
+        $nombre_periodo = $_POST['nombre'];
         $fecha_inicio = $_POST['fecha_inicio'];
         $fecha_fin = $_POST['fecha_fin'];
 
@@ -14,7 +15,7 @@ switch ($accion) {
             exit;
         }
 
-        $sql = "INSERT INTO periodos (fecha_inicio, fecha_fin) VALUES ('$fecha_inicio', '$fecha_fin')";
+        $sql = "INSERT INTO periodos (nombre,fecha_inicio, fecha_fin) VALUES ('$nombre_periodo','$fecha_inicio', '$fecha_fin')";
         
         if ($conn->query($sql) === TRUE) {
         } else {
@@ -30,11 +31,11 @@ switch ($accion) {
 
         if ($result->num_rows > 0) {
             $periodo = $result->fetch_assoc();
-
+            $nombre_periodo = $_POST['nombre'] ?? $periodo['nombre'];
             $fecha_inicio = $_POST['fecha_inicio'] ?? $periodo['fecha_inicio'];
             $fecha_fin = $_POST['fecha_fin'] ?? $periodo['fecha_fin'];
            
-            $sql_update = "UPDATE periodos SET fecha_inicio='$fecha_inicio', fecha_fin='$fecha_fin'WHERE id_periodo='$id_periodo'";
+            $sql_update = "UPDATE periodos SET nombre= '$nombre_periodo', fecha_inicio='$fecha_inicio', fecha_fin='$fecha_fin'WHERE id_periodo='$id_periodo'";
 
             if ($conn->query($sql_update) === TRUE) {
             } else {
@@ -73,7 +74,7 @@ switch ($accion) {
     
     $where = "";
     if (!empty($searchValue)) {
-        $where = " WHERE periodos.fecha_inicio LIKE '%$searchValue%' OR periodos.fecha_fin LIKE '%$searchValue%'";
+        $where = " WHERE periodos.nombre LIKE '%$searchValue% OR periodos.fecha_inicio LIKE '%$searchValue%' OR periodos.fecha_fin LIKE '%$searchValue%'";
     }
     
     // Obtener el total de registros antes de filtrar

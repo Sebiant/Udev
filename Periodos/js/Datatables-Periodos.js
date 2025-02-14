@@ -7,6 +7,7 @@ $(document).ready(function() {
             "dataSrc": "data"
         },
         "columns": [
+            { "data": "nombre" },
             { "data": "fecha_inicio" },
             { "data": "fecha_fin" },
             { "data": "estado" },
@@ -70,6 +71,7 @@ function editarPeriodo(id) {
             if (response.data && response.data.length > 0) {
                 var modulo = response.data[0];
                 $('#editForm input[name="id_periodo"]').val(modulo.id_periodo);
+                $('#editForm input[name="nombre"]').val(modulo.nombre);
                 $('#editForm input[name="fecha_inicio"]').val(modulo.fecha_inicio);
                 $('#editForm input[name="fecha_fin"]').val(modulo.fecha_fin);
                 $('#editPeriodoModal').modal('show');
