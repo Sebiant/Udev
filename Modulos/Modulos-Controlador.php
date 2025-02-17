@@ -7,9 +7,10 @@ switch ($accion) {
     case 'crear':
         $tipo = $_POST['tipo'];
         $nombre = $_POST['nombre'];
+        $id_programa = $_POST['id_programa'];
         $descripcion = $_POST['descripcion'];
     
-        $sql = "INSERT INTO modulos (tipo, nombre, descripcion) VALUES ('$tipo', '$nombre', '$descripcion')";
+        $sql = "INSERT INTO modulos (id_programa, tipo, nombre, descripcion) VALUES ('$id_programa','$tipo', '$nombre', '$descripcion')";
     
         if ($conn->query($sql) === TRUE) {
         } else {
@@ -17,26 +18,39 @@ switch ($accion) {
         }
         break;
     
-    case 'editar':
-        $id_modulo = $_POST['id_modulo'];
-        $sql_select = "SELECT * FROM modulos WHERE id_modulo='$id_modulo'";
-        $result = $conn->query($sql_select);
+        case 'editar':
+            $id_modulo = $_POST['id_modulo'];
+            $tipo = $_POST['tipo'];
+            $nombre = $_POST['nombre'];
+            $id_programa = $_POST['id_programa'];
+            $descripcion = $_POST['descripcion'];
+
+            $sql = "UPDATE modulos 
+                    SET tipo = ?, nombre = ?, id_programa = ?, descripcion = ? 
+                    WHERE id_modulo = ?";
     
-        if ($result->num_rows > 0) {
-            $modulo = $result->fetch_assoc();
-            $tipo = isset($_POST['tipo']) ? $_POST['tipo'] : $modulo['tipo'];
-            $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : $modulo['nombre'];
-            $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : $modulo['descripcion'];
+            if ($stmt = $conn->prepare($sql)) {
+                $stmt->bind_param(
+                    "ssisi", 
+                    $tipo, 
+                    $nombre, 
+                    $id_programa, 
+                    $descripcion,
+                    $id_modulo
+                );
     
-            $sql_update = "UPDATE modulos SET tipo='$tipo', nombre='$nombre', descripcion='$descripcion' WHERE id_modulo='$id_modulo'";
+                if ($stmt->execute()) {
+                    echo "Registro actualizado correctamente.";
+                } else {
+                    echo "Error al actualizar el registro: " . $stmt->error;
+                }
     
-            if ($conn->query($sql_update) === TRUE) {
+                $stmt->close();
             } else {
-                echo "Error al actualizar el registro: " . $conn->error;
+                echo "Error al preparar la consulta: " . $conn->error;
             }
-        } else {
-        }
-        break;
+            break;
+        
     
         case 'cambiarEstado':
             $id_modulo = $_POST['id_modulo'];
@@ -73,25 +87,37 @@ switch ($accion) {
     $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
     $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
     $search = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
+
+    $search = "%$search%";
+
+    $sql = "SELECT m.id_modulo, p.nombre AS programa, m.tipo, m.nombre, m.descripcion, m.estado 
+            FROM modulos m
+            JOIN programas p ON m.id_programa = p.id_programa
+            WHERE m.tipo LIKE ? OR m.nombre LIKE ? OR p.nombre LIKE ? OR m.descripcion LIKE ?
+            ORDER BY m.estado DESC
+            LIMIT ?, ?";
     
-    $sql = "SELECT * FROM modulos 
-    WHERE nombre LIKE '%$search%' OR descripcion LIKE '%$search%' 
-    ORDER BY estado DESC
-    LIMIT $start, $length";
-    $result = $conn->query($sql);
-    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssssii", $search, $search, $search, $search, $start, $length);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     $data = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
-            $data[] = $row;
-        }
+    while ($row = $result->fetch_assoc()) {
+        $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
+        $data[] = $row;
     }
-    
-    $sql_count = "SELECT COUNT(*) AS total FROM modulos WHERE nombre LIKE '%$search%' OR descripcion LIKE '%$search%'";
-    $result_count = $conn->query($sql_count);
+
+    $sql_count = "SELECT COUNT(*) AS total 
+                  FROM modulos m
+                  JOIN programas p ON m.id_programa = p.id_programa
+                  WHERE m.nombre LIKE ? OR m.descripcion LIKE ?";
+    $stmt_count = $conn->prepare($sql_count);
+    $stmt_count->bind_param("ss", $search, $search);
+    $stmt_count->execute();
+    $result_count = $stmt_count->get_result();
     $totalData = $result_count->fetch_assoc()['total'];
-    
+
     header('Content-Type: application/json');
     echo json_encode([
         'draw' => isset($_POST['draw']) ? intval($_POST['draw']) : 1,
@@ -99,9 +125,10 @@ switch ($accion) {
         'recordsFiltered' => $totalData,
         'data' => $data
     ]);
-    break;
-    
-}
 
+    $stmt->close();
+    $stmt_count->close();
+    break;
+}
 $conn->close();
 ?>
