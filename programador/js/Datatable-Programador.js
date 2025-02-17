@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var table = $('#datos_docente').DataTable({
+    var table = $('#datos_programador').DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
         },

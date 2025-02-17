@@ -84,9 +84,9 @@ switch ($accion) {
         $stmt->close();
         break;
 
-    case 'default':
+        default:
         $conn->query("SET lc_time_names = 'es_ES'");
-
+    
         $sql = "SELECT 
                     p.id_programador, 
                     DATE_FORMAT(p.fecha, '%d/%M/%Y') AS fecha, 
@@ -101,22 +101,22 @@ switch ($accion) {
                 FROM programador p
                 JOIN docentes d ON p.numero_documento = d.numero_documento
                 JOIN salones s ON p.id_salon = s.id_salon
-                LEFT JOIN asignacion_a_modulo am ON p.id_asignacion_periodo = am.id_asignacion
-                LEFT JOIN modulos m ON am.id_modulo = m.id_modulo";
-
+                LEFT JOIN modulos m ON p.id_modulo = m.id_modulo";  // Usar directamente la relación con modulos
+    
         $result = $conn->query($sql);
-
+    
         $data = [];
-
+    
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $data[] = $row; // Corrección de índice incorrecto
             }
         }
-
+    
         header('Content-Type: application/json');
         echo json_encode(['data' => $data]);
         break;
+    
 }
 
 $conn->close();
