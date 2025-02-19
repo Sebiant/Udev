@@ -7,12 +7,14 @@ switch ($accion) {
  
     default:
         $sql = "SELECT 
-                    a.fecha, 
-                    a.horas_trabajadas, 
-                    d.nombres, 
-                    d.apellidos 
-                FROM asistencias a 
-                JOIN docentes d ON a.numero_documento = d.numero_documento";
+            a.fecha, 
+            a.horas_trabajadas, 
+            d.nombres, 
+            d.apellidos 
+        FROM asistencias a 
+        JOIN docentes d ON a.numero_documento = d.numero_documento
+        WHERE YEARWEEK(a.fecha, 1) = YEARWEEK(NOW(), 1)";
+
         
         $result = $conn->query($sql);
         $data = [];
