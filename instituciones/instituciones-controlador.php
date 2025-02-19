@@ -127,7 +127,9 @@ switch ($accion) {
         $filteredResult = $conn->query($sqlFiltered);
         $filteredRecords = $filteredResult->fetch_assoc()['total'];
 
-        $sql = "SELECT * FROM instituciones $where ORDER BY $orderColumn $orderDir LIMIT $start, $length";
+        $sql = "SELECT * FROM instituciones $where 
+        ORDER BY estado DESC, $orderColumn $orderDir
+        LIMIT $start, $length";
         $result = $conn->query($sql);
 
         $data = [];
