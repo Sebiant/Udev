@@ -3,14 +3,12 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "CuentaCobroDocente_controlador.php",
+            url: "Cuentas-Docentes-Controlador.php",
             type: "POST",
             dataSrc: 'data'
         },
         columns: [
-            { "data": "id_cuenta" },
             { "data": "fecha" },
-            { "data": "pago_excepcional" },
             { "data": "valor_hora" },
             { "data": "horas_trabajadas" },
             { "data": "monto" },
