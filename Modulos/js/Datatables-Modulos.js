@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var table = $('#datos_materia').DataTable({
+    var table = $('#datos_modulo').DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
         },
@@ -10,15 +10,16 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "Materias-Controlador.php",
+            url: "Modulos-Controlador.php",
             type: "POST",
             dataSrc: 'data'
         },
         columns: [
-            { "data": "id_materia" },
-            { "data": "nombre" },
-            { "data": "descripcion" },
-            { "data": "estado" },
+            { "data": "tipo", "title": "Tipo" },
+            { "data": "nombre", "title": "Nombre" },
+            { "data": "programa", "title": "Programa" },
+            { "data": "descripcion", "title": "Descripción" },
+            { "data": "estado", "title": "Estado" },
             {
                 data: null,
                 defaultContent: '<button class="btn btn-primary w-100 btn-modify">Modificar</button>',
@@ -27,8 +28,8 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data, type, row) {
-                    var buttonClass = row.estado === "Activo" ? "btn-danger" : "btn-success";
-                    var buttonText = row.estado === "Activo" ? "Inactivar" : "Activar";
+                    var buttonClass = row.estado == "Activo" ? "btn-danger" : "btn-success";
+                    var buttonText = row.estado == "Activo" ? "Inactivar" : "Activar";
                     return `<button class="btn ${buttonClass} w-100 btn-toggle-state">${buttonText}</button>`;
                 },
                 orderable: false
@@ -36,15 +37,17 @@ $(document).ready(function () {
         ]
     });
 
-    $('#datos_materia').on('click', '.btn-toggle-state', function () {
+    $('#datos_modulo').on('click', '.btn-toggle-state', function () {
         var data = table.row($(this).parents('tr')).data();
-        var idMateria = data.id_materia;
-        var nuevoEstado = data.estado === "Activo" ? 0 : 1; 
+        var idModulo = data.id_modulo;
+        var nuevoEstado = data.estado == "Activo" ? 0 : 1;
+        console.log(idModulo)
+        console.log(nuevoEstado)
 
         $.ajax({
-            url: 'Materias-Controlador.php?accion=cambiarEstado',
+            url: 'Modulos-Controlador.php?accion=cambiarEstado',
             type: 'POST',
-            data: { id_materia: idMateria, estado: nuevoEstado },
+            data: { id_modulo: idModulo, estado: nuevoEstado },
             success: function (response) {
                 table.ajax.reload();
             },
@@ -54,25 +57,27 @@ $(document).ready(function () {
         });
     });
 
-    $('#datos_materia').on('click', '.btn-modify', function () {
+    $('#datos_modulo').on('click', '.btn-modify', function () {
         var data = table.row($(this).parents('tr')).data();
-        var idMateria = data.id_materia;
+        var idModulo = data.id_modulo;
 
         $.ajax({
-            url: 'Materias-Controlador.php?accion=busquedaPorId',
+            url: 'Modulos-Controlador.php?accion=busquedaPorId',
             type: 'POST',
-            data: { id_materia: idMateria },
+            data: { id_modulo: idModulo },
             dataType: 'json',
             success: function (response) {
                 if (response.data && response.data.length > 0) {
-                    var materia = response.data[0];
-                    $('#editForm [name="id_materia"]').val(materia.id_materia);
-                    $('#editForm [name="nombre"]').val(materia.nombre);
-                    $('#editForm [name="descripcion"]').val(materia.descripcion);
-                    $('#editForm [name="estado"]').prop('checked', materia.estado === "1");
+                    var modulo = response.data[0];
+                    $('#editForm [name="id_modulo"]').val(modulo.id_modulo);
+                    $('#editForm [name="tipo"]').val(modulo.tipo);
+                    $('#editForm [name="nombre"]').val(modulo.nombre);
+                    $('#editForm [name="id_programa"]').val(modulo.id_programa);
+                    $('#editForm [name="descripcion"]').val(modulo.descripcion);
+                    $('#editForm [name="estado"]').prop('checked', modulo.estado == 1);
                     $('#editModal').modal('show');
                 } else {
-                    alert('No se encontraron datos para esta materia.');
+                    alert('No se encontraron datos para este módulo.');
                 }
             }
         });
@@ -82,7 +87,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         $.ajax({
-            url: 'Materias-Controlador.php?accion=editar',
+            url: 'Modulos-Controlador.php?accion=editar',
             type: 'POST',
             data: $(this).serialize(),
             success: function (response) {
@@ -90,7 +95,7 @@ $(document).ready(function () {
                 $('#editModal').modal('hide');
             },
             error: function () {
-                alert('Error al actualizar la materia.');
+                alert('Error al actualizar el módulo.');
             }
         });
     });
