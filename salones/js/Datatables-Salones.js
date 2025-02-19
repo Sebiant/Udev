@@ -53,7 +53,6 @@ $(document).ready(function() {
             type: 'POST',
             data: { id_salon: idSalon, estado: nuevoEstado },
             success: function () {
-                alert(`El estado del salón ha sido actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
                 table.ajax.reload();
             },
             error: function () {

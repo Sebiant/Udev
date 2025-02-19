@@ -112,7 +112,7 @@ switch ($accion) {
                 FROM salones S 
                 JOIN instituciones i ON i.id_institucion = S.id_institucion
                 $where 
-                ORDER BY $order_by $order_dir 
+                ORDER BY estado DESC, $order_by $order_dir 
                 LIMIT $start, $length";
 
         $result = $conn->query($sql);
