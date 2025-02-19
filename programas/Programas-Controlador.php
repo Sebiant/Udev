@@ -7,12 +7,11 @@ switch ($accion) {
     case 'crear':
         $tipo = $_POST['tipo'] ?? '';
         $nombre = $_POST['nombre'] ?? '';
-        $duracion_mes = $_POST['duracion_mes'] ?? '';
-        $cant_modulos = $_POST['cant_modulos'] ?? '';
+        $duracion_meses = $_POST['duracion_mes'] ?? '';
         $descripcion = $_POST['descripcion'] ?? '';
 
-        $sql = "INSERT INTO programas (tipo, nombre, duracion_mes, cant_modulos, descripcion) 
-                VALUES ('$tipo', '$nombre', '$duracion_mes', '$cant_modulos', '$descripcion')";
+        $sql = "INSERT INTO programas (tipo, nombre, duracion_meses, descripcion) 
+                VALUES ('$tipo', '$nombre', '$duracion_meses', '$descripcion')";
         
         echo ($conn->query($sql) === TRUE) 
             ? "Nuevo registro creado exitosamente."
@@ -29,22 +28,16 @@ switch ($accion) {
         $tipo = $_POST['tipo'] ?? null;
         $nombre = $_POST['nombre'] ?? null;
         $duracion_mes = $_POST['duracion_mes'] ?? null;
-        $cant_modulos = $_POST['cant_modulos'] ?? null;
         $descripcion = isset($_POST['descripcion']) && $_POST['descripcion'] !== '' ? $_POST['descripcion'] : null;
         $estado = $_POST['estado'] ?? null;
 
-        if (is_null($tipo) && is_null($nombre) && is_null($duracion_mes) && is_null($cant_modulos) && is_null($descripcion) && is_null($estado)) {
+        if (is_null($tipo) && is_null($nombre) && is_null($duracion_mes)&& is_null($descripcion) && is_null($estado)) {
             echo json_encode(["success" => false, "message" => "No se han enviado datos para actualizar."]);
             break;
         }
 
         if (!is_null($duracion_mes) && !is_numeric($duracion_mes)) {
             echo json_encode(["success" => false, "message" => "La duración debe ser un número válido."]);
-            break;
-        }
-
-        if (!is_null($cant_modulos) && !is_numeric($cant_modulos)) {
-            echo json_encode(["success" => false, "message" => "La cantidad de módulos debe ser un número válido."]);
             break;
         }
 
@@ -58,14 +51,13 @@ switch ($accion) {
             $sql_update = "UPDATE programas SET 
                             tipo = IFNULL(?, tipo), 
                             nombre = IFNULL(?, nombre), 
-                            duracion_mes = IFNULL(?, duracion_mes), 
-                            cant_modulos = IFNULL(?, cant_modulos), 
+                            duracion_meses = IFNULL(?, duracion_meses), 
                             descripcion = IFNULL(?, descripcion), 
                             estado = IFNULL(?, estado) 
                             WHERE id_programa = ?";
 
             $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param('ssiissi', $tipo, $nombre, $duracion_mes, $cant_modulos, $descripcion, $estado, $id_programa);
+            $stmt_update->bind_param('ssisii', $tipo, $nombre, $duracion_mes, $descripcion, $estado, $id_programa);
             
             echo ($stmt_update->execute())
                 ? json_encode(["success" => true, "message" => "Registro actualizado exitosamente."])
@@ -109,7 +101,8 @@ switch ($accion) {
         $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
         $searchValue = $_POST['search']['value'] ?? '';
     
-        $sql = "SELECT * FROM programas";
+        $sql = "SELECT * FROM programas
+        ORDER BY estado DESC";
     
         if (!empty($searchValue)) {
             $sql .= " WHERE tipo LIKE '%$searchValue%' 
@@ -131,7 +124,7 @@ switch ($accion) {
         }
         $filteredResult = $conn->query($filteredQuery);
         $totalFiltered = $filteredResult->fetch_assoc()['total'];
-    
+        
         $sql .= " LIMIT $start, $length";
         $result = $conn->query($sql);
     

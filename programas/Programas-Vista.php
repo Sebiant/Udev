@@ -33,7 +33,6 @@ include_once '../componentes/header.php';
                         <th>Tipo</th>
                         <th>Nombre</th>
                         <th>Duración</th>
-                        <th>Cantidad de módulos</th>
                         <th>Descripción</th>
                         <th>Estado</th>
                         <th>Modificar</th>
@@ -69,10 +68,6 @@ include_once '../componentes/header.php';
                     <div class="mb-3">
                         <label for="duracion_mes" class="form-label">Duración:</label>
                         <input type="number" name="duracion_mes" id="duracion_mes" class="form-control" placeholder="Duración en meses">
-                    </div>
-                    <div class="mb-3">
-                        <label for="cant_modulos" class="form-label">Cantidad de módulos:</label>
-                        <input type="number" name="cant_modulos" id="cant_modulos" class="form-control" placeholder="Cantidad de módulos">
                     </div>
                     <div class="mb-3">
                         <label for="descripcion_crear" class="form-label">Descripción:</label>
@@ -111,10 +106,6 @@ include_once '../componentes/header.php';
                     <div class="form-group">
                         <label for="duracion_mes_edit" class="form-label">Duración:</label>
                         <input type="number" name="duracion_mes" id="duracion_mes_edit" class="form-control" placeholder="Duración en meses">
-                    </div>
-                    <div class="form-group">
-                        <label for="cant_modulos_edit" class="form-label">Cantidad de módulos:</label>
-                        <input type="number" name="cant_modulos" id="cant_modulos_edit" class="form-control" placeholder="Cantidad de módulos">
                     </div>
                     <div class="form-group">
                         <label for="descripcion_edit" class="form-label">Descripción:</label>
