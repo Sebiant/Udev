@@ -29,7 +29,7 @@ include_once '../componentes/header.php';
                         <th>Especialidad</th>
                         <th>Teléfono</th>
                         <th>Dirección</th>
-                        <th>Ema0il</th>
+                        <th>Email</th>
                         <th>Estado</th>
                         <th>Modificar</th>
                         <th>Acciones</th>
@@ -182,30 +182,55 @@ include_once '../componentes/footer.php';
 <script src="js/Datatable-Docentes.js"></script>
 <script>
     function crearDocente() {
-        if (!$("#formDocente").valid()) {
-            console.log("El formulario no es válido.");
-            return;
-        }
-
-        const formData = new FormData(document.getElementById('formDocente'));
-        console.log('Datos del formulario:', ...formData.entries());
-
-        $.ajax({
-            url: 'Docentes-Controlador.php?accion=crear',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                console.log('Respuesta del servidor:', response);
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-            }
-        });
+    if (!$("#formDocente").valid()) {
+        console.log("El formulario no es válido.");
+        return;
     }
+
+    const formData = new FormData(document.getElementById('formDocente'));
+    console.log('Datos del formulario:', ...formData.entries());
+
+    $.ajax({
+        url: 'Docentes-Controlador.php?accion=crear',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('Respuesta del servidor:', response);
+            try {
+                var data = JSON.parse(response);
+
+                if (data.status === "error") {
+                    alert(data.message);
+
+                    if (data.message.includes("documento ya está registrado")) {
+                        $("#numero_documento").addClass("is-invalid");
+                        $("#error-documento").text(data.message).show();
+                    } 
+                    else if (data.message.includes("teléfono ya está registrado")) {
+                        $("#telefono").addClass("is-invalid");
+                        $("#error-telefono").text(data.message).show();
+                    }
+
+                } else {
+                    alert(data.message);
+                    $("#formDocente")[0].reset();
+                    $("#modalUsuario").modal("hide");
+                    dataTable.ajax.reload();
+                }
+            } catch (e) {
+                console.error("Error en el parseo de JSON:", e);
+                alert(e);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la petición AJAX:', error);
+        }
+    });
+}
 </script>
+
 <script>
     function guardarCambiosDocente() {
         if (!$("#editForm").valid()) {

@@ -18,6 +18,12 @@ switch ($accion) {
         $declara_renta = isset($_POST['declara_renta']) ? 1 : 0;
         $retenedor_iva = isset($_POST['retenedor_iva']) ? 1 : 0;
         $estado = 1;
+
+         if (validarTelefono($_POST['telefono']) = "success"){
+
+         }else{
+            echo json_encode([message];
+         };
     
         $stmt->bind_param(
             'ssssssssiii',
@@ -35,7 +41,13 @@ switch ($accion) {
         );
     
         if (!$stmt->execute()) {
-            echo "Error al crear el registro: " . $stmt->error;
+            if ($stmt->errno == 1062) { // Código de error de MySQL para clave duplicada
+                echo json_encode(["status" => "error", "message" => "El número de documento ya está registrado."]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "Error al crear el registro: " . $stmt->error]);
+            }
+            
+            exit;
         }
     
         $stmt->close();
@@ -98,6 +110,30 @@ switch ($accion) {
         }
         $stmt->close();
         break;
+
+        case 'buscarPorId':
+            if (empty($_POST['numero_documento'])) {
+                echo json_encode(["error" => "Número de documento no proporcionado"]);
+                exit;
+            }
+            $sql = "SELECT * FROM docentes WHERE numero_documento=?";
+            $stmt = $conn->prepare($sql);
+    
+            if (!$stmt) {
+                die("Error en la preparación de la consulta: " . $conn->error);
+            }
+    
+            $stmt->bind_param('s', $_POST['numero_documento']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+    
+            if ($result->num_rows > 0) {
+                echo json_encode(['data' => $result->fetch_all(MYSQLI_ASSOC)]);
+            } else {
+                echo json_encode(['error' => 'Registro no encontrado']);
+            }
+            $stmt->close();
+            break;
     
     default:
         $search = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
@@ -143,3 +179,33 @@ switch ($accion) {
 }
 
 $conn->close();
+
+function validarTelefono($telefono){
+
+    include '../conexion.php';
+    
+    $telefono = null;
+            
+    $sql = "SELECT telefono FROM docentes WHERE numero_documento = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $telefono);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "El teléfono ya está registrado."
+        ]);
+    } else {
+        echo json_encode([
+            "status" => "success",
+            "message" => "Teléfono disponible."
+        ]);
+    }
+
+    $conn->close();
+}
+
+
+

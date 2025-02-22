@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
                 required: "Por favor ingresa un número de teléfono.",
                 digits: "Solo se permiten números.",
                 minlength: "Debe contener 10 dígitos.",
-                maxlength: "Debe contener 10 dígitos."
+                maxlength: "Debe contener 10 dígitos.",
             },
             direccion: {
                 required: "Por favor ingresa tu dirección."
