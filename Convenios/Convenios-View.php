@@ -18,7 +18,7 @@
 </head>
 
 <body>
-  <?php include_once '../componentes/navbar.php' ?>
+  <?php include_once '../componentes/header.php' ?>
   <h1 class="text-center">CONVENIOS</h1>
 
   <br>
@@ -68,7 +68,7 @@
     </button>
   </div>
   <?php
-  include("../componentes/pie.php");
+  include("../componentes/footer.php");
   ?>
 
   <!-- Modal Crear Convenio -->
@@ -304,7 +304,7 @@
             "serverSide": true,
             "order": [],
             "ajax": {
-              url: "Convenios.controller.php",
+              url: "Convenios-Controller.php",
               type: "POST"
             },
             "columnDefs": [{
@@ -343,7 +343,7 @@
             if (codigo_convenio != '' && descripcion_convenio != '' && valor_total_convenio != '' && codigo_estudiante != '') {
 
               $.ajax({
-                url: "Convenios.controller.php",
+                url: "Convenios-Controller.php",
                 method: "POST",
                 data: new FormData(this),
                 processData: false,
@@ -368,7 +368,7 @@
           $(document).on('click', '.info', function(){
             var codigo_convenio = $(this).attr("id");
             $.ajax({
-              url: "Convenios.function.php",
+              url: "Convenios-Function.php",
               method:"POST",
               data:{
                 codigo_convenio: codigo_convenio,
@@ -409,7 +409,7 @@
             var codigo_convenio = $(this).attr("id");
             $.ajax({
 
-              url: "Convenios.controller.php",
+              url: "Convenios-Controller.php",
               method: "POST",
               data: {
                 codigo_convenio: codigo_convenio,
