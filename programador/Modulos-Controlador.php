@@ -17,8 +17,10 @@ switch ($accion) {
         $orderBy = $columns[$orderColumn] ?? 'm.id_modulo';
 
         $sql = "SELECT m.id_modulo, m.tipo, p.nombre AS programa, m.nombre, m.descripcion
-                FROM modulos m
-                LEFT JOIN programas p ON m.id_programa = p.id_programa";
+        FROM modulos m
+        LEFT JOIN programas p ON m.id_programa = p.id_programa
+        WHERE m.estado = 1";
+
 
         if (!empty($searchValue)) {
             $sql .= " WHERE m.tipo LIKE '%$searchValue%' 
