@@ -92,7 +92,7 @@ if (!$result_programa) {
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="crearModulo()">Guardar</button>
+                <button type="submit" class="btn btn-success" onclick="crearModulo()">Guardar</button>
             </div>
         </div>
     </div>
@@ -147,7 +147,7 @@ if (!$result_programa) {
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="guardarModulo()">Guardar Cambios</button>
+                    <button type="submit" class="btn btn-primary" onclick="guardarModulo()">Guardar Cambios</button>
                 </div>
             </form>
         </div>
