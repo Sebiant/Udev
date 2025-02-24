@@ -5,7 +5,7 @@ jQuery(document).ready(function ($) {
             nombre: {
                 required: true,
                 minlength: 3,
-                maxlength: 50
+                maxlength: 100
             },
             descripcion: {
                 required: true,
@@ -16,7 +16,7 @@ jQuery(document).ready(function ($) {
             nombre: {
                 required: "Por favor, ingresa el nombre de la materia.",
                 minlength: "El nombre debe tener al menos 3 caracteres.",
-                maxlength: "El nombre no puede superar los 50 caracteres."
+                maxlength: "El nombre no puede superar los 100 caracteres."
             },
             descripcion: {
                 required: "Por favor, ingresa una descripción.",
@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
             nombre: {
                 required: true,
                 minlength: 3,
-                maxlength: 50
+                maxlength: 100
             },
             descripcion: {
                 required: true,
@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
             nombre: {
                 required: "Por favor, ingresa el nombre de la materia.",
                 minlength: "El nombre debe tener al menos 3 caracteres.",
-                maxlength: "El nombre no puede superar los 50 caracteres."
+                maxlength: "El nombre no puede superar los 100 caracteres."
             },
             descripcion: {
                 required: "Por favor, ingresa una descripción.",

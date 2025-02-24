@@ -62,7 +62,7 @@ include_once '../componentes/header.php';
                     </div>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del módulo:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control" maxlength="25" placeholder="Nombre del módulo" required>
+                        <input type="text" name="nombre" id="nombre" class="form-control" maxlength="50" placeholder="Nombre del módulo" required>
                     </div>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción:</label>
@@ -101,7 +101,7 @@ include_once '../componentes/header.php';
                     </div>
                     <div class="mb-3">
                         <label for="nombre_edit" class="form-label">Nombre del módulo:</label>
-                        <input type="text" name="nombre" id="nombre_edit" class="form-control" maxlength="25" placeholder="Nombre del módulo" required>
+                        <input type="text" name="nombre" id="nombre_edit" class="form-control" maxlength="50" placeholder="Nombre del módulo" required>
                     </div>
                     <div class="mb-3">
                         <label for="descripcion_edit" class="form-label">Descripción:</label>
