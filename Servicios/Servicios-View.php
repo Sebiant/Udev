@@ -147,7 +147,7 @@
       success:function(data){
 
         alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
-                dataTable.ajax.reload();
+                location.reload();
       },
       error:function(){
         alert("Hubo un error al cambiar el estado.");
@@ -182,7 +182,8 @@
               $('.modal-backdrop').remove();//Se asegura que se quite la pantalla gris 
 
               //Recarga los datos de la tabla
-              dataTable.ajax.reload(null, false);// sin reiniciar la paginacion
+              //dataTable.ajax.reload(null, false);// sin reiniciar la paginacion
+              location.reload();
             },
 
             error: function(jqXHR, textStatus, errorThrown) {
