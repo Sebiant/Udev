@@ -101,8 +101,10 @@ switch ($accion) {
         $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
         $searchValue = $_POST['search']['value'] ?? '';
     
-        $sql = "SELECT * FROM programas
+        $sql = "SELECT *, CONCAT('$', FORMAT(valor_total_programa, 2, 'de_DE')) AS valor_total_formateado 
+        FROM programas 
         ORDER BY estado DESC";
+
     
         if (!empty($searchValue)) {
             $sql .= " WHERE tipo LIKE '%$searchValue%' 

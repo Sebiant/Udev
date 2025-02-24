@@ -16,6 +16,7 @@ $(document).ready(function () {
                     return data + " Meses";
                 }
             },
+            { "data": "valor_total_formateado" },
             { "data": "descripcion" },
             { "data": "estado" },
             {

@@ -33,6 +33,7 @@ include_once '../componentes/header.php';
                         <th>Tipo</th>
                         <th>Nombre</th>
                         <th>Duración</th>
+                        <th>Valor Programa</th>
                         <th>Descripción</th>
                         <th>Estado</th>
                         <th>Modificar</th>
