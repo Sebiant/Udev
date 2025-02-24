@@ -25,9 +25,9 @@
 <body>
   <?php include_once '../Componentes/header.php' ?>
 
-  <h1 class="text-center">Estudiante</h1>
-  <div>
-
+  
+  <div class ="container">
+  <h1 class="text-center">Gestion de estudiantes</h1>
     <div class="row">
       <div class="col-2 offset-10">
         <div class="text-center">
@@ -43,13 +43,15 @@
       </div>
     </div>
     <br>
-    <br>
+    <div class="card">
+  <div class="card-header">
+    <h5>Estudiantes</h5>
+  </div>
+  <div class="card-body">
     <div class="tabla-responsive">
-      <table id="Estudiantes" name="Estudiantes"  class="table table-bordered table-striped">
-
+      <table id="Estudiantes" name="Estudiantes" class="table table-bordered table-striped">
         <thead>
           <tr>
-
             <th>Codigo</th>
             <th>Nombre</th>
             <th>Apellido</th>
@@ -58,12 +60,12 @@
             <th>Estado</th>
             <th>Editar</th>
             <th>Acciones</th>
-
           </tr>
         </thead>
       </table>
-
     </div>
+  </div>
+</div>
 
 
     <!-- Modal -->
