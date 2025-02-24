@@ -57,7 +57,7 @@
             <th>Imagen</th>
             <th>Estado</th>
             <th>Editar</th>
-            <!--<th>Borrar</th>-->
+            <th>Acciones</th>
 
           </tr>
         </thead>
@@ -99,16 +99,6 @@
                 <label for="imagen_estudiante">Seleccione una imagen</label>
                 <input type="file" name="imagen_estudiante" id="imagen_estudiante" class="form-control">
                 <span id="imagen_subida"></span>
-
-                <br>
-                <label for="estado">Estado</label>
-                <select name="estado" id="estado" class="form-control">
-                  <option value="2">Seleccione una opciones</option>
-                  <option value="Activo">Activo</option>
-                  <option value="Inactivo">Inactivo</option>
-                </select>
-                <br>
-
 
 
               </div>
@@ -220,6 +210,31 @@
         } else {
           alert("algunos campos son obligatorios");
         }
+      });
+
+      //funcionalidad cambio de estado
+      $(document).on('click', '.btn-toggle-state', function(){
+        var id = $(this).data('id');
+        var estadoActual = $(this).data('estado');
+        var nuevoEstado = (estadoActual == "Activo") ? 0: 1;
+        
+        $.ajax({
+
+          url:'Estudiantes-Controller.php',
+          method:'POST',
+          type:'json',
+          data:{codigo_estudiante: id, estado: nuevoEstado,
+          operacion:'cambiarEstado'
+        },
+        success:function(data){
+          alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+          location.reload();
+                    
+        },
+        error:function(){
+            alert("Hubo un error al cambiar el estado.");
+        }
+        });
       });
 
 

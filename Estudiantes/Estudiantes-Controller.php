@@ -25,6 +25,10 @@ function main($action, $conn)
             obtener_registro($conn);
             break;
 
+        case 'cambiarEstado':
+            cambiar_estado($conn);
+            break;
+
         default:
             obtener_registros($conn);
             break;
@@ -56,7 +60,7 @@ function crear($conn)
             )
         );
         */
-
+        $state=1;
         $stmt->bind_param(
             "sssss",//tipado de los datos usados en el bind_param
             
@@ -64,7 +68,8 @@ function crear($conn)
             $_POST["apellidos"],
             $_POST["fecha_nacimiento_estudiante"],
             $imagen,
-            $_POST["estado"]
+            //$_POST["estado"]
+            $state
         );
 
 
@@ -159,7 +164,7 @@ function obtener_registros($conn)
     if (!empty($_POST["order"])) {
         $query .= 'ORDER BY ' . intval($_POST['order']['0']['column']) . ' ' . $_POST["order"][0]['dir'] . ' ';
     } else {
-        $query .= 'ORDER BY codigo_estudiante DESC ';
+        $query .= 'ORDER BY estado DESC ';
     }
 
     //PAGINACION
@@ -206,6 +211,17 @@ function obtener_registros($conn)
 
         while ($fila = $resultado->fetch_assoc()) {
             $imagen = $fila["imagen"] ? '<img src="../img/' . $fila["imagen"] . '" class="img-thumbnail" width="50" height="35" />' : '';
+            $estado = $fila["estado"];
+            if($estado == 1){
+                $estado = "Activo";
+            } else{
+                $estado = "Inactivo";
+            }
+            $codigo_estudiante = $fila["codigo_estudiante"];
+
+            //cambio de clase y texto segun el estado
+            $buttonClass = ($estado === "Activo") ? "btn-danger" : "btn-success";
+            $buttonText = ($estado === "Activo") ? "Inactivar" : "Activar";
 
             $datos[] = [
                 $fila["codigo_estudiante"],
@@ -213,8 +229,13 @@ function obtener_registros($conn)
                 $fila["apellidos_estudiante"],
                 $fila["fecha_nacimiento_estudiante"],
                 $imagen,
-                $fila["estado"],
-                '<button type="button" data-bs-toggle="modal" data-bs-target="#modalUsuario" name="editar" id="' . $fila["codigo_estudiante"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
+                $estado,
+                //$fila["estado"],
+                //'<button type="button" data-bs-toggle="modal" data-bs-target="#modalUsuario" name="editar" id="' . $fila["codigo_estudiante"] . '" class="btn btn-success bi bi-pencil-square editar"></button>'
+                //boton modificar
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $codigo_estudiante . '" class="btn btn-primary w-100 editar">Modificar</button>',
+            // boton dinamico
+            '<button type="button" class="btn w-100 ' . $buttonClass . ' btn-toggle-state" data-id="' . $codigo_estudiante . '"data-estado="' . $estado . '">' . $buttonText . '</button>'
             ];
         }
 
@@ -287,6 +308,32 @@ function obtener_registro($conn)
         echo json_encode(["error" => "Código de estudiante no proporcionado."]);
     }
 }
+
+function cambiar_estado($conn){
+    
+    if (isset($_POST["codigo_estudiante"]) && isset ($_POST["estado"])){
+        $nuevoEstado=intval($_POST["estado"]);
+
+
+        $stmt = $conn->prepare ("UPDATE estudiantes SET estado=? WHERE codigo_estudiante=? LIMIT 1");
+        $stmt->bind_param(
+            'si',
+            $nuevoEstado,
+            $_POST["codigo_estudiante"]
+        );
+
+        if ($stmt->execute()){
+            echo "Estado cambiado exitosamente a " . ($nuevoEstado == 1 ? "Activo" : "Inactivo" . ".");
+        }else {
+            echo "Error al cambiar el estado: " . $conn->error;
+        }
+    }else{
+        echo "DATOS INSUFICIENTES PARA CAMBIAR EL ESTADO";
+    
+    }
+
+    }
+
 
 
 //correcion de forma y parametros de conexion nueva funcion
