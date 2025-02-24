@@ -178,7 +178,7 @@ if (!empty($_POST["order"])) {
     $query .= 'ORDER BY ' . $_POST['order']['0']['column'] . ' ' . 
     $_POST["order"][0]['dir'] . ' ';
 } else {
-    $query .= 'ORDER BY id_programa DESC ';
+    $query .= 'ORDER BY estado DESC ';
 }
 
 
