@@ -118,6 +118,113 @@
                 ]
             });
         });
+
+        $(document).on('click', '.btn-toggle-state', function(){
+  var id = $(this).data('id');
+    var estadoActual = $(this).data('estado');
+    var nuevoEstado = (estadoActual == "Activo") ? 0 : 1;
+  //var nuevoEstado = estadoActual;
+  console.log( "el estado es ", estadoActual);
+  /* if(nuevoEstado == 0){
+    nuevoEstado = 1;
+
+   }else{
+
+    nuevoEstado = 0;
+
+   }*/
+
+     // Ejemplo de cómo podrías usar estos datos
+    // console.log("ID:", id, "Estado actual:", estadoActual, "Nuevo estado:", nuevoEstado);
+    $.ajax({
+
+      url:'Servicios-Controller.php',
+      method:'POST',
+      type:'json',
+      data:{id_programa: id, estado: nuevoEstado,
+        operacion:'cambiarEstado'
+      },
+      success:function(data){
+
+        alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+                dataTable.ajax.reload();
+      },
+      error:function(){
+        alert("Hubo un error al cambiar el estado.");
+      }
+
+
+    });
+
+});
+
+
+      $(document).on('submit', '#formulario', function(event) {
+        event.preventDefault();
+        var codigo_servicio = $("#codigo_servicio").val();
+        var descripcion_servicio = $("#descripcion_servicio").val();
+        var valor_total_servicio = $("#valor_total_servicio").val();
+        var estado = $("#estado").val();
+
+        if (descripcion_servicio != '' && valor_total_servicio != '' && estado != '') {
+          $.ajax({
+            url: "Servicios-Controller.php",
+            method: 'POST',
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            success: function(data) {
+              alert(data);//muestra la respuesta del servidor
+
+             //limpia y cierra el modal
+              $('#formulario')[0].reset();
+              $('#modalServicio').modal('hide');
+              $('.modal-backdrop').remove();//Se asegura que se quite la pantalla gris 
+
+              //Recarga los datos de la tabla
+              dataTable.ajax.reload(null, false);// sin reiniciar la paginacion
+            },
+
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+                alert("Hubo un error al procesar la solicitud.");
+            }
+
+          });
+        } else {
+          alert("Todos los campos son obligatorios");
+        }
+      });
+
+      // Funcionalidad de editar
+      $(document).on('click', '.editar', function() {
+        var codigo_servicio = $(this).attr("id");
+
+        $.ajax({
+          url: "Servicios-Controller.php",
+          method: "POST",
+          data: {codigo_programa: codigo_servicio,
+            operacion:'obtener_registro'},
+          dataType: "json",
+          success: function(data) {
+            console.log(data);
+            $('#modalServicio').modal('show');
+            $('#descripcion_servicio').val(data.nombre);
+            $('#valor_total_servicio').val(data.valor_total_programa);
+            $('#estado').val(data.estado);
+            $('.modal-title').text("Editar servicio");
+            console.log("Código de servicio asignado:", codigo_servicio);
+            $('#codigo_servicio').val(codigo_servicio);
+            $('#action').val("Editar").removeClass('btn-primary').addClass('btn-success');
+            $('#operacion').val("editar");
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
+          }
+        });
+      });
+
+
     </script>
 </body>
 </html>

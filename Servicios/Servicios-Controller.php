@@ -46,7 +46,7 @@ function borrar($conn)
 
 function crear($conn)
 {
-    $stmt = $conn->prepare("INSERT INTO programas(id_programa, nombre, cant_modulos, estado) VALUES(?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO programas(id_programa, nombre, valor_total_programa, estado) VALUES(?, ?, ?, ?)");
 
     /*$resultado = $stmt->execute(
         array(
@@ -56,13 +56,14 @@ function crear($conn)
             ':estado'  => $_POST["estado"],
         )
     );*/
+    $state=1;
     
         $stmt->bind_param(
             "ssis",
             $_POST["id_programa"] ,
             $_POST["descripcion_servicio"],
             $_POST["valor_total_servicio"],
-            $_POST["estado"],
+            $state
         );
         
 
@@ -85,7 +86,7 @@ function editar($conn)
     if(isset($_POST["codigo_servicio"])){
         
 
-    $stmt = $conn->prepare("UPDATE programas SET nombre=?, cant_modulos=?, estado=? WHERE id_programa = ? limit 1");
+    $stmt = $conn->prepare("UPDATE programas SET nombre=?, valor_total_programa=?, estado=? WHERE id_programa = ? limit 1");
 
     /*$resultado = $stmt->execute(
         array(
@@ -272,7 +273,7 @@ try {
         $sub_array = [
             $id_programa,
             $fila["nombre"],
-            $fila["cant_modulos"],
+            $fila["valor_total_programa"],
             $estado,
             //boton modificar
             '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $id_programa . '" class="btn btn-primary w-100 editar">Modificar</button>',
