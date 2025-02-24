@@ -17,6 +17,7 @@ $(document).ready(function () {
         columns: [
             { "data": "tipo", "title": "Tipo" },
             { "data": "nombre", "title": "Nombre" },
+            { "data": "programa", "title": "Programa" },
             { "data": "descripcion", "title": "Descripción" },
             { "data": "estado", "title": "Estado" },
             {
@@ -69,7 +70,9 @@ $(document).ready(function () {
                 if (response.data && response.data.length > 0) {
                     var modulo = response.data[0];
                     $('#editForm [name="id_modulo"]').val(modulo.id_modulo);
+                    $('#editForm [name="tipo"]').val(modulo.tipo);
                     $('#editForm [name="nombre"]').val(modulo.nombre);
+                    $('#editForm [name="id_programa"]').val(modulo.id_programa);
                     $('#editForm [name="descripcion"]').val(modulo.descripcion);
                     $('#editForm [name="estado"]').prop('checked', modulo.estado == 1);
                     $('#editModal').modal('show');

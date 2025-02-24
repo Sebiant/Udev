@@ -1,5 +1,11 @@
 <?php
 include_once '../componentes/header.php';
+include '../conexion.php';
+$sql_programa = "SELECT id_programa, nombre FROM programas";
+$result_programa = $conn->query($sql_programa);
+if (!$result_programa) {
+    die("Error en la consulta: " . $conn->error);
+}
 ?>
 
 <div class="container">
@@ -27,6 +33,7 @@ include_once '../componentes/header.php';
                     <tr>
                         <th>Tipo</th>
                         <th>Nombre</th>
+                        <th>Programa</th>
                         <th>Descripción</th>
                         <th>Estado</th>
                         <th>Modificar</th>
@@ -64,10 +71,23 @@ include_once '../componentes/header.php';
                         <label for="nombre" class="form-label">Nombre del módulo:</label>
                         <input type="text" name="nombre" id="nombre" class="form-control" maxlength="50" placeholder="Nombre del módulo" required>
                     </div>
+                    <label for="programa">Selecciona un programa</label>
+                    <select name="id_programa"  id="id_programa" class="form-control" required>
+                        <option value="">-- Selecciona un programa --</option>
+                        <?php
+                            if ($result_programa->num_rows > 0) {
+                                while ($row_programa = $result_programa->fetch_assoc()) {
+                                    echo '<option value="' . $row_programa['id_programa'] . '">' . $row_programa['nombre'] . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay programas disponibles</option>';
+                            }
+                        ?>
+                    </select>
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción:</label>
-                        <textarea name="descripcion" id="descripcion" maxlength="100" class="form-control" placeholder="Máximo 100 caracteres"></textarea>
-                        <small id="contadorCrear" class="contador-texto">100 caracteres disponibles</small>
+                        <textarea name="descripcion" id="descripcion" maxlength="30" class="form-control" placeholder="Máximo 30 caracteres"></textarea>
+                        <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
                     </div>
                 </form>
             </div>
@@ -103,10 +123,27 @@ include_once '../componentes/header.php';
                         <label for="nombre_edit" class="form-label">Nombre del módulo:</label>
                         <input type="text" name="nombre" id="nombre_edit" class="form-control" maxlength="50" placeholder="Nombre del módulo" required>
                     </div>
+                    <div class="form-group">
+                    <label for="programa">Selecciona un programa</label>
+                    <select id="id_programa" name="id_programa" class="form-control" required>
+                        <option value="">-- Selecciona un programa --</option>
+                        <?php
+                            $sql_programa = "SELECT id_programa, nombre FROM programas";
+                            $result_programa = $conn->query($sql_programa);
+
+                            if ($result_programa->num_rows > 0) {
+                                while ($row_programa = $result_programa->fetch_assoc()) {
+                                    echo '<option value="' . $row_programa['id_programa'] . '">' . $row_programa['nombre'] . '</option>';
+                                }
+                            } else {
+                                echo '<option value="">No hay programas disponibles</option>';
+                            }
+                        ?>
+                    </select>
                     <div class="mb-3">
                         <label for="descripcion_edit" class="form-label">Descripción:</label>
-                        <textarea name="descripcion" id="descripcion_edit" maxlength="100" class="form-control" placeholder="Máximo 100 caracteres"></textarea>
-                        <small id="contadorEditar" class="contador-texto">100 caracteres disponibles</small>
+                        <textarea name="descripcion" id="descripcion_edit" maxlength="30" class="form-control" placeholder="Máximo 30 caracteres"></textarea>
+                        <small id="contadorEditar" class="contador-texto">30 caracteres disponibles</small>
                     </div>
                 </div>
                 <div class="modal-footer">
