@@ -6,6 +6,11 @@
     <title>Udev</title>
     <link rel="stylesheet" href="../css/bootstrap.rtl.css">
     <link rel="stylesheet" href="../css/bootstrap.css">
+    <style>
+        .error { color: red; font-size: 0.9em; }
+        #contador { font-size: 0.9em; margin-top: 5px; }
+        .alerta { color: orange; font-weight: bold; }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -29,19 +34,19 @@
           <a class="nav-link" href="../Docentes/Docentes-Vista.php">Docentes</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Instituciones/Instituciones-Vista.php">Instituciones</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="../Salones/Salones-Vista.php">Salones</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Modulos/Modulos-Vista.php">Módulos</a>
+          <a class="nav-link" href="../Instituciones/Instituciones-Vista.php">Instituciones</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="../Materias/Materias-Vista.php">Materias</a>
+          <a class="nav-link" href="../Periodos/Periodos-Vista.php">Periodos</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="../Programas/Programas-Vista.php">Programas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../Modulos/Modulos-Vista.php">Modulos</a>
         </li>
       </ul>
     </div>
