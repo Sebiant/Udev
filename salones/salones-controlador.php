@@ -9,7 +9,7 @@ switch ($accion) {
         $capacidad = isset($_POST['capacidad']) ? $_POST['capacidad'] : '';
         $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : '';
         $id_institucion = isset($_POST['id_institucion']) ? $_POST['id_institucion'] : '';
-        $estado = isset($_POST['estado']) ? 1 : 0;
+        $estado = 1;
 
         $sql = "INSERT INTO salones (nombre_salon, capacidad, descripcion, id_institucion, estado) 
                 VALUES ('$nombre_salon','$capacidad','$descripcion','$id_institucion','$estado')";
