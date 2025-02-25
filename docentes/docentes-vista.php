@@ -199,7 +199,7 @@ include_once '../componentes/footer.php';
         success: function(response) {
             console.log('Respuesta del servidor:', response);
             try {
-                var data = JSON.parse(response);
+                var data = response;
 
                 if (data.status === "error") {
                     alert(data.message);
@@ -217,7 +217,7 @@ include_once '../componentes/footer.php';
                     alert(data.message);
                     $("#formDocente")[0].reset();
                     $("#modalUsuario").modal("hide");
-                    dataTable.ajax.reload();
+                    location.reload();
                 }
             } catch (e) {
                 console.error("Error en el parseo de JSON:", e);

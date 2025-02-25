@@ -5,52 +5,70 @@ $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
     case 'crear':
-        $sql = "INSERT INTO docentes 
-                (tipo_documento, numero_documento, nombres, apellidos, perfil_profesional, telefono, direccion, email, declara_renta, retenedor_iva, estado) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
-        $stmt = $conn->prepare($sql);
-    
-        if (!$stmt) {
-            die("Error en la preparación de la consulta: " . $conn->error);
-        }
-    
-        $declara_renta = isset($_POST['declara_renta']) ? 1 : 0;
-        $retenedor_iva = isset($_POST['retenedor_iva']) ? 1 : 0;
-        $estado = 1;
-
-         if (validarTelefono($_POST['telefono']) = "success"){
-
-         }else{
-            echo json_encode([message];
-         };
-    
-        $stmt->bind_param(
-            'ssssssssiii',
-            $_POST['tipo_documento'],
-            $_POST['numero_documento'],
-            $_POST['nombres'],
-            $_POST['apellidos'],
-            $_POST['perfil_profesional'],
-            $_POST['telefono'],
-            $_POST['direccion'],
-            $_POST['email'],
-            $declara_renta,
-            $retenedor_iva,
-            $estado
-        );
-    
-        if (!$stmt->execute()) {
-            if ($stmt->errno == 1062) { // Código de error de MySQL para clave duplicada
-                echo json_encode(["status" => "error", "message" => "El número de documento ya está registrado."]);
-            } else {
-                echo json_encode(["status" => "error", "message" => "Error al crear el registro: " . $stmt->error]);
+        header('Content-Type: application/json; charset=utf-8');
+        error_reporting(E_ALL);
+        ini_set('display_errors', 1);
+        
+        try {
+            if (!$conn) {
+                throw new Exception("Error en la conexión con la base de datos.");
             }
-            
-            exit;
+
+            if (!validarCedula($_POST['numero_documento'])) {
+                echo json_encode(["status" => "error", "message" => "El número de documento ya está registrado."]);
+                exit;
+            }
+
+            if (!validarTelefono($_POST['telefono'])) {
+                echo json_encode(["status" => "error", "message" => "El número de teléfono ya está registrado."]);
+                exit;
+            }
+
+            if (!validarCorreo($_POST['email'])) {
+                echo json_encode(["status" => "error", "message" => "El correo electrónico ya está registrado."]);
+                exit;
+            }
+
+            $sql = "INSERT INTO docentes 
+                    (tipo_documento, numero_documento, nombres, apellidos, perfil_profesional, telefono, direccion, email, declara_renta, retenedor_iva, estado) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+            $stmt = $conn->prepare($sql);
+        
+            if (!$stmt) {
+                throw new Exception("Error en la preparación de la consulta: " . $conn->error);
+            }
+        
+            $declara_renta = isset($_POST['declara_renta']) ? 1 : 0;
+            $retenedor_iva = isset($_POST['retenedor_iva']) ? 1 : 0;
+            $estado = 1;
+        
+            $stmt->bind_param(
+                'ssssssssiii',
+                $_POST['tipo_documento'],
+                $_POST['numero_documento'],
+                $_POST['nombres'],
+                $_POST['apellidos'],
+                $_POST['perfil_profesional'],
+                $_POST['telefono'],
+                $_POST['direccion'],
+                $_POST['email'],
+                $declara_renta,
+                $retenedor_iva,
+                $estado
+            );
+        
+            if (!$stmt->execute()) {
+                throw new Exception($stmt->error, $stmt->errno);
+            }
+
+            echo json_encode(["status" => "success", "message" => "Docente registrado correctamente."]);
+            $stmt->close();
+        
+        } catch (Exception $e) {
+            ob_clean(); 
+            echo json_encode(["status" => "error", "message" => "Error al crear el registro: " . $e->getMessage()]);
         }
-    
-        $stmt->close();
         break;
     
     case 'Modificar':
@@ -180,32 +198,74 @@ switch ($accion) {
 
 $conn->close();
 
-function validarTelefono($telefono){
-
+function validarTelefono($telefono) {
     include '../conexion.php';
-    
-    $telefono = null;
-            
-    $sql = "SELECT telefono FROM docentes WHERE numero_documento = ?";
+
+    $sql = "SELECT telefono FROM docentes WHERE telefono = ?";
     $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        return false;
+    }
+
     $stmt->bind_param("s", $telefono);
     $stmt->execute();
     $stmt->store_result();
 
-    if ($stmt->num_rows > 0) {
-        echo json_encode([
-            "status" => "error",
-            "message" => "El teléfono ya está registrado."
-        ]);
-    } else {
-        echo json_encode([
-            "status" => "success",
-            "message" => "Teléfono disponible."
-        ]);
+    $telefono_valido = ($stmt->num_rows === 0);
+
+    $stmt->close();
+    $conn->close();
+
+    return $telefono_valido;
+}
+
+function validarCedula($cedula) {
+    include '../conexion.php';
+
+    $sql = "SELECT numero_documento FROM docentes WHERE numero_documento = ?";
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        return false;
     }
 
+    $stmt->bind_param("s", $cedula);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $cedula_valida = ($stmt->num_rows === 0);
+
+    $stmt->close();
     $conn->close();
+
+    return $cedula_valida;
 }
+
+function validarCorreo($correo) {
+    include '../conexion.php';
+
+    $sql = "SELECT email FROM docentes WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        return false;
+    }
+
+    $stmt->bind_param("s", $correo);
+    $stmt->execute();
+    $stmt->store_result();
+
+    $correo_valido = ($stmt->num_rows === 0);
+
+    $stmt->close();
+    $conn->close();
+
+    return $correo_valido;
+}
+
+
+
 
 
 
