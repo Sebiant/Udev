@@ -86,7 +86,7 @@ function obtener_registros($conn)
 {
     $query = "";
     $salida = array();
-    $query = "SELECT convenio.codigo_convenio, convenio.codigo_estudiante, estudiantes.nombre_estudiante, estudiantes.apellidos_estudiante, convenio.codigo_servicio, programas.nombre, 
+    $query = "SELECT convenio.codigo_convenio, convenio.codigo_estudiante, estudiantes.nombre_estudiante, estudiantes.apellidos_estudiante, convenio.id_programa, programas.nombre, 
     convenio.descripcion_convenio, tipo_convenio.codigo_tipo_convenio, tipo_convenio.valor_descuento, convenio.valor_total_convenio, convenio.saldo_convenio, convenio.estado 
     FROM convenio 
     INNER JOIN estudiantes 
@@ -94,7 +94,7 @@ function obtener_registros($conn)
     LEFT JOIN tipo_convenio
     ON convenio.tipo_fk_convenio = tipo_convenio.codigo_tipo_convenio
     INNER JOIN programas 
-    ON convenio.codigo_servicio = programas.id_programa;";
+    ON convenio.id_programa = programas.id_programa;";
 
    /* if (isset($_POST["search"]["value"])) {
         $query .= ' WHERE descripcion_convenio LIKE "%' . $_POST["search"]["value"] . '%" ';
@@ -112,7 +112,7 @@ function obtener_registros($conn)
 
     $stmt = $conn->prepare($query);
 
-    try {
+    try {/*
 
         $stmt->execute();
         $resultado = $stmt->fetchAll();
@@ -127,7 +127,7 @@ function obtener_registros($conn)
             $sub_array[] = $fila["nombre_estudiante"];
             $sub_array[] = $fila["apellidos_estudiante"];
             //$sub_array[] = $fila["codigo_servicio"];
-            $sub_array[] = $fila["descripcion_servicio"];
+            $sub_array[] = $fila["nombre"];
             $sub_array[] = $fila["descripcion_convenio"];
             $sub_array[] = $fila["valor_descuento"];
             $sub_array[] = $fila["valor_total_convenio"];
@@ -145,14 +145,68 @@ function obtener_registros($conn)
         $stmt_estudiantes = $conexion->query("SELECT * FROM estudiantes");
         $estudiantes = $stmt_estudiantes->fetchAll(PDO::FETCH_ASSOC);
 */
-        $salida = array(
+        $param_types='';
+        $params=[];
+
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        $datos = [];
+
+        while($fila=$resultado->fetch_assoc()){
+
+            $estado = $fila["estado"];
+            if($estado == 1){
+                $estado = "Activo";
+
+            }else{
+                $estado = "Inactivo";
+            }
+            $codigo_convenio =$fila["codigo_convenio"];
+
+            $buttonClass = ($estado === "Activo") ? "btn-danger" : "btn-success";
+            $buttonText = ($estado === "Activo") ? "Inactivar" : "Activar";
+
+            $sub_array=[
+                $codigo_convenio,
+                //$sub_array[] = $fila["codigo_estudiante"];
+                $fila["nombre_estudiante"],
+                $fila["apellidos_estudiante"],
+                //$sub_array[] = $fila["codigo_servicio"];
+                $fila["nombre"],
+                $fila["descripcion_convenio"],
+                $fila["valor_descuento"],
+                $fila["valor_total_convenio"],
+                $fila["saldo_convenio"],
+                $estado,
+                //boton modificar
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $codigo_convenio . '" class="btn btn-primary w-100 editar">Modificar</button>',
+            // boton dinamico
+            '<button type="button" class="btn w-100 ' . $buttonClass . ' btn-toggle-state" data-id="' . $codigo_convenio . '"data-estado="' . $estado . '">' . $buttonText . '</button>',
+            '<button type="button"  data-bs-toggle="modal" data-bs-target="#modalInfoEstudiante" name="info" id="' . $fila["codigo_convenio"] . '" class="btn btn-info bi bi-person-square info"></button>'
+            ];
+
+            $datos[] = $sub_array;
+        }
+
+
+
+        /*$salida = array(
             "draw" => $draw,
             "recordsTotal" => $filtered_rows,
             "recordsFiltered" => obtener_todos_registros(),
             "data" => $datos,
            /* "carreras"=>$carreras,
             "estudiantes"=>$estudiantes*/
-        );
+
+        $salida=[
+            "draw"=>intval($_POST["draw"] ?? 0),
+            "recordsTotal" => obtener_todos_registros($conn),
+            "recordsFiltered" => $resultado->num_rows,
+            "data" => $datos
+    
+        ];
+
+        
 
         echo json_encode($salida);
     } catch (Exception $e) {
@@ -187,11 +241,27 @@ function obtener_registro($conn)
 
 function obtener_todos_registros()
 {
-    include('../conexion.php');
-    $stmt = $conn->prepare('SELECT * FROM convenio');
-    $stmt->execute();
+    include('../Conexion.php');
+    //$stmt = $conn->prepare('SELECT * FROM convenio');
+    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM convenio  WHERE estado = 'activo'");
+   /* $stmt->execute();
     $resultado = $stmt->fetch();
-    return $stmt->rowCount();
+    return $stmt->rowCount();*/
+    try{
+        $stmt ->execute();
+    
+    
+        $stmt->bind_result($total);
+    
+        $stmt ->fetch();
+    
+        return $total ?? 0;
+        } catch(mysqli_sql_exception $e){
+            error_log("Error en la consulta: " . $e->getMessage());
+            return 0;
+        } finally{
+            $stmt->close();
+}
 }
 
 function obtener_registros_estudiantes(){

@@ -51,6 +51,7 @@
           <th>SALDO TOTAL</th>
           <th>ESTADO</th>
           <th>Edición</th>
+          <th>Acciones</th>
           <th>+Infos</th>
         </tr>
       </thead>
@@ -401,6 +402,16 @@
               }
 
 
+            })
+          })
+
+          $(document).on('click', '.btn-toggle-state', function(){
+            var id = $(this).data('id');
+            var estadoActual = $(this).data('estado');
+            var nuevoEstado = (estadoActual == "Activo") ? 0 : 1;
+
+            $.ajax({
+              url:'Convenios-Controller.php'
             })
           })
 
