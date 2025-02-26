@@ -7,11 +7,12 @@ switch ($accion) {
     case 'crear':
         $tipo = $_POST['tipo'] ?? '';
         $nombre = $_POST['nombre'] ?? '';
-        $duracion_meses = $_POST['duracion_mes'] ?? '';
+        $duracion_meses = $_POST['duracion_meses'] ?? '';
+        $valor_total_programa = $_POST['valor_total_programa'] ?? '';
         $descripcion = $_POST['descripcion'] ?? '';
 
-        $sql = "INSERT INTO programas (tipo, nombre, duracion_meses, descripcion) 
-                VALUES ('$tipo', '$nombre', '$duracion_meses', '$descripcion')";
+        $sql = "INSERT INTO programas (tipo, nombre, duracion_meses, valor_total_programa,descripcion) 
+                VALUES ('$tipo', '$nombre', '$duracion_meses', '$valor_total_programa','$descripcion')";
         
         echo ($conn->query($sql) === TRUE) 
             ? "Nuevo registro creado exitosamente."
@@ -27,11 +28,12 @@ switch ($accion) {
         $id_programa = $_POST['id_programa'];
         $tipo = $_POST['tipo'] ?? null;
         $nombre = $_POST['nombre'] ?? null;
-        $duracion_mes = $_POST['duracion_mes'] ?? null;
+        $duracion_meses = $_POST['duracion_meses'] ?? null;
+        $valor_total_programa = $_POST['valor_total_programa'] ?? null;
         $descripcion = isset($_POST['descripcion']) && $_POST['descripcion'] !== '' ? $_POST['descripcion'] : null;
         $estado = $_POST['estado'] ?? null;
 
-        if (is_null($tipo) && is_null($nombre) && is_null($duracion_mes)&& is_null($descripcion) && is_null($estado)) {
+        if (is_null($tipo) && is_null($nombre) && is_null($duracion_meses) && is_null($valor_total_programa) && is_null($descripcion) && is_null($estado)) {
             echo json_encode(["success" => false, "message" => "No se han enviado datos para actualizar."]);
             break;
         }
@@ -52,12 +54,13 @@ switch ($accion) {
                             tipo = IFNULL(?, tipo), 
                             nombre = IFNULL(?, nombre), 
                             duracion_meses = IFNULL(?, duracion_meses), 
+                            valor_total_programa = IFNULL(?, valor_total_programa),
                             descripcion = IFNULL(?, descripcion), 
                             estado = IFNULL(?, estado) 
                             WHERE id_programa = ?";
 
             $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param('ssisii', $tipo, $nombre, $duracion_mes, $descripcion, $estado, $id_programa);
+            $stmt_update->bind_param('ssissii', $tipo, $nombre, $duracion_mes, $valor_total_programa, $descripcion, $estado, $id_programa);
             
             echo ($stmt_update->execute())
                 ? json_encode(["success" => true, "message" => "Registro actualizado exitosamente."])
@@ -94,59 +97,70 @@ switch ($accion) {
         break;
 
     default:
-        header('Content-Type: application/json');
-        
-        $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
-        $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
-        $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
-        $searchValue = $_POST['search']['value'] ?? '';
-    
-        $sql = "SELECT *, CONCAT('$', FORMAT(valor_total_programa, 2, 'de_DE')) AS valor_total_formateado 
-        FROM programas 
-        ORDER BY estado DESC";
+    header('Content-Type: application/json');
 
+    $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+    $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+    $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
+    $searchValue = $_POST['search']['value'] ?? '';
     
-        if (!empty($searchValue)) {
-            $sql .= " WHERE tipo LIKE '%$searchValue%' 
-                      OR nombre LIKE '%$searchValue%' 
-                      OR descripcion LIKE '%$searchValue%' 
-                      OR estado LIKE '%$searchValue%'";
-        }
+    $sql = "SELECT *, CONCAT('$', FORMAT(valor_total_programa, 2, 'de_DE')) AS valor_total_formateado 
+            FROM programas WHERE 1=1"; // WHERE 1=1 permite concatenar condiciones sin errores
     
-        $totalQuery = "SELECT COUNT(*) as total FROM programas";
-        $totalResult = $conn->query($totalQuery);
-        $totalData = $totalResult->fetch_assoc()['total'];
+    if (!empty($searchValue)) {
+        $sql .= " AND (tipo LIKE '%$searchValue%' 
+                    OR nombre LIKE '%$searchValue%'
+                    OR duracion_meses LIKE '%$searchValue%'  /* Comillas invertidas en duración */
+                    OR descripcion LIKE '%$searchValue%' 
+                    OR estado LIKE '%$searchValue%')";
+    }
     
-        $filteredQuery = "SELECT COUNT(*) as total FROM programas WHERE 1=1";
-        if (!empty($searchValue)) {
-            $filteredQuery .= " AND (tipo LIKE '%$searchValue%' 
-                                OR nombre LIKE '%$searchValue%' 
-                                OR descripcion LIKE '%$searchValue%' 
-                                OR estado LIKE '%$searchValue%')";
-        }
-        $filteredResult = $conn->query($filteredQuery);
-        $totalFiltered = $filteredResult->fetch_assoc()['total'];
-        
-        $sql .= " LIMIT $start, $length";
-        $result = $conn->query($sql);
+    // Agregamos ORDER BY correctamente
+    $sql .= " ORDER BY estado DESC";
     
-        if ($result === false) {
-            echo json_encode(['error' => 'Error en la consulta: ' . $conn->error]);
-            break;
-        }
+    // Aplicamos paginación
+    $sql .= " LIMIT $start, $length";
     
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
-            $data[] = $row;
-        }
+    // Ejecutamos la consulta principal
+    $result = $conn->query($sql);
+    if (!$result) {
+        echo json_encode(['error' => 'Error en la consulta: ' . $conn->error]);
+        exit;
+    }
     
-        echo json_encode([
-            'draw' => $draw,
-            'recordsTotal' => $totalData,
-            'recordsFiltered' => $totalFiltered,
-            'data' => $data
-        ]);
+    // Contamos el total de registros sin filtro
+    $totalQuery = "SELECT COUNT(*) as total FROM programas";
+    $totalResult = $conn->query($totalQuery);
+    $totalData = $totalResult ? $totalResult->fetch_assoc()['total'] : 0;
+    
+    // Contamos el total de registros filtrados
+    $filteredQuery = "SELECT COUNT(*) as total FROM programas WHERE 1=1";
+    if (!empty($searchValue)) {
+        $filteredQuery .= " AND (tipo LIKE '%$searchValue%' 
+                            OR nombre LIKE '%$searchValue%'
+                            OR duracion_meses LIKE '%$searchValue%'
+                            OR descripcion LIKE '%$searchValue%' 
+                            OR estado LIKE '%$searchValue%')";
+    }
+    
+    $filteredResult = $conn->query($filteredQuery);
+    $totalFiltered = $filteredResult ? $filteredResult->fetch_assoc()['total'] : 0;
+    
+    // Formateamos los datos para la respuesta JSON
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
+        $data[] = $row;
+    }
+    
+    // Respuesta JSON para DataTables
+    echo json_encode([
+        'draw' => $draw,
+        'recordsTotal' => $totalData,
+        'recordsFiltered' => $totalFiltered,
+        'data' => $data
+    ]);
+    
         break;
 }
 

@@ -71,6 +71,10 @@ include_once '../componentes/header.php';
                         <input type="number" name="duracion_mes" id="duracion_mes" class="form-control" placeholder="Duración en meses">
                     </div>
                     <div class="mb-3">
+                        <label for="valor_total_programa" class="form-label">Valor Programa:</label>
+                        <input type="text" name="valor_total_programa" id="valor_total_programa" class="form-control" placeholder="Valor Programa">
+                    </div>
+                    <div class="mb-3">
                         <label for="descripcion_crear" class="form-label">Descripción:</label>
                         <textarea name="descripcion" id="descripcion" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
                         <small id="contadorCrear" class="contador-texto">30 caracteres disponibles</small>
@@ -109,6 +113,10 @@ include_once '../componentes/header.php';
                         <input type="number" name="duracion_mes" id="duracion_mes_edit" class="form-control" placeholder="Duración en meses">
                     </div>
                     <div class="form-group">
+                        <label for="valor_total_programa" class="form-label">Valor Programa:</label>
+                        <input type="text" name="valor_total_programa" class="form-control" placeholder="Valor Programa">
+                    </div>
+                    <div class="form-group">
                         <label for="descripcion_edit" class="form-label">Descripción:</label>
                         <textarea name="descripcion" id="descripcion_edit" maxlength="30" class="form-control" placeholder="Descripción"></textarea>
                         <small id="contadorEditar" class="contador-texto">30 caracteres disponibles</small>
@@ -125,7 +133,7 @@ include_once '../componentes/header.php';
 <?php
 include_once '../componentes/footer.php';
 ?>
-<script src="js/Consultas-Programas.js"></script>
+<script src="js/Validation-Programas.js"></script>
 <script src="js/Datatable-Programas.js"></script>
 <script>
    function crearPrograma() {
@@ -145,7 +153,7 @@ include_once '../componentes/footer.php';
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                location.reload();
+                //location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
@@ -170,7 +178,7 @@ function editarPrograma() {
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                location.reload();
+                //location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);

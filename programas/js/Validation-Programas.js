@@ -14,10 +14,9 @@ jQuery(document).ready(function($) {
                 number: true,
                 min: 1
             },
-            cant_modulos: {
+            valor_total_programa: {
                 required: true,
-                number: true,
-                min: 1
+                digits: true,
             },
             descripcion: {
                 required: true,
@@ -38,10 +37,9 @@ jQuery(document).ready(function($) {
                 number: "Debe ser un número válido.",
                 min: "Debe ser mayor a 0."
             },
-            cant_modulos: {
-                required: "Por favor, ingresa la cantidad.",
-                number: "Debe ser un número válido.",
-                min: "Debe ser mayor a 0."
+            valor_total_programa: {
+                required: "Por favor, ingresa el valor del programa.",
+                digits: "Solo se permiten números."
             },
             descripcion: {
                 required: "Por favor, ingresa una descripción.",
@@ -70,10 +68,9 @@ jQuery(document).ready(function($) {
                 number: true,
                 min: 1
             },
-            cant_modulos: {
+            valor_total_programa: {
                 required: true,
-                number: true,
-                min: 1
+                digits: true,
             },
             descripcion: {
                 required: true,
@@ -94,10 +91,9 @@ jQuery(document).ready(function($) {
                 number: "Debe ser un número válido.",
                 min: "Debe ser mayor a 0."
             },
-            cant_modulos: {
-                required: "Por favor, ingresa la cantidad.",
-                number: "Debe ser un número válido.",
-                min: "Debe ser mayor a 0."
+            valor_total_programa: {
+                required: "Por favor, ingresa el valor del programa.",
+                digits: "Solo se permiten números."
             },
             descripcion: {
                 required: "Por favor, ingresa una descripción.",

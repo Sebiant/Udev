@@ -85,6 +85,7 @@ $(document).ready(function () {
                     $('#editForm [name="tipo"]').val(programa.tipo);
                     $('#editForm [name="nombre"]').val(programa.nombre);
                     $('#editForm [name="duracion_mes"]').val(programa.duracion_meses);
+                    $('#editForm [name="valor_total_programa"]').val(programa.valor_total_programa);
                     $('#editForm [name="descripcion"]').val(programa.descripcion);
                     $('#editModal').modal('show');
 
