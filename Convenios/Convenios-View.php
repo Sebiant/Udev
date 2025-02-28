@@ -48,6 +48,7 @@
           <th>CONVENIO</th>
           <th>VALOR DESCUENTO</th>
           <th>VALOR TOTAL </th>
+          <Th>TOTAL CALCULADO</Th>
           <th>SALDO TOTAL</th>
           <th>ESTADO</th>
           <th>Edición</th>
@@ -99,6 +100,10 @@
               <input type="text" name="codigo_In_servicio" id="codigo_In_servicio" class="form-control">
               <br>
 
+              <label for="tipo_convenio">tipo convenio</label>
+              <input type="text" name="tipo_convenio" id="tipo_convenio" class="form-control">
+              <br>
+
               <label for="valor_total_convenio">Valor total</label>
               <input type="number" name="valor_total_convenio" id="valor_total_convenio" class="form-control">
               <br>
@@ -111,7 +116,7 @@
 
 
               <br>
-             
+             <!-- 
 
               <label for="estado">Estado</label>
               <select name="estado" id="estado" class="form-control">
@@ -119,7 +124,7 @@
                 <option value="Activo">Activo</option>
                 <option value="Inactivo">Inactivo</option>
               </select>
-              <br>
+              <br>-->
              
 
 
@@ -334,6 +339,7 @@
             var codigo_convenio = $("#codigo_convenio").val();
             var descripcion_convenio = $("#descripcion_convenio").val();
             var codigo_estudiante = $("#codigo_estudiante").val();
+            var codigo_descuento = $("#tipo_convenio").val();
             var codigo_In_servicio = $("#codigo_In_servicio").val();
             var valor_total_convenio = $("#valor_total_convenio");
             var saldo_convenio = $("#saldo_convenio").val();

@@ -40,21 +40,26 @@ function main($action, $conn)
 
 function crear($conn){
 
-    $stmt = $conn->prepare("INSERT INTO convenio(codigo_convenio, descripcion_convenio, valor_total_convenio, saldo_convenio, codigo_servicio, codigo_estudiante, estado) VALUES(:codigo_convenio, :descripcion_convenio, :valor_total_convenio, :saldo_convenio, :codigo_servicio, :codigo_estudiante, :estado)");
+    $stmt = $conn->prepare("INSERT INTO convenio(codigo_convenio, descripcion_convenio, valor_total_convenio, saldo_convenio, id_programa, codigo_estudiante, estado, tipo_fk_convenio) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 
-    $resultado = $stmt->execute(
-        array(
-            'codigo_convenio' => $_POST["codigo_convenio"],
-            ':descripcion_convenio' => $_POST["descripcion_convenio"],
-            ':valor_total_convenio' => $_POST["valor_total_convenio"],
-            ':saldo_convenio' => $_POST["saldo_convenio"],
-            ':codigo_servicio' => $_POST["codigo_In_servicio"],
-            ':codigo_estudiante' => $_POST["codigo_estudiante"],
-            ':estado' => $_POST["estado"]
-        )
+    $state = 1;
+
+    $stmt->bind_param(
+        "ssiissss",
+        
+            $_POST["codigo_convenio"],
+            $_POST["descripcion_convenio"],
+            $_POST["valor_total_convenio"],
+            $_POST["saldo_convenio"],
+            $_POST["codigo_In_servicio"],
+            $_POST["codigo_estudiante"],
+            //':estado' => $_POST["estado"]
+            $state,
+            $_POST["codigo_descuento"],
+        
     );
 
-    if (!empty($resultado)) {
+    if ($stmt->execute()) {
         echo 'Convenio creado';
     } else {
         echo 'Convenio no creado';
@@ -166,6 +171,13 @@ function obtener_registros($conn)
             $buttonClass = ($estado === "Activo") ? "btn-danger" : "btn-success";
             $buttonText = ($estado === "Activo") ? "Inactivar" : "Activar";
 
+           $porcent= $fila["valor_descuento"];
+           $valor_porcent=$fila["valor_total_convenio"];
+           $total_cal=(($valor_porcent * $porcent) / 100);
+           $TOTAL=$valor_porcent - $total_cal;
+
+
+
             $sub_array=[
                 $codigo_convenio,
                 //$sub_array[] = $fila["codigo_estudiante"];
@@ -176,6 +188,7 @@ function obtener_registros($conn)
                 $fila["descripcion_convenio"],
                 $fila["valor_descuento"],
                 $fila["valor_total_convenio"],
+                $TOTAL,
                 $fila["saldo_convenio"],
                 $estado,
                 //boton modificar
