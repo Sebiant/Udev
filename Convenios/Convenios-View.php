@@ -18,7 +18,18 @@
 </head>
 
 <body>
-  <?php include_once '../componentes/header.php' ?>
+  <?php include_once '../componentes/header.php';
+  include("../Conexion.php");
+
+  $sqlEstudiante="SELECT codigo_estudiante, nombre_estudiante, apellidos_estudiante FROM estudiantes WHERE estado = 1";
+  $resultEstudiantes = $conn->query($sqlEstudiante);
+  $sqlPrograma="SELECT id_programa, nombre FROM programas WHERE estado = 1";
+  $resultPrograma = $conn->query($sqlPrograma);
+  $sqlDescuento="SELECT codigo_tipo_convenio, descripcion_tipo_usuario, valor_descuento FROM tipo_convenio WHERE estado = 1";
+  $resultDesct = $conn->query($sqlDescuento);
+  
+  
+  ?>
   <h1 class="text-center">CONVENIOS</h1>
 
   <br>
@@ -92,9 +103,28 @@
               <input type="text" name="descripcion_convenio" id="descripcion_convenio" class="form-control">
               <br>
 
-              <label for="codigo_estudiante">codigo estudiante</label>
+              <!--<label for="codigo_estudiante">codigo estudiante</label>
               <input type="text" name="codigo_estudiante" id="codigo_estudiante" class="form-control">
+              <br> -->
+
+              <label for="codigo_estudiante">codigo estudiante</label>
+              <select name="codigo_estudiante" id="codigo_estudiante" class="form-control">
+                <option value="">Seleccione una opciones</option>
+                <?php
+
+                
+                if($resultEstudiantes->num_rows > 0){
+                  while($row = $resultEstudiantes->fetch_assoc()){
+                    echo "<option value='" . $row['codigo_estudiante'] ."'>" . $row['nombre_estudiante'] . " " . $row['apellidos_estudiante'] . "</option>";
+                  }
+                }
+
+                ?>
+                
+              </select>
               <br>
+
+
 
               <label for="codigo_In_servicio">codigo servicios</label>
               <input type="text" name="codigo_In_servicio" id="codigo_In_servicio" class="form-control">
