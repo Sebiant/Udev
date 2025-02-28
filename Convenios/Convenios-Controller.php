@@ -176,7 +176,9 @@ function obtener_registros($conn)
            $total_cal=(($valor_porcent * $porcent) / 100);
            $TOTAL=$valor_porcent - $total_cal;
 
-
+            if(!$fila["valor_descuento"]){
+                $fila["valor_descuento"] = 0;
+            };
 
             $sub_array=[
                 $codigo_convenio,
@@ -186,7 +188,7 @@ function obtener_registros($conn)
                 //$sub_array[] = $fila["codigo_servicio"];
                 $fila["nombre"],
                 $fila["descripcion_convenio"],
-                $fila["valor_descuento"],
+                $fila["valor_descuento"] . ' %',
                 $fila["valor_total_convenio"],
                 $TOTAL,
                 $fila["saldo_convenio"],
