@@ -19,22 +19,47 @@ $(document).ready(function() {
             {
                 "data": null,
                 "defaultContent": 
-                    '<div class="d-flex justify-content-center">' +
-                    '<button class="btn btn-primary mx-1 btn-export-pdf"><i class="bi bi-file-earmark-pdf"></i> PDF</button>' +
-                    '</div>',
+                    '<button class="btn btn-primary btn-sm btn-verify">Verificar</button>',
                 "orderable": false,
-                "className": 'text-center'
+                "className": "text-center"
+            },
+            {
+                "data": null,
+                "defaultContent": 
+                    '<button class="btn btn-primary btn-sm btn-return">Devolver</button>',
+                "orderable": false,
+                "className": "text-center"
             }
         ]
     });
 
-    $('#datos_cuentacobro_admin tbody').on('click', '.btn-export-pdf', function() {
-        var data = table.row($(this).parents('tr')).data();
-        window.location.href = `Cuentas-De-Cobro-Controlador.php?accion=exportar_todos`;
-    });
+    $('#datos_cuentacobro_admin').on('click', '.btn-verify', function() {
 
-    $('#datos_cuentacobro_admin tbody').on('click', '.btn-export-pdf', function() {
         var data = table.row($(this).parents('tr')).data();
-        window.location.href = 'Cuentas-De-Cobro-Controlador.php?accion=exportar&id_cuenta=' + data.id_cuenta + '&formato=pdf';
+        var idCuenta = data.id_cuenta; // Cambio aquí
+    
+        $.ajax({
+            url: 'Cuentas-De-Cobro-Controlador.php?accion=BusquedaPorId',
+            type: 'POST',
+            data: { id_cuenta: idCuenta }, // Cambio aquí
+            dataType: 'json',
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                if (response.data && response.data.length > 0) {
+                    var cuenta = response.data[0];
+                    $('#editForm [name="fecha"]').val(cuenta.fecha);
+                    $('#editForm [name="numero_documento"]').val(cuenta.numero_documento);
+                    $('#editForm [name="horas_trabajadas"]').val(cuenta.horas_trabajadas);
+                    $('#editForm [name="valor_hora"]').val(cuenta.valor_hora);
+                    $('#editForm [name="monto"]').val(cuenta.monto);                   
+                    $('#modalCuentasCobro').modal('show');
+                } else {
+                    alert('No se encontraron datos para la cuenta de cobro.');
+                }
+            },
+            error: function() {
+                alert('Error al obtener los datos de la cuenta de cobro.');
+            }
+        });
     });
 });

@@ -50,6 +50,66 @@ switch ($accion) {
 
         fclose($output);
         break;
+        case 'modificar':
+            $id_cuenta = $_POST['id_cuenta'];
+            $fecha = $_POST['fecha'];
+            $valor_hora = $_POST['valor_hora'];
+            $horas_trabajadas = $_POST['horas_trabajadas'];
+            $monto = $_POST['monto'];
+            $numero_documento = $_POST['numero_documento'];
+        
+            $sql = "UPDATE cuentas_cobro 
+                    SET fecha = ?, valor_hora = ?, horas_trabajadas = ?, monto = ?, numero_documento = ? 
+                    WHERE id_cuenta = ?";
+        
+            if ($stmt = $conn->prepare($sql)) {
+                $stmt->bind_param(
+                    "siiisi",  
+                    $fecha, 
+                    $valor_hora, 
+                    $horas_trabajadas, 
+                    $monto, 
+                    $numero_documento, 
+                    $id_cuenta  
+                );
+        
+                if ($stmt->execute()) {
+                    echo "Registro actualizado correctamente.";
+                } else {
+                    echo "Error al actualizar el registro: " . $stmt->error;
+                }
+        
+                $stmt->close();
+            } else {
+                echo "Error al preparar la consulta: " . $conn->error;
+            }
+            break;
+
+            case 'BusquedaPorId':
+                if (empty($_POST['id_cuenta'])) {
+                    echo json_encode(["error" => "Número de cuenta no proporcionado"]);
+                    exit;
+                }
+                $sql = "SELECT * FROM cuentas_cobro WHERE id_cuenta=?";
+                $stmt = $conn->prepare($sql);
+        
+                if (!$stmt) {
+                    die("Error en la preparación de la consulta: " . $conn->error);
+                }
+        
+                $stmt->bind_param('s', $_POST['id_cuenta']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+        
+                if ($result->num_rows > 0) {
+                    echo json_encode(['data' => $result->fetch_all(MYSQLI_ASSOC)]);
+                } else {
+                    echo json_encode(['error' => 'Registro no encontrado']);
+                }
+                $stmt->close();
+                break;
+        
+        
 
     default:
         $sql = "SELECT c.id_cuenta, c.fecha, c.valor_hora, c.horas_trabajadas, c.monto, 
