@@ -125,14 +125,50 @@
               <br>
 
 
-
+              <!--
               <label for="codigo_In_servicio">codigo servicios</label>
               <input type="text" name="codigo_In_servicio" id="codigo_In_servicio" class="form-control">
+              <br>-->
+
+
+              <label  for="codigo_In_servicio">Codigo servicios</label>
+              
+              <label for="tipo_convenio">tipo convenio</label>
+              <select name="codigo_In_servicio" id="codigo_In_servicio" class="form-control">
+                <option value="">Seleccione un servicio</option>
+                <?php 
+                  if($resultPrograma->num_rows >0){ 
+
+                    while ($row =$resultPrograma->fetch_assoc()){
+                      echo "<option value='" . $row['id_programa'] . "'>" . $row['nombre'] . "</option>";
+                    }
+
+                  }
+                ?>
+
+                                
+                
+              </select>
               <br>
 
               <label for="tipo_convenio">tipo convenio</label>
+              <select name="tipo_convenio" id="tipo_convenio" class="form-control">
+                <option value="">Seleccione el descuento</option>
+                  <?php
+                    if($resultDesct->num_rows>0){
+                      while($row=$resultDesct->fetch_assoc()){
+                          echo "<option value='" . $row['codigo_tipo_convenio'] . "'>" . $row['descripcion_tipo_usuario'] . " " . $row['valor_descuento'] . " %" . "</option>";
+                      }
+                    }
+                  ?>
+
+
+              </select>
+
+              <!--
+              <label for="tipo_convenio">tipo convenio</label>
               <input type="text" name="tipo_convenio" id="tipo_convenio" class="form-control">
-              <br>
+              <br>-->
 
               <label for="valor_total_convenio">Valor total</label>
               <input type="number" name="valor_total_convenio" id="valor_total_convenio" class="form-control">
