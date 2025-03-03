@@ -39,10 +39,14 @@ switch ($accion) {
         break;
 
         default:
-        $sql = "SELECT c.id_cuenta, c.fecha, c.valor_hora, c.horas_trabajadas, c.monto, d.nombres, d.apellidos, c.estado
+        $conn->query("SET lc_time_names = 'es_ES'");
+        
+        $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas, c.monto, d.nombres, d.apellidos, c.estado
                 FROM cuentas_cobro c
                 JOIN docentes d ON c.numero_documento = d.numero_documento
-                WHERE d.numero_documento = $docente";
+                WHERE d.numero_documento = $docente
+                AND c.estado <> 'creada'
+                ORDER BY FIELD(c.estado, 'rechazada_por_docente', 'aceptada_docente', 'pendiente_firma', 'proceso_pago', 'pagada'), c.fecha ASC;";
     
         $result = $conn->query($sql);
         header('Content-Type: application/json');
@@ -64,7 +68,7 @@ switch ($accion) {
                 while ($row = $result->fetch_assoc()) {
                     $row['valor_hora'] = '$' . number_format($row['valor_hora'], 0, ',', '.');
                     $row['monto'] = '$' . number_format($row['monto'], 0, ',', '.');
-                    
+
                     $row['estado'] = $estados_legibles[$row['estado']] ?? $row['estado'];
     
                     $data[] = $row;

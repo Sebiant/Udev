@@ -5,17 +5,17 @@
 
     $conn->query("SET lc_time_names = 'es_ES'");
 
-    $sql = "SELECT DATE_FORMAT(c.fecha, '%M') AS fecha, 
-                   c.horas_trabajadas, 
-                   c.monto, 
-                   d.nombres, 
-                   d.apellidos 
-            FROM cuentas_cobro c 
-            JOIN docentes d ON c.numero_documento = d.numero_documento
-            WHERE c.numero_documento = '$docente'
-            AND MONTH(c.fecha) = MONTH(CURRENT_DATE()) 
-            AND YEAR(c.fecha) = YEAR(CURRENT_DATE()) 
-            AND c.estado = 'creada'";
+    $sql = "SELECT MONTHNAME(c.fecha) AS fecha, 
+        SUM(c.horas_trabajadas) AS total_horas, 
+        SUM(c.monto) AS total_monto, 
+        c.valor_hora,
+        d.nombres, 
+        d.apellidos 
+    FROM cuentas_cobro c 
+    JOIN docentes d ON c.numero_documento = d.numero_documento
+    WHERE c.numero_documento = '$docente'
+    AND c.estado = 'creada'
+    GROUP BY MONTHNAME(c.fecha), c.valor_hora, d.nombres, d.apellidos";
 
     $resultado = $conn->query($sql);
 ?>
@@ -34,24 +34,30 @@
                         <div class="col-md-6">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h5>Cuenta de cobro de <?php echo strftime('%B'); ?></h5>
+                                    <?php 
+                                    if ($resultado->num_rows > 0) {
+                                        $fila = $resultado->fetch_assoc();
+                                        $mes = ucfirst($fila['fecha']);
+                                    } else {
+                                        $mes = 'Sin registros';
+                                    }
+                                    ?>
+                                    <h5>Cuenta de cobro de <?php echo $mes; ?></h5>
                                 </div>
                                 <div class="card-body">
                                     <?php
                                     if ($resultado->num_rows > 0) {
-                                        $fila = $resultado->fetch_assoc();
-                                        $valor_hora = 20000;
-                                        $total = $fila['horas_trabajadas'] * $valor_hora;
-                                        $total = '$' . number_format($total, 0, ',', '.');
+                                        $total = '$' . number_format($fila['total_monto'], 0, ',', '.');
                                     ?>
                                         <h5>Nombre: <?php echo $fila['nombres'] . ' ' . $fila['apellidos']; ?></h5>
-                                        <h5>Horas: <?php echo $fila['horas_trabajadas']; ?></h5>
+                                        <h5>Horas: <?php echo $fila['total_horas']; ?></h5>
                                         <h5>Total: <?php echo $total; ?></h5>
                                     <?php
                                     } else {
                                         echo '<p class="list-group-item">No hay cuentas disponibles</p>';
                                     }
                                     ?>
+                                    <br>
                                     <div class="d-grid gap-2 d-md-block">
                                         <button class="btn btn-primary" onclick="btnAceptar()">Aceptar</button>
                                         <button class="btn btn-primary" onclick="btnRechazar()">Rechazar</button>
