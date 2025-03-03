@@ -38,29 +38,43 @@ switch ($accion) {
         }
         break;
 
-    default:
+        default:
         $sql = "SELECT c.id_cuenta, c.fecha, c.valor_hora, c.horas_trabajadas, c.monto, d.nombres, d.apellidos, c.estado
                 FROM cuentas_cobro c
                 JOIN docentes d ON c.numero_documento = d.numero_documento
                 WHERE d.numero_documento = $docente";
-
+    
         $result = $conn->query($sql);
-    header('Content-Type: application/json');
-    if ($result) {
-        $data = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $data[] = $row;
+        header('Content-Type: application/json');
+    
+        if ($result) {
+            $data = [];
+    
+            $estados_legibles = [
+                'creada' => 'Creada',
+                'aceptada_docente' => 'Aceptada por el docente',
+                'pendiente_firma' => 'Pendiente de firma',
+                'proceso_pago' => 'En proceso de pago',
+                'pagada' => 'Pagada',
+                'rechazada_por_docente' => 'Rechazada por el docente',
+                'rechazada_por_institucion' => 'Rechazada por la institución'
+            ];
+    
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $row['valor_hora'] = '$' . number_format($row['valor_hora'], 0, ',', '.');
+                    $row['monto'] = '$' . number_format($row['monto'], 0, ',', '.');
+                    
+                    $row['estado'] = $estados_legibles[$row['estado']] ?? $row['estado'];
+    
+                    $data[] = $row;
+                }
             }
+            echo json_encode(['success' => true, 'data' => $data]);
+        } else {
+            echo json_encode(['success' => false, 'message' => "Error en la consulta SQL: " . $conn->error]);
         }
-        echo json_encode(['success' => true, 'data' => $data]);
-    } else {
-        echo json_encode(['success' => false, 'message' => "Error en la consulta SQL: " . $conn->error]);
-    }
-    break;
-
+        break;
 }
-
-
 $conn->close();
 ?>

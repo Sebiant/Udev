@@ -9,14 +9,14 @@ $(document).ready(function() {
         },
         columns: [
             { "data": "fecha" },
-            { "data": "valor_hora" },
-            { "data": "horas_trabajadas" },
-            { "data": "monto" },
             { "data": null,
                 "render": function(data,type,row) {
                     return row.nombres + ' ' + row.apellidos;
-                }
+                }   
             },
+            { "data": "valor_hora" },
+            { "data": "horas_trabajadas" },
+            { "data": "monto" },
             { "data": "estado" },
                         
         ]
