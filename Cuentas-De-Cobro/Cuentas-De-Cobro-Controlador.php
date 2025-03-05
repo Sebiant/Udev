@@ -52,24 +52,20 @@ switch ($accion) {
         break;
         case 'modificar':
             $id_cuenta = $_POST['id_cuenta'];
-            $fecha = $_POST['fecha'];
             $valor_hora = $_POST['valor_hora'];
             $horas_trabajadas = $_POST['horas_trabajadas'];
-            $monto = $_POST['monto'];
-            $numero_documento = $_POST['numero_documento'];
+            
         
             $sql = "UPDATE cuentas_cobro 
-                    SET fecha = ?, valor_hora = ?, horas_trabajadas = ?, monto = ?, numero_documento = ? 
+                    SET valor_hora = ?, horas_trabajadas = ?
                     WHERE id_cuenta = ?";
         
             if ($stmt = $conn->prepare($sql)) {
                 $stmt->bind_param(
-                    "siiisi",  
-                    $fecha, 
+                    "iii",  
+                     
                     $valor_hora, 
-                    $horas_trabajadas, 
-                    $monto, 
-                    $numero_documento, 
+                    $horas_trabajadas,  
                     $id_cuenta  
                 );
         
@@ -90,7 +86,7 @@ switch ($accion) {
                     echo json_encode(["error" => "Número de cuenta no proporcionado"]);
                     exit;
                 }
-                $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas, c.monto, d.nombres, d.apellidos, c.estado
+                $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas,  (c.valor_hora * c.horas_trabajadas) AS monto, d.nombres, d.apellidos, c.estado
                 FROM cuentas_cobro c
                 JOIN docentes d ON c.numero_documento = d.numero_documento
                 WHERE id_cuenta=?
@@ -141,11 +137,39 @@ switch ($accion) {
                     }
                     break;
                 
+                case 'Devolver':
+                    if (empty($_POST['id_cuenta'])) {
+                        echo json_encode(["error" => "Número de cuenta no proporcionado"]);
+                        exit;
+                    }
+                
+                    $id_cuenta = $_POST['id_cuenta'];
+                    $estado = "creada"; 
+                    
+                    $sql = "UPDATE cuentas_cobro 
+                            SET estado = ? 
+                            WHERE id_cuenta = ?";
+                
+                    if ($stmt = $conn->prepare($sql)) {
+                        $stmt->bind_param("si", $estado, $id_cuenta); // Se agregan los dos parámetros
+                
+                        if ($stmt->execute()) {
+                            echo json_encode(["success" => true, "message" => "Cuenta firmada correctamente"]);
+                        } else {
+                            echo json_encode(["error" => "Error al actualizar la cuenta: " . $stmt->error]);
+                        }
+                
+                        $stmt->close();
+                    } else {
+                        echo json_encode(["error" => "Error al preparar la consulta: " . $conn->error]);
+                    }
+                    break;
+                
         
                 default:
                 
                 
-                $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas, c.monto, d.nombres, d.apellidos, c.estado
+                $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas,  (c.valor_hora * c.horas_trabajadas) AS monto, d.nombres, d.apellidos, c.estado
                         FROM cuentas_cobro c
                         JOIN docentes d ON c.numero_documento = d.numero_documento
                         AND c.estado <> 'creada'

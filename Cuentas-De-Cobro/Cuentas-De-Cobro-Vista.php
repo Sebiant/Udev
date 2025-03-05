@@ -38,7 +38,6 @@ include_once '../componentes/header.php';
                             <th>Monto</th>
                             <th>Estado</th>
                             <th>Verificar</th>
-                            <th>Devolver Petición</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,17 +68,14 @@ include_once '../componentes/header.php';
                         </div>
                         <div class="mb-3">
                             <label for="valor_hora" class="form-label">Valor Hora</label>
-                            <input type="text" name="valor_hora" id="valor_hora" class="form-control" oninput="formatearMoneda(this)">
-                        </div>
-                        <div class="mb-3">
-                            <label for="monto" class="form-label">Monto</label>
-                            <input type="text" name="monto" id="monto" class="form-control"oninput="formatearMoneda(this)">
+                            <input type="text" name="valor_hora" id="valor_hora" class="form-control">
                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" id="btnModificar" onclick="modificarCuenta()">Modificar</button>
                             <button type="button" class="btn btn-primary" id="btnExportar">Exportar</button>
                             <button type="button" class="btn btn-warning" id="btnFirmado" data-id="" onclick="Firmar()">Firmado</button>
+                            <button  type="button" class="btn btn-danger" id="btnDevolver" data-id="" onclick="Devolver()">Devolver</button>
                             </div>
 
                     </form>
@@ -114,7 +110,7 @@ include_once '../componentes/footer.php';
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                //ocation.reload();
+                //location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
@@ -122,13 +118,6 @@ include_once '../componentes/footer.php';
         });
     }
 
-    function formatearMoneda(input) {
-            
-            let valor = input.value.replace(/\D/g, "");
-            
-            let numero = parseInt(valor, 10) || 0;
 
-            input.value = "$" + numero.toLocaleString("es-CO", { minimumFractionDigits: 0 });
-        }
 
 </script>

@@ -31,12 +31,6 @@ $(document).ready(function() {
                 "orderable": false,
                 "className": "text-center"
             },
-            {
-                "data": null,
-                "defaultContent": '<button class="btn btn-danger btn-sm btn-return">Devolver</button>',
-                "orderable": false,
-                "className": "text-center"
-            }
         ]
     });
 
@@ -66,12 +60,13 @@ function verificarCuenta(idCuenta) {
             if (response.data && response.data.length > 0) {
                 var cuenta = response.data[0];
 
+                $('#id_cuenta').val(cuenta.id_cuenta);
                 $('#btnFirmado').attr('data-id', cuenta.id_cuenta);
+                $('#btnDevolver').attr('data-id', cuenta.id_cuenta);
                 $('[name="fecha"]').text('Cuenta: ' + cuenta.fecha);
                 $('[name="modalCuentasCobroLabel"]').text(cuenta.nombres + " " + cuenta.apellidos);
                 $('#formCuentaCobro [name="horas_trabajadas"]').val(cuenta.horas_trabajadas);
                 $('#formCuentaCobro [name="valor_hora"]').val(cuenta.valor_hora);
-                $('#formCuentaCobro [name="monto"]').val(cuenta.monto);  
 
                 // Llamar a la función para actualizar los botones según el estado
                 actualizarBotones(cuenta.estado);
@@ -88,28 +83,12 @@ function verificarCuenta(idCuenta) {
     });
 }
 
-function devolverCuenta(idCuenta) {
-    if (confirm("¿Estás seguro de que quieres devolver esta cuenta?")) {
-        $.ajax({
-            url: 'Cuentas-De-Cobro-Controlador.php?accion=Devolver',
-            type: 'POST',
-            data: { id_cuenta: idCuenta },
-            success: function(response) {
-                console.log('Cuenta devuelta:', response);
-                location.reload();
-            },
-            error: function() {
-                alert('Error al devolver la cuenta.');
-            }
-        });
-    }
-}
-
 function actualizarBotones(estado) {
-    $("#btnModificar, #btnExportar, #btnFirmado").hide();
+    $("#btnModificar, #btnExportar, #btnFirmado, #btnDevolver").hide();
 
     if (estado === 'aceptada_docente' || estado === 'rechazada_por_docente') {
-        $("#btnModificar").show();  
+        $("#btnModificar").show(); 
+        $("#btnDevolver").show(); 
     } 
     if (estado === 'aceptada_docente') {
         $("#btnExportar").show();  
@@ -148,3 +127,34 @@ function Firmar() {
         }
     });
 }
+
+function Devolver() {
+    const btnDevolver = document.getElementById('btnDevolver');
+    const idCuenta = btnDevolver ? btnDevolver.getAttribute('data-id') : null;
+
+    if (!idCuenta) {
+        console.error('Error: ID de cuenta no encontrado en el botón.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('id_cuenta', idCuenta);
+
+    console.log('Datos enviados:', ...formData.entries());
+
+    $.ajax({
+        url: 'Cuentas-De-Cobro-Controlador.php?accion=Devolver',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('Respuesta del servidor:', response);
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la solicitud AJAX:', error);
+        }
+    });
+}
+
