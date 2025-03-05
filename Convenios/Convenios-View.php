@@ -409,14 +409,7 @@
             var valor_total_convenio = $("#valor_total_convenio").val();
             var saldo_convenio = $("#saldo_convenio").val();
 
-            console.log("Código Convenio:", codigo_convenio);
-    console.log("Descripción Convenio:", descripcion_convenio);
-    console.log("Código Estudiante:", codigo_estudiante);
-    console.log("Código Descuento:", tipo_convenio);
-    console.log("Código Servicio:", codigo_In_servicio);
-    console.log("Valor Total Convenio:", valor_total_convenio);
-    console.log("Saldo Convenio:", saldo_convenio);
-            
+          
 
 
             //var estado = $("#estado").val();
@@ -433,6 +426,7 @@
                   alert(data);
                   $('#formulario')[0].reset();
                   $('#modalCrearConvenio').modal('hide');
+                  $('.modal-backdrop').remove();
                   dataTable.ajax.reload();
                 }
 
@@ -510,7 +504,7 @@
               dataType: "json",
               success: function(data) {
 
-                $('#modalEditarConvenio').modal('show');
+                $('#modalCrearConvenio').modal('show');
                 $('#codigo_convenio').val(data.codigo_convenio);
                 $('#descripcion_convenio').val(data.descripcion_convenio);
                 $('#valor_total_convenio').val(data.valor_total_convenio);

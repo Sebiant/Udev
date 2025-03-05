@@ -196,7 +196,7 @@ function obtener_registros($conn)
                 $fila["saldo_convenio"],
                 $estado,
                 //boton modificar
-            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalServicio" name="acciones" id="' . $codigo_convenio . '" class="btn btn-primary w-100 editar">Modificar</button>',
+            '<button type="button" data-bs-toggle="modal" data-bs-target="#modalCrearConvenio" name="acciones" id="' . $codigo_convenio . '" class="btn btn-primary w-100 editar">Modificar</button>',
             // boton dinamico
             '<button type="button" class="btn w-100 ' . $buttonClass . ' btn-toggle-state" data-id="' . $codigo_convenio . '"data-estado="' . $estado . '">' . $buttonText . '</button>',
             '<button type="button"  data-bs-toggle="modal" data-bs-target="#modalInfoEstudiante" name="info" id="' . $fila["codigo_convenio"] . '" class="btn btn-info bi bi-person-square info"></button>'
