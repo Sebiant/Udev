@@ -7,7 +7,7 @@
 
     $sql = "SELECT MONTHNAME(c.fecha) AS fecha, 
         SUM(c.horas_trabajadas) AS total_horas, 
-        (c.valor_hora * c.horas_trabajadas) AS total_monto, 
+        (c.valor_hora * SUM(c.horas_trabajadas)) AS total_monto, 
         c.valor_hora,
         d.nombres, 
         d.apellidos 
@@ -19,8 +19,8 @@
     ORDER BY MIN(c.fecha) ASC
     LIMIT 1";
 
-
     $resultado = $conn->query($sql);
+    $fila = $resultado->fetch_assoc(); // Obtener datos una sola vez
 ?>
 
 <div class="container">
@@ -37,37 +37,31 @@
                         <div class="col-md-6">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <?php 
-                                    if ($resultado->num_rows > 0) {
-                                        $fila = $resultado->fetch_assoc();
-                                        $mes = ucfirst($fila['fecha']);
-                                    } else {
-                                        $mes = 'Sin registros';
-                                    }
-                                    ?>
-                                    <h5>Cuenta de cobro de <?php echo $mes; ?></h5>
+                                    <?php if ($fila) : ?>
+                                        <h5>Cuenta de cobro de <?php echo ucfirst($fila['fecha']); ?></h5>
+                                    <?php else : ?>
+                                        <h5>No hay cuentas de cobro pendientes.</h5>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="card-body">
-                                    <?php
-                                    if ($resultado->num_rows > 0) {
-                                        $total = '$' . number_format($fila['total_monto'], 0, ',', '.');
-                                    ?>
+                                    <?php if ($fila) : ?>
                                         <h5>Nombre: <?php echo $fila['nombres'] . ' ' . $fila['apellidos']; ?></h5>
                                         <h5>Horas: <?php echo $fila['total_horas']; ?></h5>
-                                        <h5>Total: <?php echo $total; ?></h5>
-                                    <?php
-                                    } else {
-                                        echo '<p class="list-group-item">No hay cuentas disponibles</p>';
-                                    }
-                                    ?>
-                                    <br>
-                                    <div class="d-grid gap-2 d-md-block">
-                                        <button class="btn btn-primary" onclick="btnAceptar()">Aceptar</button>
-                                        <button class="btn btn-primary" onclick="btnRechazar()">Rechazar</button>
-                                    </div>
+                                        <h5>Total: <span class="text-success">
+                                            <?php echo '$' . number_format($fila['total_monto'], 0, ',', '.'); ?>
+                                        </span></h5>
+                                        <br>
+                                        <div class="d-grid gap-2 d-md-block">
+                                            <button class="btn btn-primary" onclick="btnAceptar()">Aceptar</button>
+                                            <button class="btn btn-danger" onclick="btnRechazar()">Rechazar</button>
+                                        </div>
+                                    <?php else : ?>
+                                        <p class="alert text-center"> No hay cuentas de cobro pendientes. ¡Todo está al día!</p>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- Card 2: Clases Programadas -->
                         <div class="col-md-6">
