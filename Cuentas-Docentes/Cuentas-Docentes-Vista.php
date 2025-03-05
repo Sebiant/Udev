@@ -7,7 +7,7 @@
 
     $sql = "SELECT MONTHNAME(c.fecha) AS fecha, 
         SUM(c.horas_trabajadas) AS total_horas, 
-        SUM(c.monto) AS total_monto, 
+        (c.valor_hora * c.horas_trabajadas) AS total_monto, 
         c.valor_hora,
         d.nombres, 
         d.apellidos 
@@ -15,7 +15,10 @@
     JOIN docentes d ON c.numero_documento = d.numero_documento
     WHERE c.numero_documento = '$docente'
     AND c.estado = 'creada'
-    GROUP BY MONTHNAME(c.fecha), c.valor_hora, d.nombres, d.apellidos";
+    GROUP BY MONTHNAME(c.fecha), c.valor_hora, d.nombres, d.apellidos
+    ORDER BY MIN(c.fecha) ASC
+    LIMIT 1";
+
 
     $resultado = $conn->query($sql);
 ?>
@@ -212,51 +215,33 @@
 <script src="js/Datatable-Cuentas-Docentes.js"></script>
 
 <script>
-    function btnAceptar() {
-        let button = event.target;
-        let idCuenta = $(button).data("id");
-
-        if (!idCuenta) {
-            alert('No se encontró el ID de la cuenta.');
-            return;
+function btnAceptar() {
+    $.ajax({
+        url: 'Cuentas-Docentes-Controlador.php?accion=Aceptar',
+        type: 'POST',
+        success: function(response) {
+            alert('Cuenta aceptada correctamente');
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            alert('Hubo un problema al aceptar la cuenta.');
         }
-
-        $.ajax({
-            url: 'Cuentas-Docentes-Controlador.php?accion=Aceptar',
-            type: 'POST',
-            data: { id_cuenta: idCuenta },
-            success: function(response) {
-                alert('Cuenta aceptada correctamente');
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-                alert('Hubo un problema al aceptar la cuenta.');
-            }
-        });
-    }
-
-    function btnRechazar() {
-        let button = event.target;
-        let idCuenta = $(button).data("id");
-
-        if (!idCuenta) {
-            alert("No se encontró el ID de la cuenta.");
-            return;
+    });
+}
+function btnRechazar() {
+    $.ajax({
+        url: "Cuentas-Docentes-Controlador.php?accion=Rechazar",
+        type: "POST",
+        success: function(response) {
+            alert("Cuenta rechazada correctamente");
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al rechazar la cuenta.");
         }
+    });
+}
 
-        $.ajax({
-            url: "Cuentas-Docentes-Controlador.php?accion=Rechazar",
-            type: "POST",
-            data: { id_cuenta: idCuenta },
-            success: function(response) {
-                alert("Cuenta rechazada correctamente");
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error("Error:", error);
-                alert("Hubo un problema al rechazar la cuenta.");
-            }
-        });
-    }
 </script>
