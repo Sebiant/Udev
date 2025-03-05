@@ -2,7 +2,7 @@
 include '../conexion.php';
 
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
-
+$conn->query("SET lc_time_names = 'es_ES'");
 switch ($accion) {
     case 'exportar':
         $id_cuenta = isset($_GET['id_cuenta']) ? intval($_GET['id_cuenta']) : 0;
@@ -90,7 +90,11 @@ switch ($accion) {
                     echo json_encode(["error" => "Número de cuenta no proporcionado"]);
                     exit;
                 }
-                $sql = "SELECT * FROM cuentas_cobro WHERE id_cuenta=?";
+                $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas, c.monto, d.nombres, d.apellidos, c.estado
+                FROM cuentas_cobro c
+                JOIN docentes d ON c.numero_documento = d.numero_documento
+                WHERE id_cuenta=?
+                ";
                 $stmt = $conn->prepare($sql);
         
                 if (!$stmt) {
@@ -108,28 +112,77 @@ switch ($accion) {
                 }
                 $stmt->close();
                 break;
+
+                case 'Firmar':
+                    if (empty($_POST['id_cuenta'])) {
+                        echo json_encode(["error" => "Número de cuenta no proporcionado"]);
+                        exit;
+                    }
+                
+                    $id_cuenta = $_POST['id_cuenta'];
+                    $estado = "proceso_pago"; // Estado que se va a actualizar
+                    
+                    $sql = "UPDATE cuentas_cobro 
+                            SET estado = ? 
+                            WHERE id_cuenta = ?";
+                
+                    if ($stmt = $conn->prepare($sql)) {
+                        $stmt->bind_param("si", $estado, $id_cuenta); // Se agregan los dos parámetros
+                
+                        if ($stmt->execute()) {
+                            echo json_encode(["success" => true, "message" => "Cuenta firmada correctamente"]);
+                        } else {
+                            echo json_encode(["error" => "Error al actualizar la cuenta: " . $stmt->error]);
+                        }
+                
+                        $stmt->close();
+                    } else {
+                        echo json_encode(["error" => "Error al preparar la consulta: " . $conn->error]);
+                    }
+                    break;
+                
         
+                default:
+                
+                
+                $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas, c.monto, d.nombres, d.apellidos, c.estado
+                        FROM cuentas_cobro c
+                        JOIN docentes d ON c.numero_documento = d.numero_documento
+                        AND c.estado <> 'creada'
+                        ORDER BY 
+                        FIELD(c.estado, 'rechazada_por_docente', 'aceptada_docente', 'pendiente_firma', 'proceso_pago', 'pagada') ASC, 
+                        c.fecha ASC;";
+            
+                $result = $conn->query($sql);
+                header('Content-Type: application/json');
+            
+                if ($result) {
+                    $data = [];
+            
+                    $estados_legibles = [
+                        'creada' => 'Creada',
+                        'aceptada_docente' => 'Aceptada por el docente',
+                        'pendiente_firma' => 'Pendiente de firma',
+                        'proceso_pago' => 'En proceso de pago',
+                        'pagada' => 'Pagada',
+                        'rechazada_por_docente' => 'Rechazada por el docente'
+                    ];
+            
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            $row['valor_hora'] = '$' . number_format($row['valor_hora'], 0, ',', '.');
+                            $row['monto'] = '$' . number_format($row['monto'], 0, ',', '.');
         
-
-    default:
-        $sql = "SELECT c.id_cuenta, c.fecha, c.valor_hora, c.horas_trabajadas, c.monto, 
-                       d.nombres, d.apellidos, c.estado 
-                FROM cuentas_cobro c
-                JOIN docentes d ON d.numero_documento = c.numero_documento";
-        $result = $conn->query($sql);
-
-        $data = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $row['valor_hora'] = '$' . number_format($row['valor_hora'], 2, '.', ',');
-                $row['monto'] = '$' . number_format($row['monto'], 2, '.', ',');
-                $data[] = $row;
-            }
-        }
-
-        header('Content-Type: application/json');
-        echo json_encode(['data' => $data]);
-        break;
+                            $row['estado'] = $estados_legibles[$row['estado']] ?? $row['estado'];
+            
+                            $data[] = $row;
+                        }
+                    }
+                    echo json_encode(['success' => true, 'data' => $data]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => "Error en la consulta SQL: " . $conn->error]);
+                }
+                break;
 }
 
 $conn->close();

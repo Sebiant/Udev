@@ -53,38 +53,35 @@ include_once '../componentes/header.php';
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalCuentasCobroLabel">Modificar Cuenta de Cobro</h5>
+                    <div class="contenedor-titulos">
+                        <h5 class="modal-title" name="fecha">Fecha</h5>
+                        <h6 class="modal-title" name="modalCuentasCobroLabel">Docente</h6>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formCuentaCobro">
                         <input type="hidden" name="accion" value="editar">
                         <input type="hidden" name="id_cuenta" id="id_cuenta">
-
-                        <div class="mb-3">
-                            <label for="fecha" class="form-label">Fecha</label>
-                            <input type="date" name="fecha" id="fecha" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="numero_documento" class="form-label">Docente</label>
-                            <input type="text" name="numero_documento" id="numero_documento" class="form-control">
-                        </div>
                         <div class="mb-3">
                             <label for="horas_trabajadas" class="form-label">Horas Trabajadas</label>
                             <input type="number" name="horas_trabajadas" id="horas_trabajadas" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="valor_hora" class="form-label">Valor Hora</label>
-                            <input type="text" name="valor_hora" id="valor_hora" class="form-control">
+                            <input type="text" name="valor_hora" id="valor_hora" class="form-control" oninput="formatearMoneda(this)">
                         </div>
                         <div class="mb-3">
                             <label for="monto" class="form-label">Monto</label>
-                            <input type="text" name="monto" id="monto" class="form-control">
+                            <input type="text" name="monto" id="monto" class="form-control"oninput="formatearMoneda(this)">
                         </div>
 
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Guardar</button>
-                        </div>
+                            <button type="button" class="btn btn-success" id="btnModificar" onclick="modificarCuenta()">Modificar</button>
+                            <button type="button" class="btn btn-primary" id="btnExportar">Exportar</button>
+                            <button type="button" class="btn btn-warning" id="btnFirmado" data-id="" onclick="Firmar()">Firmado</button>
+                            </div>
+
                     </form>
                 </div>
             </div>
@@ -96,4 +93,42 @@ include_once '../componentes/header.php';
 include_once '../componentes/footer.php';
 ?>
 
+<script src=js/Validation-Cuentas-De-Cobro.js></script>
 <script src="js/Datatable-Cuentas-De-Cobro.js"></script>
+
+<script>
+    function modificarCuenta() {
+        if (!$("#formCuentaCobro").valid()) {
+            console.log("El formulario no es válido.");
+            return;
+        }
+
+        const formData = new FormData(document.getElementById('formCuentaCobro'));
+        console.log('Datos del formulario:', ...formData.entries());
+
+        $.ajax({
+            url: 'Cuentas-De-Cobro-Controlador.php?accion=modificar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                //ocation.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function formatearMoneda(input) {
+            
+            let valor = input.value.replace(/\D/g, "");
+            
+            let numero = parseInt(valor, 10) || 0;
+
+            input.value = "$" + numero.toLocaleString("es-CO", { minimumFractionDigits: 0 });
+        }
+
+</script>
