@@ -43,6 +43,8 @@ function crear($conn){
     $stmt = $conn->prepare("INSERT INTO convenio(codigo_convenio, descripcion_convenio, valor_total_convenio, saldo_convenio, id_programa, codigo_estudiante, estado, tipo_fk_convenio) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 
     $state = 1;
+    
+
 
     $stmt->bind_param(
         "ssiissss",
@@ -53,14 +55,14 @@ function crear($conn){
             $_POST["saldo_convenio"],
             $_POST["codigo_In_servicio"],
             $_POST["codigo_estudiante"],
-            //':estado' => $_POST["estado"]
             $state,
-            $_POST["codigo_descuento"],
+            $_POST["tipo_convenio"],
         
     );
 
     if ($stmt->execute()) {
-        echo 'Convenio creado';
+        echo
+        'Convenio creado';
     } else {
         echo 'Convenio no creado';
     }

@@ -133,7 +133,6 @@
 
               <label  for="codigo_In_servicio">Codigo servicios</label>
               
-              <label for="tipo_convenio">tipo convenio</label>
               <select name="codigo_In_servicio" id="codigo_In_servicio" class="form-control">
                 <option value="">Seleccione un servicio</option>
                 <?php 
@@ -405,13 +404,22 @@
             var codigo_convenio = $("#codigo_convenio").val();
             var descripcion_convenio = $("#descripcion_convenio").val();
             var codigo_estudiante = $("#codigo_estudiante").val();
-            var codigo_descuento = $("#tipo_convenio").val();
+            var tipo_convenio = $("#tipo_convenio").val();
             var codigo_In_servicio = $("#codigo_In_servicio").val();
-            var valor_total_convenio = $("#valor_total_convenio");
+            var valor_total_convenio = $("#valor_total_convenio").val();
             var saldo_convenio = $("#saldo_convenio").val();
 
+            console.log("Código Convenio:", codigo_convenio);
+    console.log("Descripción Convenio:", descripcion_convenio);
+    console.log("Código Estudiante:", codigo_estudiante);
+    console.log("Código Descuento:", tipo_convenio);
+    console.log("Código Servicio:", codigo_In_servicio);
+    console.log("Valor Total Convenio:", valor_total_convenio);
+    console.log("Saldo Convenio:", saldo_convenio);
+            
 
-            var estado = $("#estado").val();
+
+            //var estado = $("#estado").val();
 
             if (codigo_convenio != '' && descripcion_convenio != '' && valor_total_convenio != '' && codigo_estudiante != '') {
 
