@@ -10,7 +10,8 @@
         (c.valor_hora * SUM(c.horas_trabajadas)) AS total_monto, 
         c.valor_hora,
         d.nombres, 
-        d.apellidos 
+        d.apellidos,
+        c.id_cuenta
     FROM cuentas_cobro c 
     JOIN docentes d ON c.numero_documento = d.numero_documento
     WHERE c.numero_documento = '$docente'
@@ -51,10 +52,14 @@
                                             <?php echo '$' . number_format($fila['total_monto'], 0, ',', '.'); ?>
                                         </span></h5>
                                         <br>
-                                        <div class="d-grid gap-2 d-md-block">
-                                            <button class="btn btn-primary" onclick="btnAceptar()">Aceptar</button>
-                                            <button class="btn btn-danger" onclick="btnRechazar()">Rechazar</button>
-                                        </div>
+                                        <form id="formCuentaCobro">
+                                            <input type="hidden" name="id_cuenta" value="<?php echo $fila['id_cuenta']; ?>">
+
+                                            <div class="d-grid gap-2 d-md-block">
+                                                <button type="button" class="btn btn-primary" onclick="aceptarCuenta()">Aceptar</button>
+                                                <button type="button" class="btn btn-danger" onclick="rechazarCuenta()">Rechazar</button>
+                                            </div>
+                                        </form>
                                     <?php else : ?>
                                         <p class="alert text-center"> No hay cuentas de cobro pendientes. ¡Todo está al día!</p>
                                     <?php endif; ?>
@@ -209,33 +214,46 @@
 <script src="js/Datatable-Cuentas-Docentes.js"></script>
 
 <script>
-function btnAceptar() {
+function aceptarCuenta() {
+    const formData = new FormData(document.getElementById('formCuentaCobro'));
+    console.log(...formData);
+
     $.ajax({
-        url: 'Cuentas-Docentes-Controlador.php?accion=Aceptar',
-        type: 'POST',
-        success: function(response) {
-            alert('Cuenta aceptada correctamente');
-            location.reload();
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            alert('Hubo un problema al aceptar la cuenta.');
-        }
-    });
-}
-function btnRechazar() {
-    $.ajax({
-        url: "Cuentas-Docentes-Controlador.php?accion=Rechazar",
+        url: "Cuentas-Docentes-Controlador.php?accion=Aceptar",
         type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
         success: function(response) {
-            alert("Cuenta rechazada correctamente");
+            alert("Cuenta aceptada correctamente.");
             location.reload();
         },
         error: function(xhr, status, error) {
             console.error("Error:", error);
-            alert("Hubo un problema al rechazar la cuenta.");
+            alert("Hubo un problema al procesar la solicitud.");
+        }
+    });
+}
+function rechazarCuenta() {
+    const formData = new FormData(document.getElementById('formCuentaCobro'));
+    console.log(...formData);
+
+    $.ajax({
+        url: "Cuentas-Docentes-Controlador.php?accion=Rechazar",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            alert("Cuenta rechazada correctamente.");
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al procesar la solicitud.");
         }
     });
 }
 
 </script>
+

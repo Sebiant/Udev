@@ -7,21 +7,12 @@ $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
 switch ($accion) {
     case 'Aceptar':
-        $sql_select = "SELECT id_cuenta 
-                       FROM cuentas_cobro 
-                       WHERE estado = 'creada' 
-                       ORDER BY fecha ASC 
-                       LIMIT 1";
-    
-        $result = $conn->query($sql_select);
-    
-        if ($row = $result->fetch_assoc()) {
-            $id_cuenta = $row['id_cuenta'];
-    
+        $id_cuenta = $_POST['id_cuenta'];
+        if ($id_cuenta > 0) {
             $sql_update = "UPDATE cuentas_cobro SET estado = 'aceptada_docente' WHERE id_cuenta = ?";
             $stmt_update = $conn->prepare($sql_update);
             $stmt_update->bind_param("i", $id_cuenta);
-    
+
             if ($stmt_update->execute()) {
                 echo json_encode(["success" => true, "message" => "Estado actualizado a 'aceptada_docente'."]);
             } else {
@@ -29,38 +20,27 @@ switch ($accion) {
             }
             $stmt_update->close();
         } else {
-            echo json_encode(["success" => false, "message" => "No hay cuentas en estado 'creada'."]);
+            echo json_encode(["success" => false, "message" => "ID de cuenta inválido."]);
         }
-    
         break;
 
-        case 'Rechazar':
-            $sql_select = "SELECT id_cuenta 
-                           FROM cuentas_cobro 
-                           WHERE estado = 'creada' 
-                           ORDER BY fecha ASC 
-                           LIMIT 1";
-        
-            $result = $conn->query($sql_select);
-        
-            if ($row = $result->fetch_assoc()) {
-                $id_cuenta = $row['id_cuenta'];
-        
-                $sql_update = "UPDATE cuentas_cobro SET estado = 'rechazada_por_docente' WHERE id_cuenta = ?";
-                $stmt_update = $conn->prepare($sql_update);
-                $stmt_update->bind_param("i", $id_cuenta);
-        
-                if ($stmt_update->execute()) {
-                    echo json_encode(["success" => true, "message" => "Estado actualizado a 'rechazada_por_docente'."]);
-                } else {
-                    echo json_encode(["success" => false, "message" => "Error al actualizar el estado: " . $conn->error]);
-                }
-                $stmt_update->close();
+    case 'Rechazar':
+        $id_cuenta = $_POST['id_cuenta'];
+        if ($id_cuenta > 0) {
+            $sql_update = "UPDATE cuentas_cobro SET estado = 'rechazada_por_docente' WHERE id_cuenta = ?";
+            $stmt_update = $conn->prepare($sql_update);
+            $stmt_update->bind_param("i", $id_cuenta);
+
+            if ($stmt_update->execute()) {
+                echo json_encode(["success" => true, "message" => "Estado actualizado a 'rechazada_por_docente'."]);
             } else {
-                echo json_encode(["success" => false, "message" => "No hay cuentas en estado 'creada'."]);
+                echo json_encode(["success" => false, "message" => "Error al actualizar el estado: " . $conn->error]);
             }
-        
-            break;
+            $stmt_update->close();
+        } else {
+            echo json_encode(["success" => false, "message" => "ID de cuenta inválido."]);
+        }
+        break;
         
         default:
         $conn->query("SET lc_time_names = 'es_ES'");
@@ -73,7 +53,6 @@ switch ($accion) {
                 ORDER BY FIELD(c.estado, 'rechazada_por_docente', 'aceptada_docente', 'pendiente_firma', 'proceso_pago', 'pagada'), c.fecha ASC;";
     
         $result = $conn->query($sql);
-        header('Content-Type: application/json');
     
         if ($result) {
             $data = [];
