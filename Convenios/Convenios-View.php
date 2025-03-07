@@ -415,7 +415,7 @@
             //var estado = $("#estado").val();
 
             if (codigo_convenio != '' && descripcion_convenio != '' && valor_total_convenio != '' && codigo_estudiante != '') {
-
+              
               $.ajax({
                 url: "Convenios-Controller.php",
                 method: "POST",
@@ -423,7 +423,7 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                  alert(data);
+                  console.log(data);
                   $('#formulario')[0].reset();
                   $('#modalCrearConvenio').modal('hide');
                   $('.modal-backdrop').remove();
@@ -523,7 +523,7 @@
                 $('#saldo_convenio').val(data.saldo_convenio);
                 $('#codigo_In_servicio').val(data.id_programa);
                 $('#codigo_estudiante').val(data.codigo_estudiante);
-                $('#estado').val(data.estado);
+                //$('#estado').val(data.estado);
                 $('#tipo_convenio').val(data.tipo_fk_convenio);
 
 

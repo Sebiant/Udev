@@ -77,18 +77,18 @@ function editar($conn) {
     if(isset($_POST["codigo_convenio"])){
 
         $stmt = $conn->prepare("UPDATE convenio 
-        SET descripcion_convenio=?, valor_total_convenio=?, saldo_convenio=?, id_programa=?, codigo_estudiante=?, estado=?, tipo_fk_convenio=? 
+        SET descripcion_convenio=?, valor_total_convenio=?, saldo_convenio=?, id_programa=?, codigo_estudiante=?,  tipo_fk_convenio=? 
         WHERE codigo_convenio=? 
         limit 1");
 
         $stmt->bind_param(
-            "siisssss",
+            "siissss",
             $_POST["descripcion_convenio"],
             $_POST["valor_total_convenio"],
             $_POST["saldo_convenio"],
             $_POST["codigo_In_servicio"],
             $_POST["codigo_estudiante"],
-            $_POST["estado"],
+            //$_POST["estado"],
             $_POST["tipo_fk_convenio"],
 
             //identificador para hacer el update
