@@ -70,23 +70,39 @@ function crear($conn){
 
 }
 function editar($conn) {
-    $stmt = $conn->prepare("UPDATE convenio SET descripcion_convenio=:descripcion_convenio, valor_total_convenio=:valor_total_convenio, saldo_convenio=:saldo_convenio, codigo_servicio=:codigo_servicio, codigo_estudiante=:codigo_estudiante, estado=:estado WHERE codigo_convenio=:codigo_convenio");
 
-    $stmt->bindParam(':descripcion_convenio', $_POST["descripcion_convenio"]);
-    $stmt->bindParam(':valor_total_convenio', $_POST["valor_total_convenio"]);
-    $stmt->bindParam(':saldo_convenio', $_POST["saldo_convenio"]);
-    $stmt->bindParam(':codigo_servicio', $_POST["codigo_In_servicio"]);
-    $stmt->bindParam(':codigo_estudiante', $_POST["codigo_estudiante"]);
-    $stmt->bindParam(':estado', $_POST["estado"]);
-    $stmt->bindParam(':codigo_convenio', $_POST["codigo_convenio"], PDO::PARAM_INT);
+    if(isset($_POST["codigo_convenio"])){
 
-    $resultado = $stmt->execute();
+        $stmt = $conn->prepare("UPDATE convenio 
+        SET descripcion_convenio=?, valor_total_convenio=?, saldo_convenio=?, id_programa=?, codigo_estudiante=?, estado=?, tipo_fk_convenio=? 
+        WHERE codigo_convenio=? 
+        limit 1");
 
-    if ($resultado) {
-        echo 'Convenio actualizado';
+        $stmt->bind_param(
+            "siiiiii",
+            $_POST["descripcion_convenio"],
+            $_POST["valor_total_convenio"],
+            $_POST["saldo_convenio"],
+            $_POST["codigo_In_servicio"],
+            $_POST["codigo_estudiante"],
+            $_POST["estado"],
+            $_POST["tipo_fk_convenio"]
+        );
+
+
+        
+
+        if ($stmt->execute()) {
+            echo 'Convenio actualizado';
+        } else {
+            echo "No se pudo actualizar el convenio";
+            echo 'Error al actualizar el registro: ' . $conn->error; // Error de conexión
+        echo 'Error del statement: ' . $stmt->error; // Error específico de la consulta
+        }
     } else {
-        echo "No se pudo actualizar el convenio";
+        echo "no ha llegado ningun codigo";
     }
+    
 }
 //datos de la tabla con ajax y DATATABLES tabla convenio
 function obtener_registros($conn)
@@ -233,17 +249,25 @@ function obtener_registros($conn)
 
 function obtener_registro($conn)
 {
+    if(isset($_POST["codigo_convenio"])){
 
     $salida = array();
 
-    try {
-        $stmt = $conn->prepare("SELECT * FROM convenio WHERE codigo_convenio = :codigo_convenio LIMIT 1");
-        $stmt->bindParam(':codigo_convenio', $_POST['codigo_convenio'], PDO::PARAM_INT);
-        $stmt->execute();
 
-        if ($stmt->rowCount() > 0) {
-            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-            $salida = $resultado;
+        $stmt = $conn->prepare("SELECT * FROM convenio WHERE codigo_convenio = ? LIMIT 1");
+        
+        $codigo_conve = intval($_POST["codigo_convenio"]);
+
+        $stmt->bind_param('i', $codigo_conve);
+
+    try {
+
+        $stmt->execute();
+        $resultado=$stmt->get_result();
+
+        if ($fila=$resultado->fetch_assoc()) {
+    
+            $salida = $fila;
         } else {
             $salida["error"] = "No se encontraron resultados";
         }
@@ -251,6 +275,7 @@ function obtener_registro($conn)
         $salida["error"] = "Error en la ejecución de la consulta: " . $e->getMessage();
     }
     echo json_encode($salida);
+}
 }
 
 

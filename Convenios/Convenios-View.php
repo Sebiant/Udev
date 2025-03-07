@@ -509,9 +509,10 @@
                 $('#descripcion_convenio').val(data.descripcion_convenio);
                 $('#valor_total_convenio').val(data.valor_total_convenio);
                 $('#saldo_convenio').val(data.saldo_convenio);
-                $('#codigo_In_servicio').val(data.codigo_servicio);
+                $('#codigo_In_servicio').val(data.id_programa);
                 $('#codigo_estudiante').val(data.codigo_estudiante);
                 $('#estado').val(data.estado);
+                $('#tipo_convenio').val(data.tipo_fk_convenio);
 
 
                 $('#modal-title').text('Editar estudiante');
