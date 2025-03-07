@@ -26,6 +26,9 @@ function main($action, $conn)
         case 'obtener_pagos_estudiantes':
             obtener_pagos_estudiantes($conn);
                     break;
+        case 'cambiarEstado':
+            cambiar_Estado($conn);
+            break;
             
       
         default:
@@ -250,6 +253,34 @@ function obtener_registros($conn)
     }
 }
 
+function cambiar_estado($conn){
+
+
+    
+    if (isset($_POST["codigo_convenio"]) && isset($_POST["estado"])) {
+        $nuevoEstado = intval($_POST["estado"]);
+        echo $nuevoEstado;
+        
+
+
+    $stmt = $conn->prepare ("UPDATE convenio SET estado=? WHERE codigo_convenio=? LIMIT 1");
+    $stmt->bind_param(
+        'ii',
+        $nuevoEstado,
+        $_POST["codigo_convenio"]
+    );
+
+    if ($stmt->execute()){
+        echo "Estado cambiado exitosamente a " . ($nuevoEstado == 1 ? "Activo" : "Inactivo" . ".");
+    }else {
+        echo "Error al cambiar el estado: " . $conn->error;
+    }
+}else{
+    echo "DATOS INSUFICIENTES PARA CAMBIAR EL ESTADO";
+
+}
+}
+
 function obtener_registro($conn)
 {
     if(isset($_POST["codigo_convenio"])){
@@ -280,6 +311,7 @@ function obtener_registro($conn)
     echo json_encode($salida);
 }
 }
+
 
 
 

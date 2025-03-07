@@ -485,9 +485,21 @@
             var nuevoEstado = (estadoActual == "Activo") ? 0 : 1;
 
             $.ajax({
-              url:'Convenios-Controller.php'
-            })
-          })
+              url:'Convenios-Controller.php',
+              method:'POST',
+              type:'json',
+              data:{codigo_convenio:id, estado:nuevoEstado,
+                operacion:'cambiarEstado'
+              },
+              success:function(data){
+                alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+                location.reload();
+              },
+              error:function(){
+            alert("Hubo un error al cambiar el estado.");
+        }
+            });
+          });
 
           $(document).on('click', '.editar', function() {
             //$("#botonEditar").click(function(){  
