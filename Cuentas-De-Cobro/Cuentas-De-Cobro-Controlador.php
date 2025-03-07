@@ -15,13 +15,13 @@ switch ($accion) {
         $id_cuenta = $_GET['id_cuenta'];
     
         $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas,  
-                       (c.valor_hora * c.horas_trabajadas) AS monto, d.nombres, d.apellidos, c.estado
+                       (c.valor_hora * c.horas_trabajadas) AS monto, d.nombres, d.apellidos
                 FROM cuentas_cobro c
                 JOIN docentes d ON c.numero_documento = d.numero_documento
                 WHERE c.id_cuenta = ?";
     
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id_cuenta);
+        $stmt->bind_param("s", $id_cuenta);
         $stmt->execute();
         $result = $stmt->get_result();
     
@@ -30,17 +30,30 @@ switch ($accion) {
         }
     
         $data = $result->fetch_assoc();
-
-        $estados_legibles = [
-            'creada' => 'Creada',
-            'aceptada_docente' => 'Aceptada por el docente',
-            'pendiente_firma' => 'Pendiente de firma',
-            'proceso_pago' => 'En proceso de pago',
-            'pagada' => 'Pagada',
-            'rechazada_por_docente' => 'Rechazada por el docente'
-        ];
+        $stmt->close(); // Cerrar consulta de selección
     
-        $estado_legible = isset($estados_legibles[$data['estado']]) ? $estados_legibles[$data['estado']] : "Desconocido";
+        // ✅ Actualizar estado ANTES de cerrar la conexión
+        $estado = "pendiente_firma"; 
+    
+        $sql_update = "UPDATE cuentas_cobro 
+                       SET estado = ? 
+                       WHERE id_cuenta = ?";
+        $stmt_update = $conn->prepare($sql_update);
+        
+        if ($stmt_update) {
+            $stmt_update->bind_param("si", $estado, $id_cuenta);
+            
+            if (!$stmt_update->execute()) {
+                echo json_encode(["error" => "Error al actualizar la cuenta: " . $stmt_update->error]);
+                exit;
+            }
+            $stmt_update->close();
+        } else {
+            echo json_encode(["error" => "Error al preparar la consulta: " . $conn->error]);
+            exit;
+        }
+    
+        $conn->close(); // Cierra la conexión después de actualizar el estado
     
         class PDF extends FPDF {
             function Header() {
@@ -60,17 +73,14 @@ switch ($accion) {
         $pdf->Cell(0, 10, "Valor Hora: $" . number_format($data['valor_hora'], 2), 0, 1);
         $pdf->Cell(0, 10, "Horas Trabajadas: " . $data['horas_trabajadas'], 0, 1);
         $pdf->Cell(0, 10, "Monto Total: $" . number_format($data['monto'], 2), 0, 1);
-        $pdf->Cell(0, 10, "Estado: " . ($estado_legible), 0, 1);
-
-        $stmt->close();
-        $conn->close();
-
+    
         header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; filename="cuenta_cobro_' . $data['id_cuenta'] . '.pdf"');
         $pdf->Output('D', 'cuenta_cobro_' . $data['id_cuenta'] . '.pdf');
     
         exit;
         break;
+    
 
     case 'exportar_todos':
 
