@@ -73,7 +73,7 @@ include_once '../componentes/header.php';
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" id="btnModificar" onclick="modificarCuenta()">Modificar</button>
-                            <button type="button" class="btn btn-primary" id="btnExportar">Exportar</button>
+                            <button type="button" class="btn btn-primary" id="btnExportar" data-id="">Exportar</button>
                             <button type="button" class="btn btn-warning" id="btnFirmado" data-id="" onclick="Firmar()">Firmado</button>
                             <button  type="button" class="btn btn-danger" id="btnDevolver" data-id="" onclick="Devolver()">Devolver</button>
                             </div>
@@ -118,6 +118,14 @@ include_once '../componentes/footer.php';
         });
     }
 
+    document.getElementById("btnExportar").addEventListener("click", function () {
+    let id_cuenta = this.getAttribute("data-id");
+    exportar(id_cuenta);
+});
+
+function exportar(id_cuenta) {
+    window.location.href = 'Cuentas-De-Cobro-Controlador.php?accion=exportar&id_cuenta=' + id_cuenta;
+}
 
 
 </script>

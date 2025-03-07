@@ -62,6 +62,7 @@ function verificarCuenta(idCuenta) {
 
                 $('#id_cuenta').val(cuenta.id_cuenta);
                 $('#btnFirmado').attr('data-id', cuenta.id_cuenta);
+                $('#btnExportar').attr('data-id', cuenta.id_cuenta);
                 $('#btnDevolver').attr('data-id', cuenta.id_cuenta);
                 $('[name="fecha"]').text('Cuenta: ' + cuenta.fecha);
                 $('[name="modalCuentasCobroLabel"]').text(cuenta.nombres + " " + cuenta.apellidos);
@@ -157,4 +158,6 @@ function Devolver() {
         }
     });
 }
+
+
 

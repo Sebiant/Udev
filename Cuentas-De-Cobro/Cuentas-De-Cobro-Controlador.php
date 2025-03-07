@@ -5,51 +5,77 @@ $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 $conn->query("SET lc_time_names = 'es_ES'");
 switch ($accion) {
     case 'exportar':
-        $id_cuenta = isset($_GET['id_cuenta']) ? intval($_GET['id_cuenta']) : 0;
 
-        if ($id_cuenta > 0) {
-            $sql = "SELECT c.*, d.nombres, d.apellidos 
-                    FROM cuentas_cobro c 
-                    JOIN docentes d ON c.numero_documento = d.numero_documento
-                    WHERE c.id_cuenta = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $id_cuenta);
-            $stmt->execute();
-            $result = $stmt->get_result()->fetch_assoc();
+        require(__DIR__ . '/pdf/fpdf/fpdf.php');
+    
+        if (!isset($_GET['id_cuenta'])) {
+            die("Error: No se proporcionó un ID de cuenta.");
         }
+    
+        $id_cuenta = $_GET['id_cuenta'];
+    
+        $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas,  
+                       (c.valor_hora * c.horas_trabajadas) AS monto, d.nombres, d.apellidos, c.estado
+                FROM cuentas_cobro c
+                JOIN docentes d ON c.numero_documento = d.numero_documento
+                WHERE c.id_cuenta = ?";
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id_cuenta);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result->num_rows == 0) {
+            die("No se encontraron registros.");
+        }
+    
+        $data = $result->fetch_assoc();
+
+        $estados_legibles = [
+            'creada' => 'Creada',
+            'aceptada_docente' => 'Aceptada por el docente',
+            'pendiente_firma' => 'Pendiente de firma',
+            'proceso_pago' => 'En proceso de pago',
+            'pagada' => 'Pagada',
+            'rechazada_por_docente' => 'Rechazada por el docente'
+        ];
+    
+        $estado_legible = isset($estados_legibles[$data['estado']]) ? $estados_legibles[$data['estado']] : "Desconocido";
+    
+        class PDF extends FPDF {
+            function Header() {
+                $this->SetFont('Arial', 'B', 16);
+                $this->Cell(0, 10, 'Reporte de Cuenta de Cobro', 0, 1, 'C');
+                $this->Ln(10);
+            }
+        }
+    
+        $pdf = new PDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', '', 12);
+    
+        $pdf->Cell(0, 10, "ID Cuenta: " . $data['id_cuenta'], 0, 1);
+        $pdf->Cell(0, 10, "Fecha: " . $data['fecha'], 0, 1);
+        $pdf->Cell(0, 10, "Docente: " . $data['nombres'] . " " . $data['apellidos'], 0, 1);
+        $pdf->Cell(0, 10, "Valor Hora: $" . number_format($data['valor_hora'], 2), 0, 1);
+        $pdf->Cell(0, 10, "Horas Trabajadas: " . $data['horas_trabajadas'], 0, 1);
+        $pdf->Cell(0, 10, "Monto Total: $" . number_format($data['monto'], 2), 0, 1);
+        $pdf->Cell(0, 10, "Estado: " . ($estado_legible), 0, 1);
+
+        $stmt->close();
+        $conn->close();
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="cuenta_cobro_' . $data['id_cuenta'] . '.pdf"');
+        $pdf->Output('D', 'cuenta_cobro_' . $data['id_cuenta'] . '.pdf');
+    
+        exit;
         break;
 
     case 'exportar_todos':
-        $sql = "SELECT c.*, d.nombres, d.apellidos 
-                FROM cuentas_cobro c 
-                JOIN docentes d ON c.numero_documento = d.numero_documento";
-        $result = $conn->query($sql);
 
-        // Nombre del archivo CSV
-        $filename = "export_" . date("Y-m-d_H-i-s") . ".csv";
-
-        // Cabecera para descarga
-        header("Content-Type: text/csv; charset=UTF-8");
-        header("Content-Disposition: attachment; filename=$filename");
-
-        // Abrir salida de buffer
-        $output = fopen("php://output", "w");
-
-        // Verificar si hay resultados
-        if ($result->num_rows > 0) {
-            // Obtener y escribir los nombres de las columnas
-            $firstRow = $result->fetch_assoc();
-            fputcsv($output, array_keys($firstRow)); // Encabezados
-            fputcsv($output, $firstRow); // Primera fila
-
-            // Escribir el resto de las filas
-            while ($row = $result->fetch_assoc()) {
-                fputcsv($output, $row);
-            }
-        }
-
-        fclose($output);
         break;
+
         case 'modificar':
             $id_cuenta = $_POST['id_cuenta'];
             $valor_hora = $_POST['valor_hora'];
