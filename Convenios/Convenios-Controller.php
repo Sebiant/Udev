@@ -79,14 +79,17 @@ function editar($conn) {
         limit 1");
 
         $stmt->bind_param(
-            "siiiiii",
+            "siisssss",
             $_POST["descripcion_convenio"],
             $_POST["valor_total_convenio"],
             $_POST["saldo_convenio"],
             $_POST["codigo_In_servicio"],
             $_POST["codigo_estudiante"],
             $_POST["estado"],
-            $_POST["tipo_fk_convenio"]
+            $_POST["tipo_fk_convenio"],
+
+            //identificador para hacer el update
+            $_POST['codigo_convenio']
         );
 
 
