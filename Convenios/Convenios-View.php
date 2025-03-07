@@ -423,7 +423,7 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                  console.log(data);
+                 // console.log("informacion del crear" , data);
                   $('#formulario')[0].reset();
                   $('#modalCrearConvenio').modal('hide');
                   $('.modal-backdrop').remove();
@@ -515,6 +515,7 @@
               },
               dataType: "json",
               success: function(data) {
+                //onsole.log(data);
 
                 $('#modalCrearConvenio').modal('show');
                 $('#codigo_convenio').val(data.codigo_convenio);
