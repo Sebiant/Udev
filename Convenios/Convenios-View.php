@@ -274,7 +274,7 @@
                   </thead>
                   <tbody>
                     <!-- Aquí se mostrarán los pagos -->
-                    <?php include("./Convenios.util.php"); ?>
+                    <?php //include("./Convenios.-Util.php"); ?>
                   </tbody>
                 </table>
               </div>

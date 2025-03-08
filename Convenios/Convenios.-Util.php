@@ -1,19 +1,23 @@
-<?php include("../conexion.php");
+<?php include("../Conexion.php");
 
 
 //obtencion de la tabla movimientos para mostrar sin DATATABLES por medio de listas y variables
 
-if($conexion){
+if($conn){
     try{
     $consulta = "SELECT movimientos.codigo_movimiento, movimientos.fecha_movimiento, movimientos.descripcion_movimiento, movimientos.valor_movimiento, convenio.codigo_estudiante
     FROM movimientos
     LEFT JOIN convenio
     ON movimientos.codigo_fk_estudiante = convenio.codigo_estudiante
     WHERE movimientos.codigo_fk_estudiante = 10 ";
-    $resultado = $conexion->query($consulta);
+    $stmt = $conn->prepare($consulta);
+    
+    if($stmt->execute()){
+
+        $resultados=$stmt->get_result();
     
 
-        while($row = $resultado->fetch(PDO::FETCH_ASSOC))   {
+        while($row = $resultado->fetch_assoc())   {
             $codigo = $row['codigo_movimiento'];
             $fecha = $row['fecha_movimiento'];
             $descripcion = $row['descripcion_movimiento'];
@@ -27,6 +31,7 @@ if($conexion){
             echo '<td class="text-center"><input type="checkbox" class="form-check-input"></td>';
             echo "</tr>";
 
+        }
         }
     }catch(PDOException $e){
         echo "error al ejecutar " . $e->getMessage();

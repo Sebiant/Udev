@@ -1,18 +1,18 @@
 <?php
 
-include("../conexion.php");
+include("../Conexion.php");
 /*Este archivo hace la consulta de la info de estudiante para el modal
 info_estudiante Estado:FUNCIONAL activo*/
 
 @$action = $_POST["operacion"];
 
-main($action, $conexion);
+main($action, $conn);
 
-function main($action, $conexion)
+function main($action, $conn)
 {
     switch ($action) {
         case 'registro_individual':
-            Registro_individual($conexion);
+            Registro_individual($conn);
             break;
        
             
@@ -25,24 +25,30 @@ function main($action, $conexion)
     }
 }
 
-function Registro_individual($conexion){
+function Registro_individual($conn){
     
-    $query = "SELECT estudiantes.codigo_estudiante, estudiantes.nombre_estudiante, estudiantes.apellidos_estudiante, estudiantes.fecha_nacimiento_estudiante, estudiantes.imagen, servicios.codigo_servicio, servicios.descripcion_servicio
+    $query = "SELECT estudiantes.codigo_estudiante, estudiantes.nombre_estudiante, estudiantes.apellidos_estudiante, estudiantes.fecha_nacimiento_estudiante, estudiantes.imagen, programas.id_programa, programas.nombre
             FROM convenio 
             INNER JOIN estudiantes 
             ON convenio.codigo_estudiante = estudiantes.codigo_estudiante 
-            INNER JOIN servicios
-            ON convenio.codigo_servicio = servicios.codigo_servicio 
-            WHERE convenio.codigo_convenio = :codigo_convenio LIMIT 1 "; 
+            INNER JOIN programas
+            ON convenio.id_programa = programas.id_programa 
+            WHERE convenio.codigo_convenio = ? LIMIT 1 "; 
             /*Consulta que compara con el codigo convenio recibido de el view y limit la busqueda a 1 rgistro*/
 
+
+    $codigo_conveni=$_POST['codigo_convenio'];
+    echo $codigo_conveni;
+
         try {
-            $stmt=$conexion->prepare($query);
-            $stmt->bindParam(':codigo_convenio',$_POST['codigo_convenio'], PDO::PARAM_INT);
+            $stmt=$conn->prepare($query);
+            $stmt->bind_param('s', $codigo_conveni);
             $stmt->execute();
 
-            if ($stmt->rowCount() > 0) {
-                $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+
+            if ($stmt->num_rows() > 0) {
+                $resultado = $stmt->get_result();
                 $salida = $resultado;
             } else {
                 $salida["error"] = "No se encontraron resultados";
