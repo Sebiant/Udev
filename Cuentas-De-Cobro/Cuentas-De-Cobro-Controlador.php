@@ -73,6 +73,8 @@ switch ($accion) {
         $pdf->Cell(0, 10, "Valor Hora: $" . number_format($data['valor_hora'], 2), 0, 1);
         $pdf->Cell(0, 10, "Horas Trabajadas: " . $data['horas_trabajadas'], 0, 1);
         $pdf->Cell(0, 10, "Monto Total: $" . number_format($data['monto'], 2), 0, 1);
+
+        $pdf->Cell(100, 10, "Firma del Docente: ____________________", 0, 1);
     
         header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; filename="cuenta_cobro_' . $data['id_cuenta'] . '.pdf"');
