@@ -61,6 +61,11 @@ switch ($accion) {
                 $this->Cell(0, 10, 'Reporte de Cuenta de Cobro', 0, 1, 'C');
                 $this->Ln(10);
             }
+            function Footer() {
+                $this->SetY(-15); // Posición en la parte inferior
+                $this->SetFont('Arial', 'I', 8);
+                $this->Cell(0, 10, 'Página ' . $this->PageNo(), 0, 0, 'C');
+            }
         }
     
         $pdf = new PDF();
