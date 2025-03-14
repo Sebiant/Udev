@@ -7,30 +7,7 @@
             <h5>Gestion de Asistencias</h5>
         </div>
         <div class="card-body">
-            <div class="card">
-
-                <div class="card-header">
-                    <h5>Clases Programadas de la semana</h5>
-                </div>
-
-                <div class="table-responsive mb-4" style="max-height: 400px; overflow-y: auto; overflow-x: hidden;">
-                    <table id="datos_programador" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Inicio</th>
-                                <th>Salida</th>
-                                <th>Salón</th>
-                                <th>Docente</th>
-                                <th>Materia</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <br>
+            
             <div class="card">
                 <div class="card-header">
                     <h5>Asistencias de la semana</h5>
