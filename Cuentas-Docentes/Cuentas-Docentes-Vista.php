@@ -34,8 +34,9 @@
                     <h5 class="card-title">Información Cuenta Docente</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row d-flex align-items-stretch">
-                        <div class="col-md-6">
+                <div class="row d-flex align-items-stretch">
+                        <!-- Card 1: Información Cuenta Docente (Más Pequeña) -->
+                        <div class="col-md-4">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <?php if ($fila) : ?>
@@ -54,7 +55,6 @@
                                         <br>
                                         <form id="formCuentaCobro">
                                             <input type="hidden" name="id_cuenta" value="<?php echo $fila['id_cuenta']; ?>">
-
                                             <div class="d-grid gap-2 d-md-block">
                                                 <button type="button" class="btn btn-primary" onclick="aceptarCuenta()">Aceptar</button>
                                                 <button type="button" class="btn btn-danger" onclick="rechazarCuenta()">Rechazar</button>
@@ -67,9 +67,8 @@
                             </div>
                         </div>
 
-
-                        <!-- Card 2: Clases Programadas -->
-                        <div class="col-md-6">
+                        <!-- Card 2: Clases Programadas (Más Grande) -->
+                        <div class="col-md-8">
                             <div class="card h-100">
                                 <div class="card-header">
                                     <h5>Clases Programadas</h5>
@@ -81,17 +80,19 @@
                                                 <thead class="thead-dark">
                                                     <tr>
                                                         <th>Fecha</th>
-                                                        <th>Hora Inicio</th>
-                                                        <th>Hora Salida</th>
+                                                        <th>Hora</th>
                                                         <th>Materia</th>
                                                         <th>Salón</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                    $sql = "SELECT p.fecha, DATE_FORMAT(p.hora_inicio, '%h:%i%p') AS hora_inicio, 
-                                                            DATE_FORMAT(p.hora_salida, '%h:%i%p') AS hora_salida, 
-                                                            m.nombre, s.nombre_salon
+                                                    $sql = "SELECT 
+                                                                DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
+                                                                DATE_FORMAT(p.hora_inicio, '%h:%i %p') AS hora_inicio, 
+                                                                DATE_FORMAT(p.hora_salida, '%h:%i %p') AS hora_salida, 
+                                                                m.nombre, 
+                                                                s.nombre_salon
                                                             FROM programador p
                                                             JOIN modulos m ON p.id_modulo = m.id_modulo
                                                             JOIN salones s ON p.id_salon = s.id_salon
@@ -107,14 +108,13 @@
                                                         while ($fila = $resultado->fetch_assoc()) {
                                                             echo '<tr>';
                                                             echo '<td>' . $fila['fecha'] . '</td>';
-                                                            echo '<td>' . $fila['hora_inicio'] . '</td>';
-                                                            echo '<td>' . $fila['hora_salida'] . '</td>';
+                                                            echo '<td>' . $fila['hora_inicio'] . ' - ' . $fila['hora_salida'] . '</td>';
                                                             echo '<td>' . $fila['nombre'] . '</td>';
                                                             echo '<td>' . $fila['nombre_salon'] . '</td>';
                                                             echo '</tr>';
                                                         }
                                                     } else {
-                                                        echo '<tr><td colspan="5" class="text-center">No hay módulos disponibles</td></tr>';
+                                                        echo '<tr><td colspan="5" class="text-center">No hay clases pendientes</td></tr>';
                                                     }
                                                     ?>
                                                 </tbody>
@@ -124,7 +124,7 @@
                                 </div>
                             </div> 
                         </div> 
-                    </div> 
+                    </div>
                 </div> 
             </div> 
         </div> 
