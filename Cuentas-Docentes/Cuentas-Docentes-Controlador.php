@@ -41,6 +41,26 @@ switch ($accion) {
             echo json_encode(["success" => false, "message" => "ID de cuenta inválido."]);
         }
         break;
+
+        case 'reprogramar':
+
+                if (isset($_POST['id_programador'])) {
+                    $id_programador = $_POST['id_programador'];
+                    echo "ID recibido: " . htmlspecialchars($id_programador, ENT_QUOTES, 'UTF-8');
+                    
+                    $sql = "UPDATE programador 
+                            SET fecha = ?, hora_inicio = ?, hora_salida = ?, estado = 'Pendiente' 
+                            WHERE id_programador = ?";
+                            
+                    $stmt = $this->conexion->prepare($sql);
+                    $stmt->bind_param("sssi", $nuevaFecha, $nuevaHoraInicio, $nuevaHoraSalida, $id_programador);
+                    return $stmt->execute();
+
+                } else {
+                    echo "No se recibió ningún ID.";
+                }
+            
+            break;
         
         default:
         header('Content-Type: application/json');

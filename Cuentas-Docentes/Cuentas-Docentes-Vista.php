@@ -21,7 +21,7 @@
     LIMIT 1";
 
     $resultado = $conn->query($sql);
-    $fila = $resultado->fetch_assoc(); // Obtener datos una sola vez
+    $fila = $resultado->fetch_assoc();
 ?>
 
 <div class="container">
@@ -35,7 +35,6 @@
                 </div>
                 <div class="card-body">
                 <div class="row d-flex align-items-stretch">
-                        <!-- Card 1: Información Cuenta Docente (Más Pequeña) -->
                         <div class="col-md-4">
                             <div class="card h-100">
                                 <div class="card-header">
@@ -66,8 +65,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Card 2: Clases Programadas (Más Grande) -->
                         <div class="col-md-8">
                             <div class="card h-100">
                                 <div class="card-header">
@@ -83,15 +80,18 @@
                                                         <th>Hora</th>
                                                         <th>Materia</th>
                                                         <th>Salón</th>
+                                                        <th>Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                    $sql = "SELECT 
+                                                    $sql = "SELECT
+                                                                p.id_programador,
+                                                                p.estado,
                                                                 DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
                                                                 DATE_FORMAT(p.hora_inicio, '%h:%i %p') AS hora_inicio, 
                                                                 DATE_FORMAT(p.hora_salida, '%h:%i %p') AS hora_salida, 
-                                                                m.nombre, 
+                                                                m.nombre,
                                                                 s.nombre_salon
                                                             FROM programador p
                                                             JOIN modulos m ON p.id_modulo = m.id_modulo
@@ -107,11 +107,19 @@
                                                     if ($resultado->num_rows > 0) {
                                                         while ($fila = $resultado->fetch_assoc()) {
                                                             echo '<tr>';
-                                                            echo '<td>' . $fila['fecha'] . '</td>';
-                                                            echo '<td>' . $fila['hora_inicio'] . ' - ' . $fila['hora_salida'] . '</td>';
-                                                            echo '<td>' . $fila['nombre'] . '</td>';
-                                                            echo '<td>' . $fila['nombre_salon'] . '</td>';
-                                                            echo '</tr>';
+                                                            echo '<td>' . htmlspecialchars($fila['fecha'], ENT_QUOTES, 'UTF-8') . '</td>';
+                                                            echo '<td>' . htmlspecialchars($fila['hora_inicio'], ENT_QUOTES, 'UTF-8') . ' - ' . htmlspecialchars($fila['hora_salida'], ENT_QUOTES, 'UTF-8') . '</td>';
+                                                            echo '<td>' . htmlspecialchars($fila['nombre'], ENT_QUOTES, 'UTF-8') . '</td>';
+                                                            echo '<td>' . htmlspecialchars($fila['nombre_salon'], ENT_QUOTES, 'UTF-8') . '</td>';
+                                                            echo '<td>';
+                                                            if ($fila['estado'] == 'Perdida') {
+                                                                echo '<button class="btn btn-danger reprogramar-btn" data-bs-toggle="modal" data-bs-target="#modalReprogramar" 
+                                                                      data-id="' . htmlspecialchars($fila['id_programador'], ENT_QUOTES, 'UTF-8') . '">Reprogramar</button>';
+                                                            } else {
+                                                                echo '<span>' . htmlspecialchars($fila['estado'], ENT_QUOTES, 'UTF-8') . '</span>';
+                                                            }
+                                                            echo '</td>';
+                                                            echo '</tr>';                                                                                                                     
                                                         }
                                                     } else {
                                                         echo '<tr><td colspan="5" class="text-center">No hay clases pendientes</td></tr>';
@@ -209,6 +217,34 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="modalReprogramar" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reprogramar Clase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formReprogramar" action="Cuentas-Docentes-Controlador.php?accion=reprogramar" method="post">
+                    <input type="hidden" name="id_programador" id="id_programador">
+                    
+                    <label>Fecha:</label>
+                    <input type="date" name="nueva_fecha" class="form-control" required>
+                    
+                    <label>Hora Inicio:</label>
+                    <input type="time" name="nueva_hora_inicio" class="form-control" required>
+                    
+                    <label>Hora Salida:</label>
+                    <input type="time" name="nueva_hora_salida" class="form-control" required>
+
+                    <button type="submit" class="btn btn-primary mt-3">Guardar cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include_once '../componentes/footer.php'; ?>
 
 <script src="js/Datatable-Cuentas-Docentes.js"></script>
@@ -256,4 +292,5 @@ function rechazarCuenta() {
 }
 
 </script>
+
 
