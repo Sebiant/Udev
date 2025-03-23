@@ -71,7 +71,7 @@
                                                 <button type="button" class="btn btn-danger" onclick="rechazarCuenta()">Rechazar</button>
                                             </div>
                                         </form>
-                                    <?php else : ?>z
+                                    <?php else : ?>
                                         <p class="alert text-center"> No hay cuentas de cobro pendientes. ¡Todo está al día!</p>
                                     <?php endif; ?>
                                 </div>

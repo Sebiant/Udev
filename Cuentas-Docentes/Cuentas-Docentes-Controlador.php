@@ -48,28 +48,66 @@ switch ($accion) {
         $nueva_hora_inicio = $_POST['nueva_hora_inicio'] ?? null;
         $nueva_hora_salida = $_POST['nueva_hora_salida'] ?? null;
         $estado = "Pendiente";
-
+        
         if (!$id_programador || !$nueva_fecha || !$nueva_hora_inicio || !$nueva_hora_salida) {
             echo "Error: Todos los campos son obligatorios.";
             exit;
         }
+        
+        $hora_inicio = new DateTime($nueva_hora_inicio);
+        $hora_salida = new DateTime($nueva_hora_salida);
+        $interval = $hora_inicio->diff($hora_salida);
+        $horas_trabajadas = $interval->h;
 
-        $sql = "UPDATE programador SET fecha = ?, hora_inicio = ?, hora_salida = ?, estado = ? WHERE id_programador = ?";
-        $stmt = $conn->prepare($sql);
+        $sql_doc = "SELECT numero_documento FROM programador WHERE id_programador = ?";
+        $stmt_doc = $conn->prepare($sql_doc);
+        $stmt_doc->bind_param("s", $id_programador);
+        $stmt_doc->execute();
+        $result = $stmt_doc->get_result();
+        $row = $result->fetch_assoc();
+        $numero_documento = $row['numero_documento'] ?? null;
+        $stmt_doc->close();
         
-        if ($stmt) {
-            $stmt->bind_param("sssss", $nueva_fecha, $nueva_hora_inicio, $nueva_hora_salida, $estado, $id_programador);
+        if (!$numero_documento) {
+            echo "Error: No se encontró el número de documento del programador.";
+            exit;
+        }
+        
+        $sql_update = "UPDATE programador SET fecha = ?, hora_inicio = ?, hora_salida = ?, estado= ? WHERE id_programador = ?";
+        $stmt_update = $conn->prepare($sql_update);
+        
+        if ($stmt_update) {
+            $stmt_update->bind_param("sssss", $nueva_fecha, $nueva_hora_inicio, $nueva_hora_salida, $estado,$id_programador);
             
-            if ($stmt->execute()) {
+            if ($stmt_update->execute()) {
                 echo "Reprogramación exitosa.";
-            } else {
-                echo "Error al actualizar: " . $stmt->error;
-            }
+
+                $stmt_update->close();
+
+                $sql_insert = "INSERT INTO asistencias (fecha, horas_trabajadas, numero_documento, estado) VALUES (?, ?, ?, 'perdida')";
+                $stmt_insert = $conn->prepare($sql_insert);
         
-            $stmt->close();
+                if ($stmt_insert) {
+                    $stmt_insert->bind_param("sis", $nueva_fecha, $horas_trabajadas, $numero_documento);
+                    
+                    if ($stmt_insert->execute()) {
+                        echo " Registro de asistencia creado exitosamente.";
+                    } else {
+                        echo "Error al insertar asistencia: " . $stmt_insert->error;
+                    }
+        
+                    $stmt_insert->close();
+                } else {
+                    echo "Error en la preparación del INSERT: " . $conn->error;
+                }
+            } else {
+                echo "Error al actualizar: " . $stmt_update->error;
+            }
         } else {
-            echo "Error en la preparación de la consulta: " . $conn->error;
-        } 
+            echo "Error en la preparación del UPDATE: " . $conn->error;
+        }
+        
+        $conn->close();
         break;
         
         case 'listarClases':
