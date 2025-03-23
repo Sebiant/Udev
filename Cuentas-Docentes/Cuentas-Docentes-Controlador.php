@@ -42,27 +42,73 @@ switch ($accion) {
         }
         break;
 
-        case 'reprogramar':
+    case 'reprogramar':
+        $id_programador = $_POST['id_programador'] ?? null;
+        $nueva_fecha = $_POST['nueva_fecha'] ?? null;
+        $nueva_hora_inicio = $_POST['nueva_hora_inicio'] ?? null;
+        $nueva_hora_salida = $_POST['nueva_hora_salida'] ?? null;
+        $estado = "Pendiente";
 
-                if (isset($_POST['id_programador'])) {
-                    $id_programador = $_POST['id_programador'];
-                    echo "ID recibido: " . htmlspecialchars($id_programador, ENT_QUOTES, 'UTF-8');
+        if (!$id_programador || !$nueva_fecha || !$nueva_hora_inicio || !$nueva_hora_salida) {
+            echo "Error: Todos los campos son obligatorios.";
+            exit;
+        }
+
+        $sql = "UPDATE programador SET fecha = ?, hora_inicio = ?, hora_salida = ?, estado = ? WHERE id_programador = ?";
+        $stmt = $conn->prepare($sql);
+        
+        if ($stmt) {
+            $stmt->bind_param("sssss", $nueva_fecha, $nueva_hora_inicio, $nueva_hora_salida, $estado, $id_programador);
+            
+            if ($stmt->execute()) {
+                echo "Reprogramación exitosa.";
+            } else {
+                echo "Error al actualizar: " . $stmt->error;
+            }
+        
+            $stmt->close();
+        } else {
+            echo "Error en la preparación de la consulta: " . $conn->error;
+        } 
+        break;
+        
+        case 'listarClases':
+            $conn->query("SET lc_time_names = 'es_ES'");
+
+            $sql = "SELECT
+                p.id_programador,
+                p.estado,
+                DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
+                CONCAT(DATE_FORMAT(p.hora_inicio, '%h:%i %p'), ' - ', DATE_FORMAT(p.hora_salida, '%h:%i %p')) AS hora,
+                m.nombre,
+                s.nombre_salon
+            FROM programador p
+            JOIN modulos m ON p.id_modulo = m.id_modulo
+            JOIN salones s ON p.id_salon = s.id_salon
+            WHERE p.numero_documento = ?
+            AND WEEK(p.fecha, 1) = WEEK(CURDATE(), 1)  -- Filtra la semana actual
+            AND YEAR(p.fecha) = YEAR(CURDATE())        -- Asegura que sea del mismo año
+            AND p.estado IN ('Pendiente', 'Perdida')
+            ORDER BY FIELD(p.estado, 'Perdida', 'Pendiente'), p.fecha ASC, p.hora_inicio ASC";
+
+            if ($stmt = $conn->prepare($sql)) {
+                $stmt->bind_param("s", $docente);
+                $stmt->execute();
+                $resultado = $stmt->get_result();
                     
-                    $sql = "UPDATE programador 
-                            SET fecha = ?, hora_inicio = ?, hora_salida = ?, estado = 'Pendiente' 
-                            WHERE id_programador = ?";
-                            
-                    $stmt = $this->conexion->prepare($sql);
-                    $stmt->bind_param("sssi", $nuevaFecha, $nuevaHoraInicio, $nuevaHoraSalida, $id_programador);
-                    return $stmt->execute();
-
-                } else {
-                    echo "No se recibió ningún ID.";
+                $clases = [];
+                while ($fila = $resultado->fetch_assoc()) {
+                    $clases[] = $fila;
                 }
             
+                    echo json_encode(["data" => $clases]);
+                } else {
+                    echo json_encode(["error" => "Error en la consulta: " . $conn->error]);
+                }
             break;
         
         default:
+        
         header('Content-Type: application/json');
 
         $conn->query("SET lc_time_names = 'es_ES'");

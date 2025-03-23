@@ -6,22 +6,34 @@
     $conn->query("SET lc_time_names = 'es_ES'");
 
     $sql = "SELECT MONTHNAME(c.fecha) AS fecha, 
-        SUM(c.horas_trabajadas) AS total_horas, 
-        (c.valor_hora * SUM(c.horas_trabajadas)) AS total_monto, 
-        c.valor_hora,
-        d.nombres, 
-        d.apellidos,
-        c.id_cuenta
-    FROM cuentas_cobro c 
-    JOIN docentes d ON c.numero_documento = d.numero_documento
-    WHERE c.numero_documento = '$docente'
-    AND c.estado = 'creada'
-    GROUP BY MONTHNAME(c.fecha), c.valor_hora, d.nombres, d.apellidos
-    ORDER BY MIN(c.fecha) ASC
-    LIMIT 1";
+                   SUM(c.horas_trabajadas) AS total_horas, 
+                   SUM(c.valor_hora * c.horas_trabajadas) AS total_monto, 
+                   c.valor_hora,
+                   d.nombres, 
+                   d.apellidos,
+                   c.id_cuenta
+            FROM cuentas_cobro c 
+            JOIN docentes d ON c.numero_documento = d.numero_documento
+            WHERE c.numero_documento = ? 
+              AND c.estado = 'creada'
+            GROUP BY fecha, c.valor_hora, d.nombres, d.apellidos, c.id_cuenta
+            ORDER BY MIN(c.fecha) ASC
+            LIMIT 1";
 
-    $resultado = $conn->query($sql);
-    $fila = $resultado->fetch_assoc();
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("s", $docente);
+
+        if ($stmt->execute()) {
+            $resultado = $stmt->get_result();
+            $fila = $resultado->fetch_assoc();
+        } else {
+            die("Error en la ejecución de la consulta: " . $stmt->error);
+        }
+
+        $stmt->close();
+    } else {
+        die("Error en la preparación de la consulta: " . $conn->error);
+    }
 ?>
 
 <div class="container">
@@ -59,7 +71,7 @@
                                                 <button type="button" class="btn btn-danger" onclick="rechazarCuenta()">Rechazar</button>
                                             </div>
                                         </form>
-                                    <?php else : ?>
+                                    <?php else : ?>z
                                         <p class="alert text-center"> No hay cuentas de cobro pendientes. ¡Todo está al día!</p>
                                     <?php endif; ?>
                                 </div>
@@ -73,7 +85,7 @@
                                 <div class="card-body">
                                     <div class="overflow-auto" style="max-height: 300px;">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-bordered">
+                                            <table id="tablaClases" class="table table-striped table-bordered">
                                                 <thead class="thead-dark">
                                                     <tr>
                                                         <th>Fecha</th>
@@ -84,47 +96,6 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <?php
-                                                    $sql = "SELECT
-                                                                p.id_programador,
-                                                                p.estado,
-                                                                DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
-                                                                DATE_FORMAT(p.hora_inicio, '%h:%i %p') AS hora_inicio, 
-                                                                DATE_FORMAT(p.hora_salida, '%h:%i %p') AS hora_salida, 
-                                                                m.nombre,
-                                                                s.nombre_salon
-                                                            FROM programador p
-                                                            JOIN modulos m ON p.id_modulo = m.id_modulo
-                                                            JOIN salones s ON p.id_salon = s.id_salon
-                                                            WHERE p.numero_documento = $docente";
-
-                                                    $resultado = $conn->query($sql);
-
-                                                    if (!$resultado) {
-                                                        die("Error en la consulta SQL: " . $conn->error);
-                                                    }
-
-                                                    if ($resultado->num_rows > 0) {
-                                                        while ($fila = $resultado->fetch_assoc()) {
-                                                            echo '<tr>';
-                                                            echo '<td>' . htmlspecialchars($fila['fecha'], ENT_QUOTES, 'UTF-8') . '</td>';
-                                                            echo '<td>' . htmlspecialchars($fila['hora_inicio'], ENT_QUOTES, 'UTF-8') . ' - ' . htmlspecialchars($fila['hora_salida'], ENT_QUOTES, 'UTF-8') . '</td>';
-                                                            echo '<td>' . htmlspecialchars($fila['nombre'], ENT_QUOTES, 'UTF-8') . '</td>';
-                                                            echo '<td>' . htmlspecialchars($fila['nombre_salon'], ENT_QUOTES, 'UTF-8') . '</td>';
-                                                            echo '<td>';
-                                                            if ($fila['estado'] == 'Perdida') {
-                                                                echo '<button class="btn btn-danger reprogramar-btn" data-bs-toggle="modal" data-bs-target="#modalReprogramar" 
-                                                                      data-id="' . htmlspecialchars($fila['id_programador'], ENT_QUOTES, 'UTF-8') . '">Reprogramar</button>';
-                                                            } else {
-                                                                echo '<span>' . htmlspecialchars($fila['estado'], ENT_QUOTES, 'UTF-8') . '</span>';
-                                                            }
-                                                            echo '</td>';
-                                                            echo '</tr>';                                                                                                                     
-                                                        }
-                                                    } else {
-                                                        echo '<tr><td colspan="5" class="text-center">No hay clases pendientes</td></tr>';
-                                                    }
-                                                    ?>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -138,7 +109,6 @@
         </div> 
     </div> 
 </div>
-
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
@@ -166,57 +136,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="modalCuentaDocente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar cuenta de cobro</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="formCuenta">
-                    <input type="hidden" name="accion" value="crear" id="accion">
-                    <input type="hidden" name="id_cuenta" id="id_cuenta">
-
-                    <div class="mb-3">
-                        <label for="fecha" class="form-label">Fecha:</label>
-                        <input type="date" name="fecha" id="fecha" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="valor_hora" class="form-label">Valor hora:</label>
-                        <input type="number" name="valor_hora" id="valor_hora" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="horas_trabajadas" class="form-label">Horas trabajadas:</label>
-                        <input type="number" name="horas_trabajadas" id="horas_trabajadas" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="monto" class="form-label">Monto:</label>
-                        <input type="number" name="monto" id="monto" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="estado" class="form-label">Estado:</label>
-                        <select name="estado" id="estado" class="form-control">
-                            <option value="creada">Creada</option>
-                            <option value="aceptada_docente">Aceptada Docente</option>
-                            <option value="pendiente_firma">Pendiente Firma</option>
-                            <option value="proceso_pago">Proceso de pago</option>
-                            <option value="pagada">Pagada</option>
-                            <option value="rechazada_por_institucion">Rechazada por institución</option>
-                            <option value="rechazada_por_docente">Rechazada por docente</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-success" onclick="crearInstitucion()">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal -->
 <div class="modal fade" id="modalReprogramar" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -226,19 +145,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formReprogramar" action="Cuentas-Docentes-Controlador.php?accion=reprogramar" method="post">
-                    <input type="hidden" name="id_programador" id="id_programador">
-                    
+                <form id="formReprogramar">
+                    <input type="hidden" name="id_programador" id="id_programador" >
+
                     <label>Fecha:</label>
                     <input type="date" name="nueva_fecha" class="form-control" required>
-                    
+
                     <label>Hora Inicio:</label>
                     <input type="time" name="nueva_hora_inicio" class="form-control" required>
-                    
+
                     <label>Hora Salida:</label>
                     <input type="time" name="nueva_hora_salida" class="form-control" required>
 
-                    <button type="submit" class="btn btn-primary mt-3">Guardar cambios</button>
+                    <button type="button" class="btn btn-primary mt-3" onclick="reprogramarClase()">Guardar cambios</button>
                 </form>
             </div>
         </div>
@@ -246,51 +165,4 @@
 </div>
 
 <?php include_once '../componentes/footer.php'; ?>
-
 <script src="js/Datatable-Cuentas-Docentes.js"></script>
-
-<script>
-function aceptarCuenta() {
-    const formData = new FormData(document.getElementById('formCuentaCobro'));
-    console.log(...formData);
-
-    $.ajax({
-        url: "Cuentas-Docentes-Controlador.php?accion=Aceptar",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            alert("Cuenta aceptada correctamente.");
-            location.reload();
-        },
-        error: function(xhr, status, error) {
-            console.error("Error:", error);
-            alert("Hubo un problema al procesar la solicitud.");
-        }
-    });
-}
-function rechazarCuenta() {
-    const formData = new FormData(document.getElementById('formCuentaCobro'));
-    console.log(...formData);
-
-    $.ajax({
-        url: "Cuentas-Docentes-Controlador.php?accion=Rechazar",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            alert("Cuenta rechazada correctamente.");
-            location.reload();
-        },
-        error: function(xhr, status, error) {
-            console.error("Error:", error);
-            alert("Hubo un problema al procesar la solicitud.");
-        }
-    });
-}
-
-</script>
-
-

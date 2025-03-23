@@ -1,4 +1,39 @@
-$(document).ready(function() {
+$(document).ready(function () {
+    var tabla = $('#tablaClases').DataTable({
+        "paging": false,
+        "searching": false,
+        "info": false,
+        "ordering": true,
+        "ajax": "Cuentas-Docentes-Controlador.php?accion=listarClases",
+        "columns": [
+            { "data": "fecha" },
+            { "data": "hora" },
+            { "data": "nombre" },
+            { "data": "nombre_salon" },
+            { 
+                "data": "estado",
+                "render": function (data, type, row) {
+                    if (data === 'Perdida') {
+                        return '<button class="btn btn-danger reprogramar-btn" data-bs-toggle="modal" data-bs-target="#modalReprogramar" data-id="' + row.id_programador + '">Reprogramar</button>';
+                    } else {
+                        return '<span>' + data + '</span>';
+                    }
+                }
+            }
+        ],
+        "language": {
+            "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json"
+        },
+        "order": [[0, "asc"]],
+        "responsive": true
+    });
+
+    $('#tablaClases tbody').on('click', '.reprogramar-btn', function () {
+        var data = tabla.row($(this).parents('tr')).data();
+        var idProgramador = data.id_programador;
+        $('#id_programador').val(idProgramador);
+    });
+
     var table = $('#datos_CuentaCobroDocente').DataTable({
         processing: true,
         serverSide: true,
@@ -10,7 +45,7 @@ $(document).ready(function() {
         columns: [
             { "data": "fecha" },
             { "data": null,
-                "render": function(data,type,row) {
+                "render": function(data, type, row) {
                     return row.nombres + ' ' + row.apellidos;
                 }   
             },
@@ -18,55 +53,68 @@ $(document).ready(function() {
             { "data": "horas_trabajadas" },
             { "data": "monto" },
             { "data": "estado" },
-                        
         ]
     });
-    
-    $('#datos_CuentaCobroDocente').on('click', '.btn-modify', function() {
-        var data = table.row($(this).parents('tr')).data();
-        var idCuenta = data.id_cuenta;
-
-        $.ajax({
-            url: 'CuentaCobroDocente_controlador.php?accion=modificar',
-            type: 'POST',
-            data: { id_cuenta: idCuenta},
-            success: function(response) {
-                var cuenta = response.data[0];
-                $('#editForm [name="id_cuenta"]').val(cuenta.id_cuenta);
-                $('#editForm [name="nombres"]').val(cuenta.fecha);
-                $('#editForm [name="pago_excepcional"]').val(cuenta.pago_excepcional);
-                $('#editForm [name="valor_hora"]').val(cuenta.valor_hora);
-                $('#editForm [name="horas_trabajadas"]').val(cuenta.horas_trabajadas);
-                $('#editForm [name="monto"]').val(cuenta.monto);
-                $('#editForm [name="id_docente"]').val(cuenta.id_docente);
-                $('#editForm [name="estado"]').val(cuenta.estado);
-                
-                
-                $('#editModal').modal('show');
-            },
-            error: function() {
-                alert('Error al obtener los datos de la cuenta.');
-            }
-        });
-    });
-    $('#editForm').on('submit', function(e) {
-        e.preventDefault();
-
-        $.ajax({
-            url: 'CuentaCobroDocente_controlador.php?accion=editar',
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function(response) {
-                alert('Cuenta actualizada exitosamente.');
-                table.ajax.reload();
-                $('#editModal').modal('hide');
-            },
-            error: function() {
-                alert('Error al actualizar la cuenta.');
-            }
-        });
-    });
-
-    
-     
 });
+
+function reprogramarClase() {
+    const formData = new FormData(document.getElementById('formReprogramar'));
+    console.log(...formData);
+
+    $.ajax({
+        url: "Cuentas-Docentes-Controlador.php?accion=reprogramar",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log("Respuesta del servidor:", response);
+            //location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al procesar la solicitud.");
+        }
+    });
+}
+
+function aceptarCuenta() {
+    const formData = new FormData(document.getElementById('formCuentaCobro'));
+    console.log(...formData);
+
+    $.ajax({
+        url: "Cuentas-Docentes-Controlador.php?accion=Aceptar",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            alert("Cuenta aceptada correctamente.");
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al procesar la solicitud.");
+        }
+    });
+}
+function rechazarCuenta() {
+    const formData = new FormData(document.getElementById('formCuentaCobro'));
+    console.log(...formData);
+
+    $.ajax({
+        url: "Cuentas-Docentes-Controlador.php?accion=Rechazar",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            alert("Cuenta rechazada correctamente.");
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al procesar la solicitud.");
+        }
+    });
+}
