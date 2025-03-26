@@ -11,141 +11,83 @@ $result_salones = $conn->query($sql_salones);
 $sql_periodos = "SELECT id_periodo, nombre FROM periodos";
 $result_periodos = $conn->query($sql_periodos);
 ?>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<style>
-    .hidden { display: none; }
-</style>
 
-<div class="container mt-5">
+  <div class="container mt-5">
+    <!-- Card principal que engloba toda la interfaz -->
     <div class="card">
-        <div class="card-header">
-            <h2 class="text-center">Programador</h2>
+      <div class="card-header">
+        <h2>Programación de Clases</h2>
+      </div>
+      <div class="card-body">
+        <!-- Sección: Selección de Datos -->
+        <div class="mb-4">
+          <h4 class="mb-3">Selección de Datos</h4>
+          <form>
+            <!-- Periodo -->
+            <div class="form-group">
+              <label for="periodo">Periodo</label>
+              <select id="periodo" class="form-control">
+                <option value="">Seleccione Periodo</option>
+                <option value="2023-1">2023-1</option>
+                <option value="2023-2">2023-2</option>
+              </select>
+            </div>
+            
+            <!-- Materias en formato de cuadrícula -->
+            <div class="form-group">
+              <label>Seleccione Materia</label>
+              <div class="row" id="materiasContainer">
+                <!-- Las tarjetas se cargarán dinámicamente aquí -->
+              </div>
+            </div>
+            
+            <!-- Docentes -->
+            <div class="form-group">
+              <label for="docente">Docentes</label>
+              <select id="docente" class="form-control">
+                <option value="">Seleccione Docente</option>
+                <option value="docente1">Docente 1</option>
+                <option value="docente2">Docente 2</option>
+              </select>
+            </div>
+          </form>
         </div>
-        <div class="card-body">
-            <form id="multiStepForm">
-                <!-- Paso 1 -->
-                <div class="step">
-                    <h4>Paso 1: Selección de Período y Materias</h4>
-                    <div class="mb-3">
-                        <label for="periodo" class="form-label">Selecciona un periodo:</label>
-                        <select class="form-select" id="periodo">
-                            <option value="">Seleccione...</option>
-                            <?php
-                                if ($result_periodos->num_rows > 0) {
-                                    while ($row_periodos = $result_periodos->fetch_assoc()) {
-                                        echo '<option value="' . $row_periodos['id_periodo'] . '">' . $row_periodos['nombre'] . '</option>';
-                                    }
-                                } else {
-                                    echo '<option value="">No hay periodos disponibles</option>';
-                                }
-                            ?>
-                        </select>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header"> 
-                            <h5>Materias</h5>
-                        </div>
-                        <div class="card-body"> 
-                            <div class="table-responsive">
-                                <table id="datos_modulo" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Nombre</th>
-                                            <th>Programa</th>
-                                            <th>Descripción</th>
-                                            <th>Seleccionar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end mt-3">
-                        <button type="button" class="btn btn-primary next">Siguiente</button>
-                    </div>
-                </div>
-
-                <!-- Paso 2 -->
-                <div class="step hidden">
-                    <h4>Paso 2: Asignación de Docente y Salón</h4>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Docentes</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="docente">Selecciona un docente</label>
-                                <select id="numero_documento" name="numero_documento" class="form-control" required>
-                                    <option value="">-- Selecciona un docente --</option>
-                                    <?php
-                                    if ($result_docentes->num_rows > 0) {
-                                        while ($row_docente = $result_docentes->fetch_assoc()) {
-                                            echo '<option value="' . $row_docente['numero_documento'] . '">' . $row_docente['nombres'] . " " . $row_docente['apellidos'] . '</option>';
-                                        }
-                                    } else {
-                                        echo '<option value="">No hay docentes disponibles</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group mt-3">
-                                <label for="salon">Selecciona un salón</label>
-                                <select id="id_salon" name="id_salon" class="form-control" required>
-                                    <option value="">-- Selecciona un salón --</option>
-                                    <?php
-                                    if ($result_salones->num_rows > 0) {
-                                        while ($row_salon = $result_salones->fetch_assoc()) {
-                                            echo '<option value="' . $row_salon['id_salon'] . '">' . $row_salon['nombre_salon'] . '</option>';
-                                        }
-                                    } else {
-                                        echo '<option value="">No hay salones disponibles</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-
-                            <div class="row mt-3">
-                                <!-- Columna izquierda: Hora de Inicio y Hora de Salida -->
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <label for="hora_inicio">Hora de Inicio</label>
-                                            <input type="time" id="hora_inicio" name="hora_inicio" class="form-control" step="900" required>
-                                        </div>
-                                        <div class="col-12 mt-2">
-                                            <label for="hora_salida">Hora de Salida</label>
-                                            <input type="time" id="hora_salida" name="hora_salida" class="form-control" step="900" required>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Columna derecha: Fecha -->
-                                <div class="col-md-6 d-flex flex-column justify-content-center">
-                                    <label for="fecha">Fecha de la clase</label>
-                                    <input type="date" id="fecha" name="fecha" class="form-control" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end mt-3">
-                        <button type="button" class="btn btn-secondary prev me-2">Anterior</button>
-                        <button type="button" class="btn btn-success" onclick="CrearClase()">Programar Clase</button>
-                    </div>
-                </div>
-            </form>
+        <hr>
+        <!-- Sección: Programación de Horario y Modalidad -->
+        <div>
+          <h4 class="mb-3">Programación de Horario y Modalidad</h4>
+          <form>
+            <div class="form-group">
+              <label for="dia">Día de la Semana</label>
+              <select id="dia" class="form-control">
+                <option value="">Seleccione Día</option>
+                <option value="lunes">Lunes</option>
+                <option value="martes">Martes</option>
+                <option value="miercoles">Miércoles</option>
+                <option value="jueves">Jueves</option>
+                <option value="viernes">Viernes</option>
+                <option value="sabado">Sábado</option>
+                <option value="domingo">Domingo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="horaEntrada">Hora de Entrada</label>
+              <input type="time" id="horaEntrada" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="horaSalida">Hora de Salida</label>
+              <input type="time" id="horaSalida" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="modalidad">Modalidad</label>
+              <textarea id="modalidad" class="form-control" rows="3" placeholder="Ingrese la modalidad"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Programar Clase</button>
+          </form>
         </div>
+      </div>
     </div>
-</div>
-
+  </div>
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
@@ -287,39 +229,6 @@ include_once '../componentes/footer.php';
 <script src="js/Validate.js"></script>
 
 <script>
-    const steps = document.querySelectorAll(".step");
-    const nextBtns = document.querySelectorAll(".next");
-    const prevBtns = document.querySelectorAll(".prev");
-    let currentStep = 0;
-
-    function showStep(index) {
-        steps.forEach((step, i) => {
-            step.classList.toggle("hidden", i !== index);
-        });
-    }
-
-    nextBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                showStep(currentStep);
-            }
-        });
-    });
-
-    prevBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (currentStep > 0) {
-                currentStep--;
-                showStep(currentStep);
-            }
-        });
-    });
-
-    function CrearClase() {
-        alert("Clase programada con éxito!");
-    }
-
     function GuardarClase() {
         const formData = new FormData(document.getElementById('editarClaseForm'));
 
@@ -347,6 +256,46 @@ include_once '../componentes/footer.php';
             location.reload();
         }
     });
-
-    showStep(currentStep);
 </script>
+<script>
+    $(document).ready(function(){
+      // Llamada AJAX para obtener las materias desde la BD
+      $.ajax({
+        url: 'Materias-Controlador.php', // Archivo que consulta la BD y retorna JSON
+        method: 'GET',
+        dataType: 'json',
+        success: function(data){
+          // Se espera que 'data' sea un arreglo de objetos: [{ id: 1, nombre: "Matemáticas" }, ...]
+          var container = $('#materiasContainer');
+          container.empty();
+          // Array de clases de color para alternar estilos en las tarjetas
+          var colores = ['bg-info', 'bg-success', 'bg-warning', 'bg-danger'];
+          $.each(data, function(index, materia){
+            var colorClass = colores[index % colores.length];
+            var card = $('<div>', { class: 'col-md-3 mb-3' }).append(
+              $('<div>', {
+                class: 'card materia ' + colorClass + ' text-white text-center',
+                'data-materia': materia.id_modulo
+              }).append(
+                $('<div>', { class: 'card-body' }).append(
+                    $('<h5>', { class: 'card-title', text: materia.nombre }),
+                    $('<p>', { class: 'card-text', text: 'Programa: ' + materia.programa })
+                    )
+              )
+            );
+            container.append(card);
+          });
+          
+          // Manejo de selección de tarjeta
+          $('.card.materia').on('click', function(){
+            $('.card.materia').removeClass('materia-seleccionada');
+            $(this).addClass('materia-seleccionada');
+            console.log('Materia seleccionada: ', $(this).data('materia'));
+          });
+        },
+        error: function(xhr, status, error){
+          console.error('Error al cargar las materias:', error);
+        }
+      });
+    });
+  </script>
