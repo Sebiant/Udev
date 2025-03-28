@@ -23,15 +23,16 @@ $result_periodos = $conn->query($sql_periodos);
         <div class="mb-4">
           <h4 class="mb-3">Selección de Datos</h4>
           <form>
-            <!-- Periodo -->
-            <div class="form-group">
-              <label for="periodo">Periodo</label>
-              <select id="periodo" class="form-control">
-                <option value="">Seleccione Periodo</option>
-                <option value="2023-1">2023-1</option>
-                <option value="2023-2">2023-2</option>
-              </select>
-            </div>
+             <!-- Periodo -->
+             <div class="form-group">
+                    <label for="periodo">Periodo</label>
+                    <select id="periodo" class="form-control">
+                        <option value="">Seleccione Periodo</option>
+                        <?php while ($row = $result_periodos->fetch_assoc()): ?>
+                            <option value="<?php echo $row['id_periodo']; ?>"><?php echo $row['nombre']; ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
             
             <!-- Materias en formato de cuadrícula -->
             <div class="form-group">
@@ -40,16 +41,32 @@ $result_periodos = $conn->query($sql_periodos);
                 <!-- Las tarjetas se cargarán dinámicamente aquí -->
               </div>
             </div>
-            
+            <br><br>
             <!-- Docentes -->
             <div class="form-group">
-              <label for="docente">Docentes</label>
-              <select id="docente" class="form-control">
-                <option value="">Seleccione Docente</option>
-                <option value="docente1">Docente 1</option>
-                <option value="docente2">Docente 2</option>
-              </select>
-            </div>
+                    <label for="docente">Docente</label>
+                    <select id="docente" class="form-control">
+                        <option value="">Seleccione Docente</option>
+                        <?php while ($row = $result_docentes->fetch_assoc()): ?>
+                            <option value="<?php echo $row['numero_documento']; ?>">
+                                <?php echo $row['nombres'] . " " . $row['apellidos']; ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <!-- Salón -->
+                <div class="form-group">
+                    <label for="salon">Salón</label>
+                    <select id="salon" class="form-control">
+                        <option value="">Seleccione Salón</option>
+                        <?php while ($row = $result_salones->fetch_assoc()): ?>
+                            <option value="<?php echo $row['id_salon']; ?>">
+                                <?php echo $row['nombre_salon']; ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
           </form>
         </div>
         <hr>
@@ -67,7 +84,6 @@ $result_periodos = $conn->query($sql_periodos);
                 <option value="jueves">Jueves</option>
                 <option value="viernes">Viernes</option>
                 <option value="sabado">Sábado</option>
-                <option value="domingo">Domingo</option>
               </select>
             </div>
             <div class="form-group">
@@ -82,6 +98,7 @@ $result_periodos = $conn->query($sql_periodos);
               <label for="modalidad">Modalidad</label>
               <textarea id="modalidad" class="form-control" rows="3" placeholder="Ingrese la modalidad"></textarea>
             </div>
+            <br>
             <button type="submit" class="btn btn-primary">Programar Clase</button>
           </form>
         </div>
@@ -267,21 +284,22 @@ include_once '../componentes/footer.php';
         success: function(data){
           // Se espera que 'data' sea un arreglo de objetos: [{ id: 1, nombre: "Matemáticas" }, ...]
           var container = $('#materiasContainer');
-          container.empty();
+            container.empty();
+            container.addClass('d-flex flex-wrap justify-content-center');
           // Array de clases de color para alternar estilos en las tarjetas
           var colores = ['bg-info', 'bg-success', 'bg-warning', 'bg-danger'];
           $.each(data, function(index, materia){
             var colorClass = colores[index % colores.length];
-            var card = $('<div>', { class: 'col-md-3 mb-3' }).append(
-              $('<div>', {
-                class: 'card materia ' + colorClass + ' text-white text-center',
+            var card = $('<div>', { class: 'col-lg-3 col-md-4 col-sm-6 mb-3 d-flex justify-content-center' }).append(
+            $('<div>', {
+                class: 'card materia ' + colorClass + ' text-white text-center h-100 d-flex flex-column', 
                 'data-materia': materia.id_modulo
-              }).append(
-                $('<div>', { class: 'card-body' }).append(
-                    $('<h5>', { class: 'card-title', text: materia.nombre }),
-                    $('<p>', { class: 'card-text', text: 'Programa: ' + materia.programa })
-                    )
-              )
+            }).append(
+                $('<div>', { class: 'card-body d-flex flex-column justify-content-between' }).append(
+                $('<h5>', { class: 'card-title', text: materia.nombre }),
+                $('<p>', { class: 'card-text', text: 'Programa: ' + materia.programa })
+                )
+            )
             );
             container.append(card);
           });
