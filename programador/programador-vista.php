@@ -18,114 +18,117 @@ $result_periodos = $conn->query($sql_periodos);
             <h2>Programación de Clases</h2>
         </div>
         <div class="card-body">
-            <form id="formProgramador">
-                <!-- Sección: Selección de Datos -->
-                <div class="mb-4">
-                    <h4 class="mb-3">Selección de Datos</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">Selección de Datos</div>
+                        <div class="card-body">
+                            <form id="formProgramador">
+                                <div class="form-group">
+                                    <label class="titulo">Seleccione una Materia: </label>
+                                    <div class="materias-container">
+                                        <?php
+                                        $sql_materias = "SELECT m.id_modulo, p.nombre AS programa, m.nombre 
+                                                        FROM modulos m
+                                                        JOIN programas p ON m.id_programa = p.id_programa";
+                                        $result_materias = $conn->query($sql_materias);
 
-                    <!-- Sección de selección de materia -->
-                    <div class="form-group">
-                        <label class="titulo">Seleccione una Materia: </label>
-                        <div class="materias-container">
-                            <?php
-                            $sql_materias = "SELECT m.id_modulo, p.nombre AS programa, m.nombre 
-                                            FROM modulos m
-                                            JOIN programas p ON m.id_programa = p.id_programa";
-                            $result_materias = $conn->query($sql_materias);
+                                        if ($result_materias->num_rows > 0) {
+                                            while ($row_materia = $result_materias->fetch_assoc()) {
+                                                echo '
+                                                <div class="materia-card" onclick="seleccionarMateria(' . $row_materia['id_modulo'] . ')" id="materia_' . $row_materia['id_modulo'] . '">
+                                                    <div class="icono">📚</div>
+                                                    <h6>' . $row_materia['nombre'] . '</h6>
+                                                    <p class="fs-7">' . "Programa: " . $row_materia['programa'] . '</p>
+                                                </div>';
+                                            }
+                                        } else {
+                                            echo '<p>No hay materias disponibles.</p>';
+                                        }
+                                        ?>
+                                    </div>
+                                    <input type="hidden" name="materia" id="materiaSeleccionada">
+                                </div>
 
-                            if ($result_materias->num_rows > 0) {
-                                while ($row_materia = $result_materias->fetch_assoc()) {
-                                    echo '
-                                    <div class="materia-card" onclick="seleccionarMateria(' . $row_materia['id_modulo'] . ')" id="materia_' . $row_materia['id_modulo'] . '">
-                                        <div class="icono">📚</div>
-                                        <h6>' . $row_materia['nombre'] . '</h6>
-                                        <p class="fs-7">' . "Programa: " . $row_materia['programa'] . '</p>
-                                    </div>';
-                                }
-                            } else {
-                                echo '<p>No hay materias disponibles.</p>';
-                            }
-                            ?>
+                                <div class="form-group">
+                                    <label for="docente">Docente</label>
+                                    <select id="docente" name="docente" class="form-control">
+                                        <option value="">Seleccione Docente</option>
+                                        <?php while ($row = $result_docentes->fetch_assoc()): ?>
+                                            <option value="<?php echo $row['numero_documento']; ?>">
+                                                <?php echo $row['nombres'] . " " . $row['apellidos']; ?>
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="salon">Salón</label>
+                                    <select id="salon" name="salon" class="form-control">
+                                        <option value="">Seleccione Salón</option>
+                                        <?php while ($row = $result_salones->fetch_assoc()): ?>
+                                            <option value="<?php echo $row['id_salon']; ?>">
+                                                <?php echo $row['nombre_salon']; ?>
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                            </form>
                         </div>
-                        <input type="hidden" name="materia" id="materiaSeleccionada">
-                    </div>
-
-                    <!-- Docentes -->
-                    <div class="form-group">
-                        <label for="docente">Docente</label>
-                        <select id="docente" name="docente" class="form-control">
-                            <option value="">Seleccione Docente</option>
-                            <?php while ($row = $result_docentes->fetch_assoc()): ?>
-                                <option value="<?php echo $row['numero_documento']; ?>">
-                                    <?php echo $row['nombres'] . " " . $row['apellidos']; ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <!-- Salón -->
-                    <div class="form-group">
-                        <label for="salon">Salón</label>
-                        <select id="salon" name="salon" class="form-control">
-                            <option value="">Seleccione Salón</option>
-                            <?php while ($row = $result_salones->fetch_assoc()): ?>
-                                <option value="<?php echo $row['id_salon']; ?>">
-                                    <?php echo $row['nombre_salon']; ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
                     </div>
                 </div>
 
-                <hr>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">Programación de Horario y Modalidad</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="periodo">Periodo</label>
+                                <select id="periodo" name="periodo" class="form-control">
+                                    <option value="">Seleccione Periodo</option>
+                                    <?php while ($row = $result_periodos->fetch_assoc()): ?>
+                                        <option value="<?php echo $row['id_periodo']; ?>"><?php echo $row['nombre']; ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
 
-                <!-- Sección: Programación de Horario y Modalidad -->
-                <div>            
-                    <h4 class="mb-3">Programación de Horario y Modalidad</h4>
-                    
-                    <!-- Periodo -->
-                    <div class="form-group">
-                        <label for="periodo">Periodo</label>
-                        <select id="periodo" name="periodo" class="form-control">
-                            <option value="">Seleccione Periodo</option>
-                            <?php while ($row = $result_periodos->fetch_assoc()): ?>
-                                <option value="<?php echo $row['id_periodo']; ?>"><?php echo $row['nombre']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
+                            <div class="form-group">
+                                <label for="dia">Día de la Semana</label>
+                                <select id="dia" name="dia" class="form-control">
+                                    <option value="">Seleccione Día</option>
+                                    <option value="lunes">Lunes</option>
+                                    <option value="martes">Martes</option>
+                                    <option value="miercoles">Miércoles</option>
+                                    <option value="jueves">Jueves</option>
+                                    <option value="viernes">Viernes</option>
+                                    <option value="sabado">Sábado</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="horaEntrada">Hora de Entrada</label>
+                                <input type="time" id="horaEntrada" name="horaEntrada" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="horaSalida">Hora de Salida</label>
+                                <input type="time" id="horaSalida" name="horaSalida" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="modalidad">Modalidad</label>
+                                <select id="modalidad" name="modalidad" class="form-control">
+                                    <option value="presencial">Presencial</option>
+                                    <option value="virtual">Virtual</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="dia">Día de la Semana</label>
-                        <select id="dia" name="dia" class="form-control">
-                            <option value="">Seleccione Día</option>
-                            <option value="lunes">Lunes</option>
-                            <option value="martes">Martes</option>
-                            <option value="miercoles">Miércoles</option>
-                            <option value="jueves">Jueves</option>
-                            <option value="viernes">Viernes</option>
-                            <option value="sabado">Sábado</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="horaEntrada">Hora de Entrada</label>
-                        <input type="time" id="horaEntrada" name="horaEntrada" class="form-control">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="horaSalida">Hora de Salida</label>
-                        <input type="time" id="horaSalida" name="horaSalida" class="form-control">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="modalidad">Modalidad</label>
-                        <textarea id="modalidad" name="modalidad" class="form-control" rows="3" placeholder="Ingrese la modalidad"></textarea>
-                    </div>
-                    
-                    <br>
-                    <button type="Button" onclick="ProgramarClase()" class="btn btn-primary">Programar Clase</button>
                 </div>
-            </form>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <button type="button" onclick="ProgramarClase()" class="btn btn-primary">Programar Clase</button>
         </div>
     </div>
 </div>
