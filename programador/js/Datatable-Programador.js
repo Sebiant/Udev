@@ -41,7 +41,7 @@ $(document).ready(function () {
             {
                 data: "id_programador",
                 render: function (data) {
-                    return `<button class="btn btn-primary w-100 btn-modify"(${data})">Editar</button>`;
+                    return `<button class="btn btn-primary w-100 btn-modify" data-id="${data}">Editar</button>`;
                 }
             },
         ],

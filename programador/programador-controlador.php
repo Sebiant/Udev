@@ -5,28 +5,74 @@ $accion = $_GET['accion'] ?? 'default';
 
 switch ($accion) {
     case 'crear':
-        $fecha = $_POST['fecha'];
-        $hora_inicio = $_POST['hora_inicio'];
-        $hora_salida = $_POST['hora_salida'];
-        $salon = $_POST['id_salon'];
-        $docente = $_POST['numero_documento'];
-        $modulo = $_POST['id_asignacion_periodo'];
-        $estado = $_POST['estado'];
+        $dia = $_POST['dia'];
+        $hora_inicio = $_POST['horaEntrada'];
+        $hora_salida = $_POST['horaSalida'];
+        $salon = $_POST['salon'];
+        $docente = $_POST['docente'];
+        $periodo = $_POST['periodo']; // Corregido
+        $modulo = $_POST['materia'];
+        $estado = 'Pendiente';
         $modalidad = $_POST['modalidad'];
-
-        $sql = "INSERT INTO programador (fecha, hora_inicio, hora_salida, id_salon, numero_documento, id_asignacion_periodo, estado, modalidad) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('sssssiss', $fecha, $hora_inicio, $hora_salida, $salon, $docente, $modulo, $estado, $modalidad);
-
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Programador creado con éxito.']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error al crear el programador: ' . $stmt->error]);
+    
+        // Obtener las fechas del período
+        $sql_periodo = "SELECT fecha_inicio, fecha_fin FROM periodos WHERE id_periodo = ?";
+        $stmt_periodo = $conn->prepare($sql_periodo);
+        $stmt_periodo->bind_param('i', $periodo);
+        $stmt_periodo->execute();
+        $result = $stmt_periodo->get_result();
+        
+        if (!$row = $result->fetch_assoc()) {
+            die(json_encode(['status' => 'error', 'message' => 'Periodo no encontrado.']));
         }
-
+    
+        $fecha_inicio = new DateTime($row['fecha_inicio']);
+        $fecha_fin = new DateTime($row['fecha_fin']);
+    
+        $dias = [
+            "domingo" => 0, "lunes" => 1, "martes" => 2, "miercoles" => 3,
+            "jueves" => 4, "viernes" => 5, "sabado" => 6
+        ];
+    
+        if (!isset($dias[$dia])) { // Corregido ($dia en vez de $dia_semana)
+            die(json_encode(['status' => 'error', 'message' => 'Día de la semana inválido.']));
+        }
+    
+        $dia_numero = $dias[$dia]; // Corregido
+    
+        // Buscar la primera fecha dentro del rango que coincida con el día seleccionado
+        while ($fecha_inicio->format("w") != $dia_numero) {
+            $fecha_inicio->modify("+1 day");
+        }
+    
+        $fechas_generadas = [];
+    
+        while ($fecha_inicio <= $fecha_fin) {
+            $fechas_generadas[] = $fecha_inicio->format("Y-m-d");
+            $fecha_inicio->modify("+7 days"); // Sumar 7 días para el próximo día de la semana
+        }
+    
+        $sql = "INSERT INTO programador (fecha, hora_inicio, hora_salida, id_salon, numero_documento, id_modulo, id_periodo, estado, modalidad) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+    
+        if (!$stmt) {
+            die(json_encode(['status' => 'error', 'message' => 'Error en la preparación de la consulta: ' . $conn->error]));
+        }
+    
+        foreach ($fechas_generadas as $fecha) {
+            $stmt->bind_param('sssiiiiss', $fecha, $hora_inicio, $hora_salida, $salon, $docente, $modulo, $periodo, $estado, $modalidad);
+    
+            if (!$stmt->execute()) {
+                die(json_encode(['status' => 'error', 'message' => 'Error al insertar: ' . $stmt->error]));
+            }
+        }
+    
+        echo json_encode(['status' => 'success', 'message' => 'Se programaron ' . count($fechas_generadas) . ' clases.']);
+    
         $stmt->close();
         break;
+    
 
     case 'editar':
         $id_programador = $_POST['id_programador'];
@@ -86,10 +132,44 @@ switch ($accion) {
 
         default:
         $conn->query("SET lc_time_names = 'es_ES'");
-    
+
+        // Obtener los parámetros de DataTables
+        $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+        $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+        $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
+        $search = isset($_POST['search']['value']) ? $_POST['search']['value'] : '';
+        
+        $searchQuery = "";
+        $params = [];
+        $types = "";
+        
+        // Si hay búsqueda, filtrar resultados
+        if (!empty($search)) {
+            $searchQuery = " AND (d.nombres LIKE ? OR d.apellidos LIKE ? OR s.nombre_salon LIKE ? OR m.nombre LIKE ?)";
+            $searchValue = "%{$search}%";
+            array_push($params, $searchValue, $searchValue, $searchValue, $searchValue);
+            $types .= "ssss";
+        }
+        
+        // Contar el total de registros sin filtro
+        $sqlTotal = "SELECT COUNT(*) as total FROM programador p 
+                     JOIN docentes d ON p.numero_documento = d.numero_documento
+                     JOIN salones s ON p.id_salon = s.id_salon
+                     LEFT JOIN modulos m ON p.id_modulo = m.id_modulo
+                     WHERE 1=1 $searchQuery";
+        
+        $stmtTotal = $conn->prepare($sqlTotal);
+        if (!empty($searchQuery)) {
+            $stmtTotal->bind_param($types, ...$params);
+        }
+        $stmtTotal->execute();
+        $resultTotal = $stmtTotal->get_result();
+        $totalRecords = $resultTotal->fetch_assoc()['total'];
+        
+        // Consulta principal con paginación
         $sql = "SELECT 
                     p.id_programador, 
-                    DATE_FORMAT(p.fecha, '%d/%M/%Y') AS fecha, 
+                    DATE_FORMAT(p.fecha, '%W %e de %M') AS fecha,
                     DATE_FORMAT(p.hora_inicio, '%h:%i %p') AS hora_inicio, 
                     DATE_FORMAT(p.hora_salida, '%h:%i %p') AS hora_salida, 
                     d.nombres,
@@ -101,20 +181,33 @@ switch ($accion) {
                 FROM programador p
                 JOIN docentes d ON p.numero_documento = d.numero_documento
                 JOIN salones s ON p.id_salon = s.id_salon
-                LEFT JOIN modulos m ON p.id_modulo = m.id_modulo";  // Usar directamente la relación con modulos
-    
-        $result = $conn->query($sql);
-    
-        $data = [];
-    
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $data[] = $row; // Corrección de índice incorrecto
-            }
-        }
-    
+                LEFT JOIN modulos m ON p.id_modulo = m.id_modulo
+                WHERE 1=1 $searchQuery
+                ORDER BY p.fecha ASC
+                LIMIT ? OFFSET ?";
+        
+        // Agregar los parámetros de paginación
+        $params[] = $length;
+        $params[] = $start;
+        $types .= "ii";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        
+        // Respuesta JSON para DataTables
+        $response = [
+            "draw" => $draw,
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalRecords,
+            "data" => $data
+        ];
+        
         header('Content-Type: application/json');
-        echo json_encode(['data' => $data]);
+        echo json_encode($response);
+        
         break;
     
 }

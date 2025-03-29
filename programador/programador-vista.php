@@ -278,6 +278,20 @@ include_once '../componentes/footer.php';
         for (const [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
+        $.ajax({
+            url: 'Programador-Controlador.php?accion=crear',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                //location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     }
 
     function GuardarClase() {
