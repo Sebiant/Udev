@@ -73,7 +73,6 @@ $result_periodos = $conn->query($sql_periodos);
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -126,6 +125,7 @@ $result_periodos = $conn->query($sql_periodos);
                     </div>
                 </div>
             </div>
+            </form>
         </div>
         <div class="card-footer text-center">
             <button type="button" onclick="ProgramarClase()" class="btn btn-primary">Programar Clase</button>
