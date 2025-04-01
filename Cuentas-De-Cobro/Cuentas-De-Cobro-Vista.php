@@ -9,19 +9,7 @@ include_once '../componentes/header.php';
 
 <div class="container">
     <h1 class="text-center">Cuentas de cobro</h1>
-    
-    <div class="row">
-        <div class="col-2 offset-10">
-            <div class="text-center"> 
-                <button type="button" class="btn btn-primary mx-1" id="botonCsv" onclick="exportarTodo('csv')">
-                    <i class="bi bi-file-earmark-spreadsheet"></i> Exportar todos
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <br />
-    
+    <br>
     <div class="card">
         <div class="card-header">
             <h5>Información de Cuenta de Cobro</h5>

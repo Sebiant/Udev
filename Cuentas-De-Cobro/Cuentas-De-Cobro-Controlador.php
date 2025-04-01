@@ -85,9 +85,6 @@ switch ($accion) {
         exit;
         break;
 
-    case 'exportar_todos':
-        break;
-
     case 'modificar':
         $id_cuenta = $_POST['id_cuenta'];
         $valor_hora = $_POST['valor_hora'];
