@@ -1,4 +1,6 @@
 <?php
-header("Location: Dashboard/Dashboard.php");
+
+header("Location: Login/Login-Vista.php");
 exit();
+
 ?>
