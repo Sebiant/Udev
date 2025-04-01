@@ -26,30 +26,39 @@ function main($action, $conn)
 }
 
 function Registro_individual($conn){
-    
+
+
+    try {
     $query = "SELECT estudiantes.codigo_estudiante, estudiantes.nombre_estudiante, estudiantes.apellidos_estudiante, estudiantes.fecha_nacimiento_estudiante, estudiantes.imagen, programas.id_programa, programas.nombre
             FROM convenio 
             INNER JOIN estudiantes 
             ON convenio.codigo_estudiante = estudiantes.codigo_estudiante 
             INNER JOIN programas
-            ON convenio.id_programa = programas.id_programa 
-            WHERE convenio.codigo_convenio = ? LIMIT 1 "; 
+            ON convenio.codigo_convenio = programas.id_programa 
+            WHERE convenio.codigo_convenio = ?  "; 
             /*Consulta que compara con el codigo convenio recibido de el view y limit la busqueda a 1 rgistro*/
 
 
-    $codigo_conveni=$_POST['codigo_convenio'];
+    $codigo_conveni=intval($_POST['codigo_convenio']);
+
+    
     echo $codigo_conveni;
 
-        try {
+       
             $stmt=$conn->prepare($query);
-            $stmt->bind_param('s', $codigo_conveni);
+            $stmt->bind_param('i', $codigo_conveni);
             $stmt->execute();
+            $resultado = $stmt->get_result();
 
             
 
-            if ($stmt->num_rows() > 0) {
-                $resultado = $stmt->get_result();
-                $salida = $resultado;
+            if ($resultado->num_rows > 0) {
+
+                $fila=$resultado->fetch_assoc();
+
+
+                $salida = $fila;
+                
             } else {
                 $salida["error"] = "No se encontraron resultados";
             }
