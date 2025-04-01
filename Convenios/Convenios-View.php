@@ -451,6 +451,7 @@
               },
               dataType: "json",
               success: function(data) {
+                console.log("este es el nombre" + data.nombre_estudiante)
                 
                 /*valida y rellena la informacion con la data recibida de la DB*/
                 $('#modalInfoEstudiante').modal('show');
@@ -458,7 +459,7 @@
                 $('#nombre_estudiante').val(data.nombre_estudiante);
                 $('#apellidos_estudiante').val(data.apellidos_estudiante);
                 $('#fecha_naci_estu').val(data.fecha_nacimiento_estudiante);
-                $('#carrera_estudiante').val(data.codigo_servicio);
+                $('#carrera_estudiante').val(data.nombre);
                 //Actualiza la imagen del estudiante
                 $('#imagen').attr('src', data.imagen); // Ruta de la imagen desde la base de datos
                 

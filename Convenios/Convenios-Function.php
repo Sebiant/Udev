@@ -42,7 +42,7 @@ function Registro_individual($conn){
     $codigo_conveni=intval($_POST['codigo_convenio']);
 
     
-    echo $codigo_conveni;
+    //echo $codigo_conveni;
 
        
             $stmt=$conn->prepare($query);
@@ -58,6 +58,8 @@ function Registro_individual($conn){
 
 
                 $salida = $fila;
+
+                //$salida = $resultado->fetch_assoc();
                 
             } else {
                 $salida["error"] = "No se encontraron resultados";
