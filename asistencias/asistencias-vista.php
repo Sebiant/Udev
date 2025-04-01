@@ -107,8 +107,10 @@ $fila = $resultado->fetch_assoc();
             <thead class="thead-dark">
                 <tr>
                     <th>Fecha</th>
-                    <th>Horas Trabajadas</th>
+                    <th>Hora Entrada</th>
+                    <th>Hora Salida</th>
                     <th>Docente</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>

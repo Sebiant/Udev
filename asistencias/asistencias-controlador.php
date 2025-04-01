@@ -16,22 +16,27 @@ switch ($accion) {
         if (!empty($docente) && !empty($mes) && !empty($año)) {
             
             $sql = "SELECT DATE_FORMAT(a.fecha, '%W %d de %M de %Y') AS fecha, 
-                        a.horas_trabajadas, 
-                        d.nombres, 
-                        d.apellidos 
+                DATE_FORMAT(a.hora_entrada, '%h:%i %p') AS hora_entrada, 
+                DATE_FORMAT(a.hora_salida, '%h:%i %p') AS hora_salida, 
+                        d.nombres,
+                        d.apellidos,
+                        a.estado
                 FROM asistencias a
-                JOIN docentes d ON a.numero_documento = d.numero_documento
-                WHERE a.numero_documento = ? 
+                JOIN programador p ON a.id_programador = p.id_programador
+                JOIN docentes d ON p.numero_documento = d.numero_documento
+                WHERE p.numero_documento = ? 
                 AND MONTH(a.fecha) = ? 
                 AND YEAR(a.fecha) = ?
                 ORDER BY a.fecha ASC";
 
-
-    
             $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                die("Error en prepare(): " . $conn->error);
+            }
             $stmt->bind_param("iii", $docente, $mes, $año);
             $stmt->execute();
             $result = $stmt->get_result();
+            
             
             $data = [];
             while ($row = $result->fetch_assoc()) {
@@ -107,7 +112,8 @@ switch ($accion) {
     default:
         $sql = "SELECT 
                     DATE_FORMAT(a.fecha, '%M') AS fecha, 
-                    a.horas_trabajadas, 
+                    a.hora_entrada,
+                    a.hora_salida, 
                     d.nombres, 
                     d.apellidos 
                 FROM asistencias a 

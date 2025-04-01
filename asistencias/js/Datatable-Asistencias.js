@@ -41,13 +41,16 @@ function cargarAsistencias(docente, mes, año) {
         },
         "columns": [
             { "data": "fecha" },
-            { "data": "horas_trabajadas" },
+            { "data": "hora_entrada" },
+            { "data": "hora_salida" },
             { 
                 "data": null,
                 "render": function(data, type, row) {
                     return row.nombres + ' ' + row.apellidos;   
                 }
-            }
+            },
+            { "data": "estado" }
+
         ]
     });
 }
