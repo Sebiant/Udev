@@ -13,7 +13,7 @@ $(document).ready(function () {
                 data: null,
                 render: function (data, type, row) {
                     var buttonClass = row.estado === "Pendiente" ? "btn-danger" : "btn-success";
-                    var buttonText = row.estado === "Pendiente" ? "clase perdida" : "Activar";
+                    var buttonText = row.estado === "Pendiente" ? "Marcar clase como perdida" : "Activar clase";
                     return `<button class="btn ${buttonClass} w-100 btn-toggle-state">${buttonText}</button>`;
                 },
                 orderable: false
