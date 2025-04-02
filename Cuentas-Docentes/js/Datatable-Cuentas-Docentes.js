@@ -3,7 +3,6 @@ $(document).ready(function () {
         "paging": false,
         "searching": false,
         "info": false,
-        "ordering": true,
         "ajax": "Cuentas-Docentes-Controlador.php?accion=listarClases",
         "columns": [
             { "data": "fecha" },
@@ -24,16 +23,26 @@ $(document).ready(function () {
         "language": {
             "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/Spanish.json"
         },
-        "order": [[0, "asc"]],
+        "order": [],  // ⚠️ Aquí eliminamos la ordenación para respetar la del backend
         "responsive": true
     });
 
-    $('#tablaClases tbody').on('click', '.reprogramar-btn', function () {
-        var data = tabla.row($(this).parents('tr')).data();
-        var idProgramador = data.id_programador;
-        $('#id_programador').val(idProgramador);
-    });
+    $('#tablaClases').on('click', '.reprogramar-btn', function () {
+        var data = tabla.row($(this).closest('tr')).data(); // Obtener datos de la fila
+        
+        if (data) {
+            $('#id_programador').val(data.id_programador);
+            $('#id_salon').val(data.id_salon);
+            $('#numero_documento').val(data.numero_documento);
+            $('#id_modulo').val(data.id_modulo);
+            $('#id_periodo').val(data.id_periodo);
+            $('#modalidad').val(data.modalidad);
 
+        } else {
+            console.error("No se pudieron obtener los datos de la fila.");
+        }
+    });
+   
     var table = $('#datos_CuentaCobroDocente').DataTable({
         processing: true,
         serverSide: true,

@@ -42,92 +42,95 @@ switch ($accion) {
         }
         break;
 
-    case 'reprogramar':
-        $id_programador = $_POST['id_programador'] ?? null;
-        $nueva_fecha = $_POST['nueva_fecha'] ?? null;
+    case 'reprogramar':        
+        // Recibir datos del formulario
+        $fecha = $_POST['nueva_fecha'] ?? null;
         $nueva_hora_inicio = $_POST['nueva_hora_inicio'] ?? null;
         $nueva_hora_salida = $_POST['nueva_hora_salida'] ?? null;
+        $id_salon = $_POST['id_salon'] ?? null;
+        $numero_documento = $_POST['numero_documento'] ?? null;
+        $id_modulo = $_POST['id_modulo'] ?? null;
+        $id_periodo = $_POST['id_periodo'] ?? null;
+        $modalidad = $_POST['modalidad'] ?? null;
         $estado = "Pendiente";
+        $clase_original_id = $_POST['id_programador'] ?? null;
         
-        if (!$id_programador || !$nueva_fecha || !$nueva_hora_inicio || !$nueva_hora_salida) {
-            echo "Error: Todos los campos son obligatorios.";
+        // Validación de datos obligatorios
+        if (!$clase_original_id || !$fecha || !$nueva_hora_inicio || !$nueva_hora_salida || !$id_salon || !$numero_documento || !$id_modulo || !$id_periodo || !$modalidad) {
+            echo json_encode(["error" => "Todos los campos son obligatorios."]);
             exit;
         }
         
-        $hora_inicio = new DateTime($nueva_hora_inicio);
-        $hora_salida = new DateTime($nueva_hora_salida);
-        $interval = $hora_inicio->diff($hora_salida);
-        $horas_trabajadas = $interval->h;
-
-        $sql_doc = "SELECT numero_documento FROM programador WHERE id_programador = ?";
-        $stmt_doc = $conn->prepare($sql_doc);
-        $stmt_doc->bind_param("s", $id_programador);
-        $stmt_doc->execute();
-        $result = $stmt_doc->get_result();
-        $row = $result->fetch_assoc();
-        $numero_documento = $row['numero_documento'] ?? null;
-        $stmt_doc->close();
+        // Iniciar transacción para evitar inconsistencias
+        $conn->begin_transaction();
         
-        if (!$numero_documento) {
-            echo "Error: No se encontró el número de documento del programador.";
-            exit;
-        }
-        
-        $sql_update = "UPDATE programador SET fecha = ?, hora_inicio = ?, hora_salida = ?, estado= ? WHERE id_programador = ?";
-        $stmt_update = $conn->prepare($sql_update);
-        
-        if ($stmt_update) {
-            $stmt_update->bind_param("sssss", $nueva_fecha, $nueva_hora_inicio, $nueva_hora_salida, $estado,$id_programador);
+        try {
+            // Insertar nueva clase reprogramada
+            $sql_insert = "INSERT INTO programador (fecha, hora_inicio, hora_salida, id_salon, numero_documento, id_modulo, id_periodo, modalidad, estado, clase_original_id) 
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
-            if ($stmt_update->execute()) {
-                echo "Reprogramación exitosa.";
-
-                $stmt_update->close();
-
-                $sql_insert = "INSERT INTO asistencias (fecha, horas_trabajadas, numero_documento, estado) VALUES (?, ?, ?, 'perdida')";
-                $stmt_insert = $conn->prepare($sql_insert);
-        
-                if ($stmt_insert) {
-                    $stmt_insert->bind_param("sis", $nueva_fecha, $horas_trabajadas, $numero_documento);
-                    
-                    if ($stmt_insert->execute()) {
-                        echo " Registro de asistencia creado exitosamente.";
-                    } else {
-                        echo "Error al insertar asistencia: " . $stmt_insert->error;
-                    }
-        
-                    $stmt_insert->close();
-                } else {
-                    echo "Error en la preparación del INSERT: " . $conn->error;
-                }
-            } else {
-                echo "Error al actualizar: " . $stmt_update->error;
+            $stmt = $conn->prepare($sql_insert);
+            if (!$stmt) {
+                throw new Exception("Error en la preparación de la consulta: " . $conn->error);
             }
-        } else {
-            echo "Error en la preparación del UPDATE: " . $conn->error;
-        }
+            
+            // Enlazar parámetros
+            $stmt->bind_param("ssssiiisss", $fecha, $nueva_hora_inicio, $nueva_hora_salida, $id_salon, $numero_documento, $id_modulo, $id_periodo, $modalidad, $estado, $clase_original_id);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Error al reprogramar la clase: " . $stmt->error);
+            }
         
-        $conn->close();
+            // Actualizar estado de la clase original a "Reprogramada"
+            $sql_update = "UPDATE programador SET estado = 'Reprogramada' WHERE id_programador = ?";
+            $stmt_update = $conn->prepare($sql_update);
+            
+            if (!$stmt_update) {
+                throw new Exception("Error en la preparación del UPDATE: " . $conn->error);
+            }
+        
+            $stmt_update->bind_param("i", $clase_original_id);
+            
+            if (!$stmt_update->execute()) {
+                throw new Exception("Error al actualizar el estado de la clase original: " . $stmt_update->error);
+            }
+        
+            // Confirmar transacción
+            $conn->commit();
+            
+            echo json_encode(["success" => "Clase reprogramada con éxito"]);
+        
+        } catch (Exception $e) {
+            $conn->rollback(); // Revertir cambios si hay un error
+            echo json_encode(["error" => $e->getMessage()]);
+        }
+    
+        $stmt->close();
+        $stmt_update->close();
         break;
         
         case 'listarClases':
             $conn->query("SET lc_time_names = 'es_ES'");
 
-            $sql = "SELECT
-                p.id_programador,
-                p.estado,
-                DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
-                CONCAT(DATE_FORMAT(p.hora_inicio, '%h:%i %p'), ' - ', DATE_FORMAT(p.hora_salida, '%h:%i %p')) AS hora,
-                m.nombre,
-                s.nombre_salon
+            $sql = "SELECT *,
+            p.id_programador,
+            p.estado,
+            DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
+            CONCAT(DATE_FORMAT(p.hora_inicio, '%h:%i %p'), ' - ', DATE_FORMAT(p.hora_salida, '%h:%i %p')) AS hora,
+            m.nombre,
+            s.nombre_salon 
             FROM programador p
             JOIN modulos m ON p.id_modulo = m.id_modulo
             JOIN salones s ON p.id_salon = s.id_salon
-            WHERE p.numero_documento = ?
-            AND WEEK(p.fecha, 1) = WEEK(CURDATE(), 1)  -- Filtra la semana actual
-            AND YEAR(p.fecha) = YEAR(CURDATE())        -- Asegura que sea del mismo año
-            AND p.estado IN ('Pendiente', 'Perdida')
-            ORDER BY FIELD(p.estado, 'Perdida', 'Pendiente'), p.fecha ASC, p.hora_inicio ASC";
+            WHERE numero_documento = ?
+            ORDER BY 
+                CASE 
+                    WHEN p.estado = 'Perdida' THEN 1 
+                    WHEN p.estado = 'Pendiente' THEN 2 
+                    ELSE 3 
+                END, 
+            p.fecha ASC";
+
 
             if ($stmt = $conn->prepare($sql)) {
                 $stmt->bind_param("s", $docente);

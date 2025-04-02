@@ -146,7 +146,12 @@
             </div>
             <div class="modal-body">
                 <form id="formReprogramar">
-                    <input type="hidden" name="id_programador" id="id_programador" >
+                    <input type="hidden" name="id_programador" id="id_programador">
+                    <input type="hidden" name="numero_documento" id="numero_documento">
+                    <input type="hidden" name="id_salon" id="id_salon">
+                    <input type="hidden" name="id_modulo" id="id_modulo">
+                    <input type="hidden" name="id_periodo" id="id_periodo">
+                    <input type="hidden" name="modalidad" id="modalidad">
 
                     <label>Fecha:</label>
                     <input type="date" name="nueva_fecha" class="form-control" required>
