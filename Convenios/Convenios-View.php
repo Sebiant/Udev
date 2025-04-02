@@ -274,7 +274,7 @@
                   </thead>
                   <tbody>
                     <!-- Aquí se mostrarán los pagos -->
-                    <?php //include("./Convenios.-Util.php"); ?>
+                    <?php include("./Convenios-Util.php"); ?>
                   </tbody>
                 </table>
               </div>
@@ -444,6 +444,7 @@
             var codigo_convenio = $(this).attr("id");
             $.ajax({
               url: "Convenios-Function.php",
+
               method:"POST",
               data:{
                 codigo_convenio: codigo_convenio,
@@ -477,6 +478,15 @@
               }
 
 
+            })
+
+            $.ajax({
+              url:"Convenios-Util.php",
+              method:"POST",
+              data:{
+                codigo_convenios: codigo_convenio,
+                
+              },
             })
           })
 
