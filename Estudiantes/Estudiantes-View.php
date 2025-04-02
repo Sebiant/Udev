@@ -25,9 +25,9 @@
 <body>
   <?php include_once '../Componentes/header.php' ?>
 
-  <h1 class="text-center">Estudiante</h1>
-  <div>
-
+  
+  <div class ="container">
+  <h1 class="text-center">Gestion de estudiantes</h1>
     <div class="row">
       <div class="col-2 offset-10">
         <div class="text-center">
@@ -43,13 +43,15 @@
       </div>
     </div>
     <br>
-    <br>
+    <div class="card">
+  <div class="card-header">
+    <h5>Estudiantes</h5>
+  </div>
+  <div class="card-body">
     <div class="tabla-responsive">
-      <table id="Estudiantes" name="Estudiantes"  class="table table-bordered table-striped">
-
+      <table id="Estudiantes" name="Estudiantes" class="table table-bordered table-striped">
         <thead>
           <tr>
-
             <th>Codigo</th>
             <th>Nombre</th>
             <th>Apellido</th>
@@ -57,13 +59,13 @@
             <th>Imagen</th>
             <th>Estado</th>
             <th>Editar</th>
-            <!--<th>Borrar</th>-->
-
+            <th>Acciones</th>
           </tr>
         </thead>
       </table>
-
     </div>
+  </div>
+</div>
 
 
     <!-- Modal -->
@@ -99,16 +101,6 @@
                 <label for="imagen_estudiante">Seleccione una imagen</label>
                 <input type="file" name="imagen_estudiante" id="imagen_estudiante" class="form-control">
                 <span id="imagen_subida"></span>
-
-                <br>
-                <label for="estado">Estado</label>
-                <select name="estado" id="estado" class="form-control">
-                  <option value="2">Seleccione una opciones</option>
-                  <option value="Activo">Activo</option>
-                  <option value="Inactivo">Inactivo</option>
-                </select>
-                <br>
-
 
 
               </div>
@@ -220,6 +212,31 @@
         } else {
           alert("algunos campos son obligatorios");
         }
+      });
+
+      //funcionalidad cambio de estado
+      $(document).on('click', '.btn-toggle-state', function(){
+        var id = $(this).data('id');
+        var estadoActual = $(this).data('estado');
+        var nuevoEstado = (estadoActual == "Activo") ? 0: 1;
+        
+        $.ajax({
+
+          url:'Estudiantes-Controller.php',
+          method:'POST',
+          type:'json',
+          data:{codigo_estudiante: id, estado: nuevoEstado,
+          operacion:'cambiarEstado'
+        },
+        success:function(data){
+          alert(`El estado del programa se ha actualizado a ${nuevoEstado === 1 ? "Activo" : "Inactivo"}.`);
+          location.reload();
+                    
+        },
+        error:function(){
+            alert("Hubo un error al cambiar el estado.");
+        }
+        });
       });
 
 
