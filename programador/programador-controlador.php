@@ -72,7 +72,72 @@ switch ($accion) {
     
         $stmt->close();
         break;
-    
+        case 'reprogramar':        
+            // Recibir datos del formulario
+            $fecha = $_POST['nueva_fecha'] ?? null;
+            $nueva_hora_inicio = $_POST['nueva_hora_inicio'] ?? null;
+            $nueva_hora_salida = $_POST['nueva_hora_salida'] ?? null;
+            $id_salon = $_POST['id_salon'] ?? null;
+            $numero_documento = $_POST['numero_documento'] ?? null;
+            $id_modulo = $_POST['id_modulo'] ?? null;
+            $id_periodo = $_POST['id_periodo'] ?? null;
+            $modalidad = $_POST['modalidad'] ?? null;
+            $estado = "Pendiente";
+            $clase_original_id = $_POST['id_programador'] ?? null;
+            
+            // Validación de datos obligatorios
+            if (!$clase_original_id || !$fecha || !$nueva_hora_inicio || !$nueva_hora_salida || !$id_salon || !$numero_documento || !$id_modulo || !$id_periodo || !$modalidad) {
+                echo json_encode(["error" => "Todos los campos son obligatorios."]);
+                exit;
+            }
+            
+            // Iniciar transacción para evitar inconsistencias
+            $conn->begin_transaction();
+            
+            try {
+                // Insertar nueva clase reprogramada
+                $sql_insert = "INSERT INTO programador (fecha, hora_inicio, hora_salida, id_salon, numero_documento, id_modulo, id_periodo, modalidad, estado, clase_original_id) 
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                
+                $stmt = $conn->prepare($sql_insert);
+                if (!$stmt) {
+                    throw new Exception("Error en la preparación de la consulta: " . $conn->error);
+                }
+                
+                // Enlazar parámetros
+                $stmt->bind_param("ssssiiisss", $fecha, $nueva_hora_inicio, $nueva_hora_salida, $id_salon, $numero_documento, $id_modulo, $id_periodo, $modalidad, $estado, $clase_original_id);
+                
+                if (!$stmt->execute()) {
+                    throw new Exception("Error al reprogramar la clase: " . $stmt->error);
+                }
+            
+                // Actualizar estado de la clase original a "Reprogramada"
+                $sql_update = "UPDATE programador SET estado = 'Reprogramada' WHERE id_programador = ?";
+                $stmt_update = $conn->prepare($sql_update);
+                
+                if (!$stmt_update) {
+                    throw new Exception("Error en la preparación del UPDATE: " . $conn->error);
+                }
+            
+                $stmt_update->bind_param("i", $clase_original_id);
+                
+                if (!$stmt_update->execute()) {
+                    throw new Exception("Error al actualizar el estado de la clase original: " . $stmt_update->error);
+                }
+            
+                // Confirmar transacción
+                $conn->commit();
+                
+                echo json_encode(["success" => "Clase reprogramada con éxito"]);
+            
+            } catch (Exception $e) {
+                $conn->rollback(); // Revertir cambios si hay un error
+                echo json_encode(["error" => $e->getMessage()]);
+            }
+        
+            $stmt->close();
+            $stmt_update->close();
+            break;
 
     case 'editar':
         $id_programador = $_POST['id_programador'];
@@ -167,7 +232,7 @@ switch ($accion) {
         $totalRecords = $resultTotal->fetch_assoc()['total'];
         
         // Consulta principal con paginación
-        $sql = "SELECT 
+        $sql = "SELECT p.*,
                     p.id_programador, 
                     DATE_FORMAT(p.fecha, '%W %e de %M') AS fecha,
                     DATE_FORMAT(p.hora_inicio, '%h:%i %p') AS hora_inicio, 
@@ -175,15 +240,19 @@ switch ($accion) {
                     d.nombres,
                     d.apellidos,
                     s.nombre_salon, 
-                    m.nombre AS nombre_modulo,
-                    p.estado,
-                    p.modalidad
+                    m.nombre AS nombre_modulo
                 FROM programador p
                 JOIN docentes d ON p.numero_documento = d.numero_documento
                 JOIN salones s ON p.id_salon = s.id_salon
                 LEFT JOIN modulos m ON p.id_modulo = m.id_modulo
                 WHERE 1=1 $searchQuery
-                ORDER BY p.fecha ASC
+                ORDER BY 
+                CASE 
+                    WHEN p.estado = 'Perdida' THEN 1 
+                    WHEN p.estado = 'Pendiente' THEN 2 
+                    ELSE 3 
+                END, 
+                p.fecha ASC
                 LIMIT ? OFFSET ?";
         
         // Agregar los parámetros de paginación

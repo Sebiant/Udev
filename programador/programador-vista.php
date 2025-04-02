@@ -149,8 +149,8 @@ $result_periodos = $conn->query($sql_periodos);
                             <th>Salón</th>
                             <th>Docente</th>
                             <th>Materia</th>
-                            <th>Estado</th>
                             <th>Modalidad</th>
+                            <th>Estado</th>
                             <th>Modificar</th>
                         </tr>
                     </thead>
@@ -162,7 +162,39 @@ $result_periodos = $conn->query($sql_periodos);
         </div>
     </div>
 </div>
+<!-- Modal Reprogramación-->
+<div class="modal fade" id="modalReprogramar" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reprogramar Clase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formReprogramar">
+                    <input type="hidden" name="id_programador" id="id_programador">
+                    <input type="hidden" name="numero_documento" id="numero_documento">
+                    <input type="hidden" name="id_salon" id="id_salon">
+                    <input type="hidden" name="id_modulo" id="id_modulo">
+                    <input type="hidden" name="id_periodo" id="id_periodo">
+                    <input type="hidden" name="modalidad" id="m">
+                    
 
+                    <label>Fecha:</label>
+                    <input type="date" name="nueva_fecha" class="form-control" required>
+
+                    <label>Hora Inicio:</label>
+                    <input type="time" name="nueva_hora_inicio" class="form-control" required>
+
+                    <label>Hora Salida:</label>
+                    <input type="time" name="nueva_hora_salida" class="form-control" required>
+
+                    <button type="button" class="btn btn-primary mt-3" onclick="reprogramarClase()">Guardar cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Modal de edición -->
 <div class="modal fade" id="modalEditarClase" tabindex="-1" aria-labelledby="modalEditarClaseLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -339,6 +371,29 @@ function seleccionarMateria(idMateria) {
 
     // Asigna el valor al input oculto
     document.getElementById('materiaSeleccionada').value = idMateria;
+}
+</script>
+
+<script>
+    function reprogramarClase() {
+    const formData = new FormData(document.getElementById('formReprogramar'));
+    console.log(...formData);
+
+    $.ajax({
+        url: "Programador-Controlador.php?accion=reprogramar",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log("Respuesta del servidor:", response);
+            //location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al procesar la solicitud.");
+        }
+    });
 }
 </script>
 
