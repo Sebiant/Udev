@@ -1,11 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['id'])) {
-    header("Location: ../Login/Login-Vista.php");
-    exit();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
