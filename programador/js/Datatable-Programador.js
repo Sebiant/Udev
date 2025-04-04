@@ -72,12 +72,13 @@ $(document).ready(function () {
                 if (response.data && response.data.length > 0) {
                     var programador = response.data[0];
 
+                    $('#editarClaseForm [name="id_programador"]').val(programador.id_programador    );
                     $('#editarClaseForm [name="fecha"]').val(programador.fecha);
                     $('#editarClaseForm [name="hora_inicio"]').val(programador.hora_inicio);
                     $('#editarClaseForm [name="hora_salida"]').val(programador.hora_salida);
                     $('#editarClaseForm [name="id_salon"]').val(programador.id_salon);
                     $('#editarClaseForm [name="numero_documento"]').val(programador.numero_documento);
-                    $('#editarClaseForm [name="id_materia"]').val(programador.id_materia);
+                    $('#editarClaseForm [name="id_modulo"]').val(programador.id_modulo);
                     $('#editarClaseForm [name="modalidad"]').val(programador.modalidad);
                     $('#editarClaseForm [name="estado"]').prop('checked', String(programador.estado) === "1");
 

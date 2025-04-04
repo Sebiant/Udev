@@ -139,32 +139,42 @@ switch ($accion) {
             $stmt_update->close();
             break;
 
-    case 'editar':
-        $id_programador = $_POST['id_programador'];
-        $fecha = $_POST['fecha'];
-        $hora_inicio = $_POST['hora_inicio'];
-        $hora_salida = $_POST['hora_salida'];
-        $salon = $_POST['id_salon'];
-        $docente = $_POST['numero_documento'];
-        $modulo = $_POST['id_asignacion_periodo'];
-        $modalidad = $_POST['modalidad'];
-        $estado = $_POST['estado'] ?? null;
-
-        $sql = "UPDATE programador 
-                SET fecha=?, hora_inicio=?, hora_salida=?, id_salon=?, numero_documento=?, id_asignacion_periodo=?, modalidad=?, estado=?  
-                WHERE id_programador=?";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ssssssssi', $fecha, $hora_inicio, $hora_salida, $salon, $docente, $modulo, $modalidad, $estado, $id_programador);
-
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Programador actualizado con éxito.']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error al actualizar el programador: ' . $stmt->error]);
-        }
-
-        $stmt->close();
-        break;
+            case 'editar':
+                $id_programador = $_POST['id_programador'] ?? null;
+                $fecha = $_POST['fecha'] ?? null;
+                $hora_inicio = $_POST['hora_inicio'] ?? null;
+                $hora_salida = $_POST['hora_salida'] ?? null;
+                $salon = $_POST['id_salon'] ?? null;
+                $docente = $_POST['numero_documento'] ?? null;
+                $modulo = $_POST['id_modulo'] ?? null;
+                $modalidad = $_POST['modalidad'] ?? null;
+            
+                // Validación de datos obligatorios
+                if (!$id_programador || !$fecha || !$hora_inicio || !$hora_salida || !$salon || !$docente || !$modulo || !$modalidad) {
+                    echo json_encode(['status' => 'error', 'message' => 'Todos los campos son obligatorios.']);
+                    exit;
+                }
+            
+                $sql = "UPDATE programador 
+                        SET fecha=?, hora_inicio=?, hora_salida=?, id_salon=?, numero_documento=?, id_modulo=?, modalidad=? 
+                        WHERE id_programador=?";
+            
+                if (!$stmt = $conn->prepare($sql)) {
+                    echo json_encode(['status' => 'error', 'message' => 'Error en la preparación de la consulta: ' . $conn->error]);
+                    exit;
+                }
+            
+                $stmt->bind_param('sssssssi', $fecha, $hora_inicio, $hora_salida, $salon, $docente, $modulo, $modalidad, $id_programador);
+            
+                if ($stmt->execute()) {
+                    echo json_encode(['status' => 'success', 'message' => 'Programador actualizado con éxito.']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Error al actualizar el programador: ' . $stmt->error]);
+                }
+            
+                $stmt->close();
+                break;
+            
 
     case 'BusquedaPorId':
         $id_programador = $_POST['id_programador'] ?? null;

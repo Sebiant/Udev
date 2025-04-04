@@ -205,6 +205,7 @@ $result_periodos = $conn->query($sql_periodos);
             </div>
             <div class="modal-body">
                 <form id="editarClaseForm">
+
                     <input type="hidden" id="id_programador" name="id_programador">
 
                     <div class="mb-3">
@@ -258,7 +259,7 @@ $result_periodos = $conn->query($sql_periodos);
                     </div>
                     <div class="mb-3">
                         <label for="id_modulo">Módulos</label>
-                        <select id="id_asignacion_periodo" name="id_modulo" class="form-control">
+                        <select id="id_modulo" name="id_modulo" class="form-control">
                             <option value="">-- Selecciona un módulo --</option>
                             <?php
                             $sql_materias = "SELECT id_modulo, nombre FROM modulos";
@@ -278,14 +279,9 @@ $result_periodos = $conn->query($sql_periodos);
                         <label for="modalidad">Modalidad</label>
                         <select name="modalidad" id="modalidad" class="form-control">
                             <option value="">-- Selecciona la Modalidad --</option>
-                            <option value="Presencial">Presencial</option>
-                            <option value="Virtual">Virtual</option>
+                            <option value="presencial">Presencial</option>
+                            <option value="virtual">Virtual</option>
                         </select>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <button id="estado" class="btn btn-danger fw-bold">
-                            Marcar Clase como Perdida
-                        </button>
                     </div>
                 </form>
             </div>
@@ -321,7 +317,7 @@ include_once '../componentes/footer.php';
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                //location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
@@ -342,20 +338,13 @@ include_once '../componentes/footer.php';
             contentType: false,
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                // location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
             }
         });
     }
-
-    document.getElementById("estado").addEventListener("click", function() {
-        let confirmar = confirm("¿Estás seguro de marcar esta clase como perdida?");
-        if (confirmar) {
-            location.reload();
-        }
-    });
 </script>
 
 <!-- Script para manejar la selección -->
@@ -387,7 +376,7 @@ function seleccionarMateria(idMateria) {
         contentType: false,
         success: function(response) {
             console.log("Respuesta del servidor:", response);
-            //location.reload();
+            location.reload();
         },
         error: function(xhr, status, error) {
             console.error("Error:", error);
