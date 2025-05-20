@@ -109,36 +109,36 @@ switch ($accion) {
         $stmt_update->close();
         break;
 
-case 'contarClasesEstado':
-    $sql = "SELECT 
-            SUM(estado = 'Pendiente') AS pendiente,
-            SUM(estado = 'Reprogramada') AS reprogramada,
-            SUM(estado = 'Perdida') AS perdida,
-            SUM(estado = 'Vista') AS vista
-        FROM programador
-        WHERE numero_documento = $docente";
+    case 'contarClasesEstado':
+        $sql = "SELECT 
+                SUM(estado = 'Pendiente') AS pendiente,
+                SUM(estado = 'Reprogramada') AS reprogramada,
+                SUM(estado = 'Perdida') AS perdida,
+                SUM(estado = 'Vista') AS vista
+            FROM programador
+            WHERE numero_documento = $docente";
 
-    $result = $conn->query($sql);
-    
-    if ($result) {
-        $data = $result->fetch_assoc();
-        foreach ($data as $key => $value) {
-            if (is_null($value)) {
-                $data[$key] = 0;
+        $result = $conn->query($sql);
+        
+        if ($result) {
+            $data = $result->fetch_assoc();
+            foreach ($data as $key => $value) {
+                if (is_null($value)) {
+                    $data[$key] = 0;
+                }
             }
+            echo json_encode([
+                "pendiente" => $data['pendiente'],
+                "reprogramada" => $data['reprogramada'],
+                "perdida" => $data['perdida'],
+                "vista" => $data['vista']  // Añadido el estado "Vista"
+            ]);
+        } else {
+            echo json_encode([
+                "error" => "Error al contar clases"
+            ]);
         }
-        echo json_encode([
-            "pendiente" => $data['pendiente'],
-            "reprogramada" => $data['reprogramada'],
-            "perdida" => $data['perdida'],
-            "vista" => $data['vista']  // Añadido el estado "Vista"
-        ]);
-    } else {
-        echo json_encode([
-            "error" => "Error al contar clases"
-        ]);
-    }
-    break;
+        break;
 
     case 'contarCuentasEstado':
         $sql = "SELECT 
@@ -176,56 +176,55 @@ case 'contarClasesEstado':
             ]);
         }
         break;
-        case 'listarClases':
-            $conn->query("SET lc_time_names = 'es_ES'");
-        
-            $sql = "SELECT *,
-                p.id_programador,
-                p.estado,
-                DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
-                CONCAT(DATE_FORMAT(p.hora_inicio, '%h:%i %p'), ' - ', DATE_FORMAT(p.hora_salida, '%h:%i %p')) AS hora,
-                m.nombre,
-                s.nombre_salon 
-                FROM programador p
-                JOIN modulos m ON p.id_modulo = m.id_modulo
-                JOIN salones s ON p.id_salon = s.id_salon
-                WHERE numero_documento = ?
-                ORDER BY 
-                    CASE 
-                        WHEN p.estado = 'Perdida' THEN 1 
-                        WHEN p.estado = 'Pendiente' THEN 2 
-                        ELSE 3 
-                    END, 
-                p.fecha ASC";
-        
-            if ($stmt = $conn->prepare($sql)) {
-                $stmt->bind_param("s", $docente);
-                $stmt->execute();
-                $resultado = $stmt->get_result();
-        
-                $clases = [];
-                while ($fila = $resultado->fetch_assoc()) {
-                    // Establecemos los estados correctos
-                    if (isset($fila['estado'])) {
-                        if ($fila['estado'] === 'Reprogramada') {
-                            $fila['estado'] = 'Reagendada';
-                        } else if ($fila['estado'] === 'Pendiente') {
-                            $fila['estado'] = 'Agendada';
-                        }
+
+    case 'listarClases':
+        $conn->query("SET lc_time_names = 'es_ES'");
+    
+        $sql = "SELECT *,
+            p.id_programador,
+            p.estado,
+            DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
+            CONCAT(DATE_FORMAT(p.hora_inicio, '%h:%i %p'), ' - ', DATE_FORMAT(p.hora_salida, '%h:%i %p')) AS hora,
+            m.nombre,
+            s.nombre_salon 
+            FROM programador p
+            JOIN modulos m ON p.id_modulo = m.id_modulo
+            JOIN salones s ON p.id_salon = s.id_salon
+            WHERE numero_documento = ?
+            ORDER BY 
+                CASE 
+                    WHEN p.estado = 'Perdida' THEN 1 
+                    WHEN p.estado = 'Pendiente' THEN 2 
+                    ELSE 3 
+                END, 
+            p.fecha ASC";
+    
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("s", $docente);
+            $stmt->execute();
+            $resultado = $stmt->get_result();
+    
+            $clases = [];
+            while ($fila = $resultado->fetch_assoc()) {
+                // Establecemos los estados correctos
+                if (isset($fila['estado'])) {
+                    if ($fila['estado'] === 'Reprogramada') {
+                        $fila['estado'] = 'Reagendada';
+                    } else if ($fila['estado'] === 'Pendiente') {
+                        $fila['estado'] = 'Agendada';
                     }
-                
-                    $clases[] = $fila;
                 }
-        
-                echo json_encode(["data" => $clases]);
-            } else {
-                echo json_encode(["error" => "Error en la consulta: " . $conn->error]);
+            
+                $clases[] = $fila;
             }
-            break;
-        
-        
-        default:
-        
+    
+            echo json_encode(["data" => $clases]);
+        } else {
+            echo json_encode(["error" => "Error en la consulta: " . $conn->error]);
+        }
+        break;
+    
+    default:
         header('Content-Type: application/json');
 
         $conn->query("SET lc_time_names = 'es_ES'");
@@ -243,26 +242,27 @@ case 'contarClasesEstado':
         $searchQuery = "";
         if (!empty($searchValue)) {
             $searchQuery = " AND (DATE_FORMAT(c.fecha, '%M %Y') LIKE '%$searchValue%'
-                                OR d.nombres LIKE '%$searchValue%'
-                                OR d.apellidos LIKE '%$searchValue%'
-                                OR c.estado LIKE '%$searchValue%')";
+                            OR d.nombres LIKE '%$searchValue%'
+                            OR d.apellidos LIKE '%$searchValue%'
+                            OR c.estado LIKE '%$searchValue%')";
         }
-        
+
         $sql = "SELECT c.id_cuenta, DATE_FORMAT(c.fecha, '%M %Y') AS fecha, c.valor_hora, c.horas_trabajadas, 
-                       (c.valor_hora * c.horas_trabajadas) AS monto, d.nombres, d.apellidos, c.estado
-                FROM cuentas_cobro c
-                JOIN docentes d ON c.numero_documento = d.numero_documento
-                WHERE d.numero_documento = $docente
-                AND c.estado <> 'creada'
-                $searchQuery
-                ORDER BY c.fecha DESC, $orderColumn $orderDir
-                LIMIT $start, $length";
-        
-        $result = $conn->query($sql);
+               (c.valor_hora * c.horas_trabajadas) AS monto, d.nombres, d.apellidos, c.estado
+        FROM cuentas_cobro c
+        JOIN docentes d ON c.numero_documento = d.numero_documento
+        WHERE d.numero_documento = '$docente'
+        AND c.estado != 'creada'
+        $searchQuery
+        ORDER BY c.fecha DESC, $orderColumn $orderDir
+        LIMIT $start, $length";
 
         $countFilteredQuery = "SELECT COUNT(*) as total FROM cuentas_cobro c
-                               JOIN docentes d ON c.numero_documento = d.numero_documento
-                               WHERE d.numero_documento = $docente AND c.estado <> 'creada' $searchQuery";
+                            JOIN docentes d ON c.numero_documento = d.numero_documento
+                            WHERE d.numero_documento = '$docente' 
+                            AND c.estado != 'creada' $searchQuery";
+        
+        $result = $conn->query($sql);
         
         $countFilteredResult = $conn->query($countFilteredQuery);
         $countFiltered = $countFilteredResult->fetch_assoc()['total'];
@@ -299,5 +299,6 @@ case 'contarClasesEstado':
         ]);
         break;
 }
+
 $conn->close();
 ?>
