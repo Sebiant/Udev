@@ -1,5 +1,5 @@
 <?php
-include '../conexion.php';
+include '../Conexion.php';
 
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
@@ -410,7 +410,7 @@ switch ($accion) {
 $conn->close();
 
 function validarTelefonoEditar($telefono, $numero_documento) {
-    include '../conexion.php';
+    include '../Conexion.php';
     $sql = "SELECT telefono FROM docentes WHERE telefono = ? AND numero_documento != ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;
@@ -424,7 +424,7 @@ function validarTelefonoEditar($telefono, $numero_documento) {
 }
 
 function validarTelefono($telefono) {
-    include '../conexion.php';
+    include '../Conexion.php';
     $sql = "SELECT telefono FROM docentes WHERE telefono = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;
@@ -438,7 +438,7 @@ function validarTelefono($telefono) {
 }
 
 function validarCedulaEditar($cedula, $numero_documento) {
-    include '../conexion.php';
+    include '../Conexion.php';
     $sql = "SELECT numero_documento FROM docentes WHERE numero_documento = ? AND numero_documento != ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;
@@ -452,7 +452,7 @@ function validarCedulaEditar($cedula, $numero_documento) {
 }
 
 function validarCedula($cedula) {
-    include '../conexion.php';
+    include '../Conexion.php';
     $sql = "SELECT numero_documento FROM docentes WHERE numero_documento = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;
@@ -466,7 +466,7 @@ function validarCedula($cedula) {
 }
 
 function validarCorreoEditar($correo, $numero_documento) {
-    include '../conexion.php';
+    include '../Conexion.php';
     $sql = "SELECT correo FROM usuarios WHERE correo = ? AND numero_documento != ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;
@@ -480,7 +480,7 @@ function validarCorreoEditar($correo, $numero_documento) {
 }
 
 function validarCorreo($correo) {
-    include '../conexion.php';
+    include '../Conexion.php';
     $sql = "SELECT correo FROM usuarios WHERE correo = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) return false;

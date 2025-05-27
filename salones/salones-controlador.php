@@ -1,5 +1,5 @@
 <?php
-include_once '../conexion.php';
+include_once '../Conexion.php';
 
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 

@@ -40,7 +40,7 @@ if ($rol === 'docente' && basename($_SERVER['PHP_SELF']) !== 'Cuentas-Docentes-V
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarTogglerDemo01">
-      <a class="navbar-brand" href="../Index.php">Udev</a>
+      <a class="navbar-brand" href="../index.php">Udev</a>
 
       <!-- CENTRADO del menú -->
       <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
@@ -62,7 +62,7 @@ if ($rol === 'docente' && basename($_SERVER['PHP_SELF']) !== 'Cuentas-Docentes-V
       </ul>
       
       <div class="d-flex">
-        <a class="nav-link text-danger fw-bold" href="../login/Login-Controlador.php?accion=logout">
+        <a class="nav-link text-danger fw-bold" href="../Login/Login-Controlador.php?accion=logout">
           <i class="bi bi-box-arrow-right"></i> Cerrar sesión
         </a>
       </div>

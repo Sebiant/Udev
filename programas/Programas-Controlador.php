@@ -1,5 +1,5 @@
 <?php
-include '../conexion.php';
+include '../Conexion.php';
 
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
@@ -7,7 +7,7 @@ switch ($accion) {
     case 'crear':
         $tipo = $_POST['tipo'] ?? '';
         $nombre = $_POST['nombre'] ?? '';
-        $duracion_meses = $_POST['duracion_meses'] ?? '';
+        $duracion_meses = $_POST['duracion_mes'] ?? '';
         $valor_total_programa = $_POST['valor_total_programa'] ?? '';
         $descripcion = $_POST['descripcion'] ?? '';
 
@@ -70,28 +70,28 @@ switch ($accion) {
         }
         break;
 
-        case 'cambiarEstado':
-            $id_programa = $_POST['id_programa'];
-            $estado = $_POST['estado'];
+    case 'cambiarEstado':
+        $id_programa = $_POST['id_programa'];
+        $estado = $_POST['estado'];
         
-            // Cambiar estado del programa
-            $sql_programa = "UPDATE programas SET estado = $estado WHERE id_programa = '$id_programa'";
-            $resultado = $conn->query($sql_programa);
+        // Cambiar estado del programa
+        $sql_programa = "UPDATE programas SET estado = $estado WHERE id_programa = '$id_programa'";
+        $resultado = $conn->query($sql_programa);
         
-            if ($resultado === TRUE) {
-                // Cambiar estado de los módulos (materias) asociados al programa
-                $sql_modulos = "UPDATE modulos SET estado = $estado WHERE id_programa = '$id_programa'";
-                $resultado_modulos = $conn->query($sql_modulos);
+        if ($resultado === TRUE) {
+             // Cambiar estado de los módulos (materias) asociados al programa
+            $sql_modulos = "UPDATE modulos SET estado = $estado WHERE id_programa = '$id_programa'";
+            $resultado_modulos = $conn->query($sql_modulos);
         
-                if ($resultado_modulos === TRUE) {
-                    echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . " para el programa y sus módulos.";
-                } else {
-                    echo "Programa actualizado, pero error al cambiar estado de módulos: " . $conn->error;
-                }
+            if ($resultado_modulos === TRUE) {
+                echo "Estado cambiado exitosamente a " . ($estado == 1 ? "Activo" : "Inactivo") . " para el programa y sus módulos.";
             } else {
-                echo "Error al cambiar el estado del programa: " . $conn->error;
+                echo "Programa actualizado, pero error al cambiar estado de módulos: " . $conn->error;
             }
-            break;        
+        } else {
+            echo "Error al cambiar el estado del programa: " . $conn->error;
+        }
+        break;        
 
     case 'BusquedaPorId':
         $id_programa = $_POST['id_programa'];
@@ -110,72 +110,72 @@ switch ($accion) {
         break;
 
     default:
-    header('Content-Type: application/json');
+        header('Content-Type: application/json');
 
-    $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
-    $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
-    $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
-    $searchValue = $_POST['search']['value'] ?? '';
-    
-    $sql = "SELECT *, CONCAT('$', FORMAT(valor_total_programa, 2, 'de_DE')) AS valor_total_formateado 
-            FROM programas WHERE 1=1"; // WHERE 1=1 permite concatenar condiciones sin errores
-    
-    if (!empty($searchValue)) {
-        $sql .= " AND (tipo LIKE '%$searchValue%' 
-                    OR nombre LIKE '%$searchValue%'
-                    OR duracion_meses LIKE '%$searchValue%'  /* Comillas invertidas en duración */
-                    OR descripcion LIKE '%$searchValue%' 
-                    OR estado LIKE '%$searchValue%')";
-    }
-    
-    // Agregamos ORDER BY correctamente
-    $sql .= " ORDER BY estado DESC";
-    
-    // Aplicamos paginación
-    $sql .= " LIMIT $start, $length";
-    
-    // Ejecutamos la consulta principal
-    $result = $conn->query($sql);
-    if (!$result) {
-        echo json_encode(['error' => 'Error en la consulta: ' . $conn->error]);
-        exit;
-    }
-    
-    // Contamos el total de registros sin filtro
-    $totalQuery = "SELECT COUNT(*) as total FROM programas";
-    $totalResult = $conn->query($totalQuery);
-    $totalData = $totalResult ? $totalResult->fetch_assoc()['total'] : 0;
-    
-    // Contamos el total de registros filtrados
-    $filteredQuery = "SELECT COUNT(*) as total FROM programas WHERE 1=1";
-    if (!empty($searchValue)) {
-        $filteredQuery .= " AND (tipo LIKE '%$searchValue%' 
-                            OR nombre LIKE '%$searchValue%'
-                            OR duracion_meses LIKE '%$searchValue%'
-                            OR descripcion LIKE '%$searchValue%' 
-                            OR estado LIKE '%$searchValue%')";
-    }
-    
-    $filteredResult = $conn->query($filteredQuery);
-    $totalFiltered = $filteredResult ? $filteredResult->fetch_assoc()['total'] : 0;
-    
-    // Formateamos los datos para la respuesta JSON
-    $data = [];
-    while ($row = $result->fetch_assoc()) {
-        $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
-        $data[] = $row;
-    }
-    
-    // Respuesta JSON para DataTables
-    echo json_encode([
-        'draw' => $draw,
-        'recordsTotal' => $totalData,
-        'recordsFiltered' => $totalFiltered,
-        'data' => $data
-    ]);
+        $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+        $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+        $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
+        $searchValue = $_POST['search']['value'] ?? '';
+        
+        $sql = "SELECT *, CONCAT('$', FORMAT(valor_total_programa, 2, 'de_DE')) AS valor_total_formateado 
+                FROM programas WHERE 1=1"; // WHERE 1=1 permite concatenar condiciones sin errores
+        
+        if (!empty($searchValue)) {
+            $sql .= " AND (tipo LIKE '%$searchValue%' 
+                        OR nombre LIKE '%$searchValue%'
+                        OR duracion_meses LIKE '%$searchValue%'  /* Comillas invertidas en duración */
+                        OR descripcion LIKE '%$searchValue%' 
+                        OR estado LIKE '%$searchValue%')";
+        }
+        
+        // Agregamos ORDER BY correctamente
+        $sql .= " ORDER BY estado DESC";
+        
+        // Aplicamos paginación
+        $sql .= " LIMIT $start, $length";
+        
+        // Ejecutamos la consulta principal
+        $result = $conn->query($sql);
+        if (!$result) {
+            echo json_encode(['error' => 'Error en la consulta: ' . $conn->error]);
+            exit;
+        }
+        
+        // Contamos el total de registros sin filtro
+        $totalQuery = "SELECT COUNT(*) as total FROM programas";
+        $totalResult = $conn->query($totalQuery);
+        $totalData = $totalResult ? $totalResult->fetch_assoc()['total'] : 0;
+        
+        // Contamos el total de registros filtrados
+        $filteredQuery = "SELECT COUNT(*) as total FROM programas WHERE 1=1";
+        if (!empty($searchValue)) {
+            $filteredQuery .= " AND (tipo LIKE '%$searchValue%' 
+                                OR nombre LIKE '%$searchValue%'
+                                OR duracion_meses LIKE '%$searchValue%'
+                                OR descripcion LIKE '%$searchValue%' 
+                                OR estado LIKE '%$searchValue%')";
+        }
+        
+        $filteredResult = $conn->query($filteredQuery);
+        $totalFiltered = $filteredResult ? $filteredResult->fetch_assoc()['total'] : 0;
+        
+        // Formateamos los datos para la respuesta JSON
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
+            $data[] = $row;
+        }
+        
+        // Respuesta JSON para DataTables
+        echo json_encode([
+            'draw' => $draw,
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $data
+        ]);
     
         break;
-}
+    }
 
 $conn->close();
 ?>

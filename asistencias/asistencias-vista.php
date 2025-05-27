@@ -1,6 +1,6 @@
 <?php 
-include_once '../componentes/header.php'; 
-include_once '../conexion.php';
+include_once '../Componentes/header.php'; 
+include_once '../Conexion.php';
 
 $conn->query("SET lc_time_names = 'es_ES'");
 
@@ -132,6 +132,6 @@ $fila = $resultado->fetch_assoc();
 </script>
 
 
-<?php include_once '../componentes/footer.php'; ?>
+<?php include_once '../Componentes/footer.php'; ?>
 <script src="js/Datatable-Programador.js"></script>
 <script src="js/Datatable-Asistencias.js"></script>

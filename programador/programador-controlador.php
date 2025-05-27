@@ -1,5 +1,5 @@
 <?php
-include '../conexion.php';
+include '../Conexion.php';
 
 $accion = $_GET['accion'] ?? 'default';
 
@@ -334,7 +334,13 @@ switch ($accion) {
             exit;
         }
 
-        $sql = "SELECT * FROM programador WHERE id_programador = ?";
+        $sql = "SELECT 
+                programador.*, 
+                periodos.id_periodo
+            FROM programador
+            JOIN periodos ON programador.id_periodo = periodos.id_periodo
+            WHERE programador.id_programador = ?";
+    
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {

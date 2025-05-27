@@ -1,5 +1,5 @@
 <?php
-include_once '../componentes/header.php';
+include_once '../Componentes/header.php';
 ?>
 <div class="container">
     <h1 class="text-center">Gestion Docentes</h1>
@@ -187,7 +187,7 @@ include_once '../componentes/header.php';
 </div>
 
 <?php
-include_once '../componentes/footer.php';
+include_once '../Componentes/footer.php';
 ?>
 <script src="js/Validation-Docentes.js"></script>
 <script src="js/Datatable-Docentes.js"></script>
@@ -244,6 +244,7 @@ include_once '../componentes/footer.php';
         });
     }
 </script>
+
 <script>
     function guardarCambiosDocente() {
         if (!$("#editForm").valid()) {
@@ -276,25 +277,25 @@ include_once '../componentes/footer.php';
 </script>
 
 <script>
-$(document).ready(function () {
-  $.ajax({
-    url: "Docentes-Controlador.php?accion=traerMaterias",
-    method: "GET",
-    dataType: "json",
-    success: function (materias) {
-      materias.forEach(function (materia) {
-        const checkboxId = `materia_${materia.id_modulo}`;
+    $(document).ready(function () {
+    $.ajax({
+        url: "Docentes-Controlador.php?accion=traerMaterias",
+        method: "GET",
+        dataType: "json",
+        success: function (materias) {
+        materias.forEach(function (materia) {
+            const checkboxId = `materia_${materia.id_modulo}`;
 
-        const checkbox = `<input type="checkbox" class="btn-check" id="${checkboxId}" name="id_modulo[]" value="${materia.id_modulo}" autocomplete="off">`;
+            const checkbox = `<input type="checkbox" class="btn-check" id="${checkboxId}" name="id_modulo[]" value="${materia.id_modulo}" autocomplete="off">`;
 
-        const label = `<label class="btn btn-outline-primary" for="${checkboxId}">${materia.nombre}</label>`;
+            const label = `<label class="btn btn-outline-primary" for="${checkboxId}">${materia.nombre}</label>`;
 
-        $("#materiasContainer").append(checkbox + label);
-      });
-    },
-    error: function () {
-      $("#materiasContainer").html("<p class='text-danger'>No se pudieron cargar las materias.</p>");
-    }
-  });
-});
+            $("#materiasContainer").append(checkbox + label);
+        });
+        },
+        error: function () {
+        $("#materiasContainer").html("<p class='text-danger'>No se pudieron cargar las materias.</p>");
+        }
+    });
+    });
 </script>

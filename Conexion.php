@@ -1,9 +1,9 @@
 <?php
 
-$servername = "mysql-hugosdd.alwaysdata.net";
-$db_username = "hugosdd_udev2";
-$db_password = "udev2024*&";
-$dbname = "hugosdd_pruebas";
+$servername = "mysql-udev.alwaysdata.net";
+$db_username = "udev_app";
+$db_password = "8BD9zlYixj1dey";
+$dbname = "udev_db";
 
 $conn = new mysqli($servername, $db_username, $db_password, $dbname);
 

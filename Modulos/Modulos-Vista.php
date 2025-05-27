@@ -1,6 +1,6 @@
 <?php
-include_once '../componentes/header.php';
-include '../conexion.php';
+include_once '../Componentes/header.php';
+include '../Conexion.php';
 $sql_programa = "SELECT id_programa, nombre FROM programas WHERE estado = 1";
 $result_programa = $conn->query($sql_programa);
 if (!$result_programa) {
@@ -155,7 +155,7 @@ if (!$result_programa) {
 </div>
 
 <?php
-include_once '../componentes/footer.php';
+include_once '../Componentes/footer.php';
 ?>
 
 <script src="js/Validation-Modulos.js"></script>
@@ -187,15 +187,17 @@ include_once '../componentes/footer.php';
     }
 </script>
 <script>
-    function guardarModulo() {
-        if (!$("#editForm").valid()) {
-            console.log("El formulario no es válido.");
-            return; 
+    $("#editForm").on("submit", function(e) {
+        e.preventDefault(); // para evitar que el formulario se envíe por defecto
+
+        if (!$(this).valid()) {
+            alert("Formulario no válido. Porfa llena todos los campos requeridos.");
+            return; // corta aquí si no es válido
         }
-    
-        const formData = new FormData(document.getElementById('editForm'));
+
+        const formData = new FormData(this);
         console.log('Datos del formulario:', ...formData.entries());
-    
+
         $.ajax({
             url: 'Modulos-Controlador.php?accion=editar',
             type: 'POST',
@@ -210,5 +212,5 @@ include_once '../componentes/footer.php';
                 console.error('Error:', error);
             }
         });
-    }
+    });
 </script>

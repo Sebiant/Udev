@@ -1,6 +1,6 @@
 
 <?php
-include '../conexion.php';
+include '../Conexion.php';
 
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';
 
@@ -67,46 +67,46 @@ switch ($accion) {
         break;
 
     default:
-    $draw = $_GET['draw'] ?? '';  // Si no existe, asigna una cadena vacía
-    $start = $_GET['start'] ?? 0; // Si no existe, asigna 0
-    $length = $_GET['length'] ?? 10; // Si no existe, asigna un valor por defecto
-    $searchValue = $_GET['search']['value'] ?? ''; // Si no existe, asigna cadena vacía
-    
-    $where = "";
-    if (!empty($searchValue)) {
-        $where = " WHERE periodos.nombre LIKE '%$searchValue% OR periodos.fecha_inicio LIKE '%$searchValue%' OR periodos.fecha_fin LIKE '%$searchValue%'";
+        $draw = $_GET['draw'] ?? '';  // Si no existe, asigna una cadena vacía
+        $start = $_GET['start'] ?? 0; // Si no existe, asigna 0
+        $length = $_GET['length'] ?? 10; // Si no existe, asigna un valor por defecto
+        $searchValue = $_GET['search']['value'] ?? ''; // Si no existe, asigna cadena vacía
+        
+        $where = "";
+        if (!empty($searchValue)) {
+            $where = " WHERE periodos.nombre LIKE '%$searchValue% OR periodos.fecha_inicio LIKE '%$searchValue%' OR periodos.fecha_fin LIKE '%$searchValue%'";
+        }
+        
+        // Obtener el total de registros antes de filtrar
+        $sqlTotal = "SELECT COUNT(*) AS total FROM periodos";
+        $resultTotal = $conn->query($sqlTotal);
+        $rowTotal = $resultTotal->fetch_assoc();
+        $totalRecords = $rowTotal['total'];
+        
+        // Obtener el total de registros después del filtro
+        $sqlFiltered = "SELECT COUNT(*) AS total FROM periodos $where";
+        $resultFiltered = $conn->query($sqlFiltered);
+        $rowFiltered = $resultFiltered->fetch_assoc();
+        $totalFiltered = $rowFiltered['total'];
+        
+        // Consulta principal con paginación
+        $sql = "SELECT * FROM periodos $where ORDER BY estado DESC LIMIT $start, $length";
+        $result = $conn->query($sql);
+        
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
+            $data[] = $row;
+        }
+        
+        // Enviar respuesta JSON
+        echo json_encode([
+            "draw" => intval($draw),
+            "recordsTotal" => $totalRecords,  // Total de registros sin filtro
+            "recordsFiltered" => $totalFiltered,  // Total de registros después del filtro
+            "data" => $data
+        ]);    
     }
-    
-    // Obtener el total de registros antes de filtrar
-    $sqlTotal = "SELECT COUNT(*) AS total FROM periodos";
-    $resultTotal = $conn->query($sqlTotal);
-    $rowTotal = $resultTotal->fetch_assoc();
-    $totalRecords = $rowTotal['total'];
-    
-    // Obtener el total de registros después del filtro
-    $sqlFiltered = "SELECT COUNT(*) AS total FROM periodos $where";
-    $resultFiltered = $conn->query($sqlFiltered);
-    $rowFiltered = $resultFiltered->fetch_assoc();
-    $totalFiltered = $rowFiltered['total'];
-    
-    // Consulta principal con paginación
-    $sql = "SELECT * FROM periodos $where ORDER BY estado DESC LIMIT $start, $length";
-    $result = $conn->query($sql);
-    
-    $data = [];
-    while ($row = $result->fetch_assoc()) {
-        $row['estado'] = ($row['estado'] == 1) ? "Activo" : "Inactivo";
-        $data[] = $row;
-    }
-    
-    // Enviar respuesta JSON
-    echo json_encode([
-        "draw" => intval($draw),
-        "recordsTotal" => $totalRecords,  // Total de registros sin filtro
-        "recordsFiltered" => $totalFiltered,  // Total de registros después del filtro
-        "data" => $data
-    ]);    
-}
 
 $conn->close();
 ?>

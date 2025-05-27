@@ -1,6 +1,6 @@
 <?php
-    include_once '../componentes/header.php';
-    include_once '../conexion.php';
+    include_once '../Componentes/header.php';
+    include_once '../Conexion.php';
     include 'idDocente.php';
 
     $conn->query("SET lc_time_names = 'es_ES'");
@@ -182,7 +182,7 @@
     </div>
 </div>
 
-<?php include_once '../componentes/footer.php'; ?>
+<?php include_once '../Componentes/footer.php'; ?>
 <script src="js/Datatable-Cuentas-Docentes.js"></script>
 <script>
     // Función para obtener los datos del servidor

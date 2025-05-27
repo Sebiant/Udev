@@ -1,6 +1,6 @@
 <?php
 
-include '../conexion.php';
+include '../Conexion.php';
 include 'idDocente.php';
 
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'default';

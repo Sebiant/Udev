@@ -1,6 +1,6 @@
 <?php
-include_once '../componentes/header.php';
-include '../conexion.php';
+include_once '../Componentes/header.php';
+include '../Conexion.php';
 
 ?>
 
@@ -107,11 +107,11 @@ include '../conexion.php';
 </div>
 
 <?php
-include_once '../componentes/footer.php';
+include_once '../Componentes/footer.php';
 ?>
 
 <script src="js/Datatables-Periodos.js"></script>
-<script src="js/Consultas-Periodos.js"></script>
+<script src="js/Validation-Periodos.js"></script>
 <script>
     function crearPeriodo() {
         if (!$("#formPeriodo").valid()) {

@@ -46,13 +46,19 @@
 </style>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
 <?php
-include_once '../componentes/header.php';
-include '../conexion.php';
+include_once '../Componentes/header.php';
+include '../Conexion.php';
 
 $sql_docentes = "SELECT numero_documento, nombres, apellidos FROM docentes WHERE estado = 1";
 $result_docentes = $conn->query($sql_docentes);
 
-$sql_salones = "SELECT id_salon, nombre_salon FROM salones WHERE estado = 1";
+$sql_salones = "SELECT 
+        salones.id_salon, 
+        salones.nombre_salon, 
+        instituciones.nombre
+    FROM salones
+    JOIN instituciones ON salones.id_institucion = instituciones.id_institucion
+    WHERE salones.estado = '1'";
 $result_salones = $conn->query($sql_salones);
 
 $sql_periodos = "SELECT id_periodo, nombre FROM periodos WHERE estado = 1";
@@ -143,7 +149,7 @@ $result_programas = $conn->query($sql_programas);
                                         <option value="">-- Seleccione Salón --</option>
                                         <?php while ($row = $result_salones->fetch_assoc()): ?>
                                             <option value="<?php echo $row['id_salon']; ?>">
-                                                <?php echo $row['nombre_salon']; ?>
+                                                <?php echo $row['nombre_salon'] . ", " . $row['nombre']; ?>
                                             </option>
                                         <?php endwhile; ?>
                                     </select>
@@ -354,9 +360,94 @@ $result_programas = $conn->query($sql_programas);
 <br>
 
 <?php
-include_once '../componentes/footer.php';
+include_once '../Componentes/footer.php';
 ?>
 <script src="js/Datatable-Programador.js"></script>
+<script>
+    function ProgramarClase() {
+  const form = document.getElementById("formProgramador");
+  const formData = new FormData(form);
+
+  console.log("Datos del formulario:");
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
+  $.ajax({
+    url: "Programador-Controlador.php?accion=crear",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      try {
+        // Intenta interpretar la respuesta como JSON
+        const data = JSON.parse(response);
+
+        if (data.status === "success") {
+          alert("✅ " + data.message);
+          location.reload();
+        } else if (data.status === "error") {
+          alert("❌ " + data.message);
+        } else {
+          alert("⚠️ Respuesta inesperada del servidor.");
+          console.log(data);
+        }
+      } catch (e) {
+        console.error("❌ Error al procesar la respuesta:", response);
+        alert("❌ Ocurrió un error inesperado. Verifica la consola.");
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error AJAX:", error);
+      alert("🚫 Error en la conexión con el servidor: " + error);
+    },
+  });
+}
+
+function GuardarClase() {
+  const formData = new FormData(document.getElementById("editarClaseForm"));
+
+  console.log("Datos del formulario:", ...formData.entries());
+
+  $.ajax({
+    url: "Programador-Controlador.php?accion=editar",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      console.log("Respuesta del servidor:", response);
+      location.reload();
+    },
+    error: function (xhr, status, error) {
+      console.error("Error:", error);
+    },
+  });
+}
+function reprogramarClase() {
+  const formData = new FormData(document.getElementById("formReprogramar"));
+  console.log(...formData);
+
+  $.ajax({
+    url: "Programador-Controlador.php?accion=reprogramar",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      console.log("Respuesta del servidor:", response);
+      alert("Respuesta del servidor:", response);
+      location.reload();
+    },
+    error: function (xhr, status, error) {
+      console.error("Error:", error);
+      alert("Hubo un problema al procesar la solicitud.");
+    },
+  });
+}
+
+</script>
 <script>
     // Función que se llama cuando haces clic en un módulo
     function seleccionarModulo(id) {
@@ -421,7 +512,7 @@ include_once '../componentes/footer.php';
     // Función para obtener los datos del servidor
     function cargarClasesEstado() {
         $.ajax({
-            url: 'programador-Controlador.php?accion=contarClasesEstado',
+            url: 'Programador-Controlador.php?accion=contarClasesEstado',
             type: 'POST',
             dataType: 'json',
             data: { action: 'contarClasesEstado' },

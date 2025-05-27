@@ -212,5 +212,37 @@ function Devolver() {
     });
 }
 
+function Abonar(){
+    const btnAbonar = document.getElementById('btnAbonar');
+    const idCuenta = btnAbonar ? btnAbonar.getAttribute('data-id') : null;
+
+    if (!idCuenta) {
+        console.error('Error: ID de cuenta no encontrado en el botón.');
+        return;
+    }
+
+    const form = document.getElementById('formCuentaCobro');
+    const formData = new FormData(form); // ✅ esto captura todo el formulario
+
+    console.log('Datos enviados:', ...formData.entries(form));
+    formData.append('id_cuenta', idCuenta);
+
+     $.ajax({
+        url: 'Cuentas-De-Cobro-Controlador.php?accion=abonar',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('Respuesta del servidor:', response);
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la solicitud AJAX:', error);
+        }
+    });
+
+}
+
 
 

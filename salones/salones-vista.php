@@ -1,6 +1,6 @@
 <?php
-    include_once '../componentes/header.php';
-    include_once '../conexion.php';
+    include_once '../Componentes/header.php';
+    include_once '../Conexion.php';
 
     $sql = "SELECT id_institucion, nombre FROM instituciones WHERE estado= 1";
     $result = $conn->query($sql);
@@ -145,7 +145,7 @@
 </div>
 
 <?php
-    include_once '../componentes/footer.php';
+    include_once '../Componentes/footer.php';
 ?>
 <script src="js/Validation-Salones.js"></script>
 <script src="js/Datatables-Salones.js"></script>

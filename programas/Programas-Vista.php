@@ -1,5 +1,5 @@
 <?php
-include_once '../componentes/header.php';
+include_once '../Componentes/header.php';
 ?>
 
 <div class="container">
@@ -131,7 +131,7 @@ include_once '../componentes/header.php';
 </div>
 
 <?php
-include_once '../componentes/footer.php';
+include_once '../Componentes/footer.php';
 ?>
 <script src="js/Validation-Programas.js"></script>
 <script src="js/Datatable-Programas.js"></script>

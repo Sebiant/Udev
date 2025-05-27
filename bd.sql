@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS hugosdd_pruebas;
-USE hugosdd_pruebas;
+CREATE DATABASE IF NOT EXISTS udev_db;
+USE udev_db;
 
 -- Tabla instituciones
 CREATE TABLE IF NOT EXISTS instituciones (

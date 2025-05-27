@@ -1,5 +1,5 @@
 <?php
-    include_once '../componentes/header.php';
+    include_once '../Componentes/header.php';
 ?>
 
 <div class="container mt-4">
@@ -7,5 +7,5 @@
 </div>
 
 <?php
-    include_once '../componentes/footer.php';
+    include_once '../Componentes/footer.php';
 ?>

@@ -1,18 +1,22 @@
 <?php
-// Simulando una entrada de contraseña
-$password = "123";
+include '../Conexion.php'; // Ajusta si está en otro path
 
-// Hashear la contraseña
-$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+$correo = 'admin@admin.com';
+$clave_plana = '123';
+$clave_encriptada = password_hash($clave_plana, PASSWORD_DEFAULT);
+$rol = 'admin';
 
-// Mostrar el hash
-echo "Password original: $password<br>";
-echo "Password hasheada: $hashedPassword<br>";
+$sql = "INSERT INTO usuarios (correo, clave, rol, numero_documento)
+        VALUES (?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ssss", $correo, $clave_encriptada, $rol, $documento);
 
-// Verificar
-if (password_verify('123', $hashedPassword)) {
-    echo "¡Todo bien, contraseña válida!";
+if ($stmt->execute()) {
+    echo "✅ Usuario admin creado correctamente.";
 } else {
-    echo "Contraseña incorrecta, papá.";
+    echo "❌ Error al crear el usuario: " . $stmt->error;
 }
+
+$stmt->close();
+$conn->close();
 ?>
