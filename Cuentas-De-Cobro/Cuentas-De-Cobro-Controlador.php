@@ -160,6 +160,46 @@ switch ($accion) {
 
         $conn->close();
         break;
+        
+    case 'Firmar':
+        $id_cuenta = $_POST['id_cuenta'];
+
+            // Prepara la consulta para actualizar el estado
+            $sql_firma = "UPDATE cuentas_cobro SET estado = 'proceso_pago' WHERE id_cuenta = ?";
+            $stmt = $conn->prepare($sql_firma);
+
+            if ($stmt) {
+                $stmt->bind_param("i", $id_cuenta); // "i" significa integer
+                if ($stmt->execute()) {
+                    echo "Estado actualizado correctamente a proceso_pago.";
+                } else {
+                    echo "Error al ejecutar la consulta: " . $stmt->error;
+                }
+                $stmt->close();
+            } else {
+                echo "Error al preparar la consulta: " . $conn->error;
+            }        
+        break;
+
+    case 'Devolver':
+        $id_cuenta = $_POST['id_cuenta'];
+
+            // Prepara la consulta para actualizar el estado
+            $sql_devolver = "UPDATE cuentas_cobro SET estado = 'creada' WHERE id_cuenta = ?";
+            $stmt = $conn->prepare($sql_devolver);
+
+            if ($stmt) {
+                $stmt->bind_param("i", $id_cuenta); // "i" significa integer
+                if ($stmt->execute()) {
+                    echo "Estado actualizado correctamente a creada.";
+                } else {
+                    echo "Error al ejecutar la consulta: " . $stmt->error;
+                }
+                $stmt->close();
+            } else {
+                echo "Error al preparar la consulta: " . $conn->error;
+            }    
+        break;
 
     case 'modificar':
         $id_cuenta = $_POST['id_cuenta'];

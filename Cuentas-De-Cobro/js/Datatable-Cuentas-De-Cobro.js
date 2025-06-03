@@ -123,7 +123,7 @@ function verificarCuenta(idCuenta) {
 
 function actualizarBotones(estado) {
   $(
-    "#btnModificar, #btnExportar, #btnFirmado, #btnDevolver, #btnAbonar, #horas_trabajadas, #valor_hora, #cant_horas, #valor, #monto_mostrado, #saldo_mostrado, #label_monto_mostrado, #label_saldo_mostrado, #abono, #label_abonar, #label_cant_horas, #label_valor"
+    "#btnModificar, #btnExportar, #btnFirmado, #btnDevolver, #btnAbonar, #horas_trabajadas, #valor_hora, #cant_horas, #valor, #monto_mostrado, #saldo_mostrado, #label_monto_mostrado, #label_saldo_mostrado, #abono, #label_abonar, #label_cant_horas, #label_valor, #valor_abonado"
   ).hide();
 
   if (estado === "aceptada_docente" || estado === "rechazada_por_docente") {
@@ -147,7 +147,7 @@ function actualizarBotones(estado) {
     $("#btnAbonar").show();
     $("#monto_mostrado, #saldo_mostrado").show();
     $("#label_monto_mostrado, #label_saldo_mostrado").show();
-    $("#abono, #label_abonar").show();
+    $("#valor_abonado, #label_abonar").show();
   }
   if (estado === "pagada") {
     $("#label_cant_horas, #cant_horas").show();
@@ -199,7 +199,6 @@ function Devolver() {
   formData.append("id_cuenta", idCuenta);
 
   console.log("Datos enviados:", ...formData.entries());
-  alert("hola mundo");
 
   $.ajax({
     url: "Cuentas-De-Cobro-Controlador.php?accion=Devolver",
