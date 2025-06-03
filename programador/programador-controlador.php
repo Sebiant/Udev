@@ -33,7 +33,7 @@ switch ($accion) {
     
         // Validación 1: Hora de salida debe ser posterior a la de entrada
         if (!validarHorasEntradaSalida($hora_inicio, $hora_salida)) {
-            die(json_encode(['status' => 'error', 'message' => 'La hora de salida debe ser posterior a la hora de entrada.']));
+            die(json_encode(['status' => 'error', 'message' => 'La hora de salida debe ser al menos una hora después de la hora de entrada.']));
         }
     
         // Validación 2: Horario laboral válido (7:00 - 22:00)
@@ -490,7 +490,10 @@ function horarioLaboralValido($hora_inicio, $hora_fin) {
 }
 
 function validarHorasEntradaSalida($hora_inicio, $hora_fin) {
-    return strtotime($hora_fin) > strtotime($hora_inicio);
+    $inicio = strtotime($hora_inicio);
+    $fin = strtotime($hora_fin);
+
+    return $fin > $inicio && ($fin - $inicio) >= 3600;
 }
 
 function docentePuedeDictarModulo($conn, $docente, $modulo) {

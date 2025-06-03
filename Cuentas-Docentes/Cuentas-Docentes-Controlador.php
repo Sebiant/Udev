@@ -180,7 +180,7 @@ switch ($accion) {
     case 'listarClases':
         $conn->query("SET lc_time_names = 'es_ES'");
     
-        $sql = "SELECT *,
+        $sql = "SELECT p.*,
             p.id_programador,
             p.estado,
             DATE_FORMAT(p.fecha, '%W %d de %M de %Y') AS fecha, 
