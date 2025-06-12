@@ -1,3 +1,10 @@
+let estado = "";
+
+function handleClick(valor) {
+  estado = valor;
+  console.log("Estado seleccionado:", estado);
+}
+
 $(document).ready(function () {
   var table = $("#datos_cuentacobro_admin").DataTable({
     language: {
@@ -11,6 +18,10 @@ $(document).ready(function () {
     serverSide: true,
     ajax: {
       url: "Cuentas-De-Cobro-Controlador.php",
+      type: "GET",
+      data: function (d) {
+        d.estado = estado;
+      },
       dataSrc: "data",
     },
     columns: [
@@ -66,9 +77,23 @@ $(document).ready(function () {
     var data = table.row($(this).parents("tr")).data();
     devolverCuenta(data.id_cuenta);
   });
-});
 
-// 📌 Ahora estas funciones están en el ámbito global
+  // Evento para cambiar estado al hacer clic en un botón con clase 'filtro-estado'
+  $(document).on("click", ".filtro-estado", function () {
+    const nuevoEstado = $(this).data("estado");
+
+    // Toggle: si vuelven a hacer clic en el mismo, se limpia el filtro
+    if (estado === nuevoEstado) {
+      estado = "";
+    } else {
+      estado = nuevoEstado;
+    }
+
+    console.log("Estado seleccionado:", estado);
+
+    table.ajax.reload(); // 🔄 Forzamos recarga de la tabla
+  });
+});
 
 function verificarCuenta(idCuenta) {
   $.ajax({

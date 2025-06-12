@@ -299,6 +299,15 @@ switch ($accion) {
         $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
         $length = isset($_GET['length']) ? intval($_GET['length']) : 10;
         $search = isset($_GET['search']['value']) ? $conn->real_escape_string($_GET['search']['value']) : '';
+
+        // 1. Recibir parámetro estado
+        $estado = isset($_GET['estado']) && $_GET['estado'] !== '' ? $conn->real_escape_string($_GET['estado']) : null;
+
+        // 2. Preparar filtro si estado existe
+        $filtroEstado = '';
+        if ($estado !== null) {
+            $filtroEstado = " AND c.estado = '$estado'";
+        }
     
         // Filtro de búsqueda
         $searchQuery = "";
@@ -326,7 +335,7 @@ switch ($accion) {
                 JOIN 
                     docentes d ON c.numero_documento = d.numero_documento
                 WHERE 
-                    c.estado <> 'creada' $searchQuery 
+                    c.estado <> 'creada' $filtroEstado $searchQuery 
                 LIMIT $start, $length";
 
         $result = $conn->query($sql);
@@ -339,7 +348,7 @@ switch ($accion) {
                     JOIN 
                         docentes d ON c.numero_documento = d.numero_documento 
                     WHERE 
-                        c.estado <> 'creada' $searchQuery";
+                        c.estado <> 'creada' $filtroEstado $searchQuery";
                     
         $resultCount = $conn->query($sqlCount);
         $totalRecords = $resultCount->fetch_assoc()['total'];
@@ -370,7 +379,8 @@ switch ($accion) {
                 'draw' => isset($_GET['draw']) ? intval($_GET['draw']) : 1,
                 'recordsTotal' => $totalRecords,
                 'recordsFiltered' => $totalRecords,
-                'data' => $data
+                'data' => $data,
+                'estado' => $estado
             ]);
         } else {
             echo json_encode([

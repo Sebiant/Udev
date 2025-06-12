@@ -14,11 +14,40 @@ include_once '../Componentes/header.php';
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Información Cuentas de Cobro</h5>
             <div>
-                <span id="badge-aceptada_docente" class="badge text-bg-success me-1 text-white">Aceptada por el docente: 0</span>
-                <span id="badge-rechazada_por_docente" class="badge text-bg-danger me-1 text-white">Rechazada por el docente: 0</span>
-                <span id="badge-pendiente_firma" class="badge text-bg-warning me-1 text-white">Pendiente de firma: 0</span>
-                <span id="badge-proceso_pago" class="badge text-bg-info me-1 text-white">En proceso de pago: 0</span>
-                <span id="badge-pagada" class="badge text-bg-success me-1 text-white">Pagada: 0</span>
+                <span id="badge-aceptada_docente" 
+                    class="badge text-bg-success me-1 text-white filtro-estado" 
+                    style="cursor: pointer;" 
+                    data-estado="aceptada_docente">
+                    Aceptada por el docente: 0
+                </span>
+
+                <span id="badge-rechazada_por_docente" 
+                    class="badge text-bg-danger me-1 text-white filtro-estado" 
+                    style="cursor: pointer;" 
+                    data-estado="rechazada_por_docente">
+                    Rechazada por el docente: 0
+                </span>
+
+                <span id="badge-pendiente_firma" 
+                    class="badge text-bg-warning me-1 text-white filtro-estado" 
+                    style="cursor: pointer;" 
+                    data-estado="pendiente_firma">
+                    Pendiente de firma: 0
+                </span>
+
+                <span id="badge-proceso_pago" 
+                    class="badge text-bg-info me-1 text-white filtro-estado" 
+                    style="cursor: pointer;" 
+                    data-estado="proceso_pago">
+                    En proceso de pago: 0
+                </span>
+
+                <span id="badge-pagada" 
+                    class="badge text-bg-success me-1 text-white filtro-estado" 
+                    style="cursor: pointer;" 
+                    data-estado="pagada">
+                    Pagada: 0
+                </span>
             </div>
         </div>
         <div class="card-body">
@@ -106,7 +135,7 @@ include_once '../Componentes/footer.php';
 ?>
 
 <script src=js/Validation-Cuentas-De-Cobro.js></script>
-<script src="js/Datatable-Cuentas-De-Cobro.js"></script>
+<script src="js/Datatable-Cuentas-De-Cobro.js" defer></script>
 
 <script>
     function modificarCuenta() {
